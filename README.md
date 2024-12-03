@@ -1,6 +1,6 @@
 # Kodakku-Script
 
-### These are scripts for Kodakku
+**These are scripts for Kodakku**
 
 
 # How-to-install
