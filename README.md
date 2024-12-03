@@ -6,7 +6,7 @@
 # How-to-install
 
 
-- Copy this link: ``
+- Copy this link: `https://github.com/VeeverSW/Kodakku-Script/blob/main/OnlineRepo.json`
 
 #
 
