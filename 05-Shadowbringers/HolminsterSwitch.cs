@@ -11,7 +11,7 @@ using System.Reflection.Metadata;
 namespace Veever.Shadowbringers.HolminsterSwitch;
 
 [ScriptType(name: "遇袭集落水滩村", territorys: [837], guid: "a407d364-b2bd-4e12-9332-70ca3829ece7",
-    version:"0.0.0.1", author: "Veever")]
+    version:"0.0.0.2", author: "Veever")]
 
 public class HolminsterSwitch
 {
