@@ -49,7 +49,7 @@ public class HolminsterSwitch
     [ScriptMethod(name: "Boss1钢铁", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:15816"])]
     public void Boss1GibbetCage(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("钢铁，远离Boss", duration: 4000, true);
+        accessory.Method.TextInfo("钢铁，远离Boss", duration: 3000, true);
 
         var dp = accessory.Data.GetDefaultDrawProperties();
         if (!ParseObjectId(@event["TargetId"], out var tid)) return;
@@ -57,8 +57,8 @@ public class HolminsterSwitch
         dp.Name = "GibbetCage";
         dp.Color = accessory.Data.DefaultDangerColor;
         dp.Owner = tid;
-        dp.Scale = new Vector2(6);
-        dp.DestoryAt = 5000;
+        dp.Scale = new Vector2(8);
+        dp.DestoryAt = 3000;
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
 
         accessory.Method.TTS("钢铁，远离Boss");
@@ -269,7 +269,7 @@ public class HolminsterSwitch
         dp.Color = accessory.Data.DefaultSafeColor;
         dp.Owner = sid;
         dp.TargetObject = tid;
-        dp.Scale = new Vector2(10, 5);
+        dp.Scale = new Vector2(4, 20);
         dp.DestoryAt = 5000;
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Rect, dp);
 
