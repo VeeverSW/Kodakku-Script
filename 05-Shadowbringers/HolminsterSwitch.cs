@@ -11,7 +11,7 @@ using System.Reflection.Metadata;
 namespace Veever.Shadowbringers.HolminsterSwitch;
 
 [ScriptType(name: "遇袭集落水滩村", territorys: [837], guid: "a407d364-b2bd-4e12-9332-70ca3829ece7",
-    version:"0.0.0.2", author: "Veever")]
+    version:"0.0.0.3", author: "Veever")]
 
 public class HolminsterSwitch
 {
@@ -212,47 +212,28 @@ public class HolminsterSwitch
         accessory.Method.TTS("攻击锁链");
     }
 
-    [ScriptMethod(name: "Boss3左鞭打", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:15847"])]
-    public void Boss3LeftKnout(Event @event, ScriptAccessory accessory)
+    [ScriptMethod(name: "Boss3鞭打", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(1584[67])$"])]
+    public void Boss3Knout(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("去Boss右面", duration: 4000, true);
+        var aid = JsonConvert.DeserializeObject<uint>(@event["ActionId"]);
+        var isR = aid == 15846;
 
         if (!ParseObjectId(@event["SourceId"], out var sid)) return;
         float.TryParse(@event["SourceRotation"], out var rotation);
 
         var dp = accessory.Data.GetDefaultDrawProperties();
-        dp.Name = "左鞭打";
+        dp.Name = "鞭打";
         dp.Color = accessory.Data.DefaultDangerColor;
         dp.DestoryAt = 5500;
         dp.Owner = sid;
-        dp.Scale = new Vector2(22);
+        dp.Scale = new Vector2(24);
         dp.Radian = float.Pi / 180 * 210;
-        float offsetAngle = 115 * (float)Math.PI / 180;
-        dp.Rotation = rotation + offsetAngle;
+        dp.Rotation = float.Pi / 180 * 75 * (isR ? -1 : 1);
+
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Fan, dp);
+        accessory.Method.TextInfo($"去Boss{(isR ? "左" : "右")}面", duration: 4000, true);
+        accessory.Method.TTS($"去Boss{(isR ? "左" : "右")}面");
     }
-
-
-    [ScriptMethod(name: "Boss3右鞭打", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:15846"])]
-    public void Boss3RightKnout(Event @event, ScriptAccessory accessory)
-    {
-        accessory.Method.TextInfo("去Boss左面", duration: 4000, true);
-
-        if (!ParseObjectId(@event["SourceId"], out var sid)) return;
-        float.TryParse(@event["SourceRotation"], out var rotation);
-
-        var dp = accessory.Data.GetDefaultDrawProperties();
-        dp.Name = "右鞭打";
-        dp.Color = accessory.Data.DefaultDangerColor;
-        dp.DestoryAt = 5500;
-        dp.Owner = sid;
-        dp.Scale = new Vector2(22);
-        dp.Radian = float.Pi / 180 * 210;
-        float offsetAngle = -90 * (float)Math.PI / 180;
-        dp.Rotation = rotation + offsetAngle;
-        accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Fan, dp);
-    }
-
 
     [ScriptMethod(name: "Boss3分摊", eventType: EventTypeEnum.ActionEffect, eventCondition: ["ActionId:15844"])]
     public void Boss3IntoTheLight(Event @event, ScriptAccessory accessory)
@@ -269,7 +250,7 @@ public class HolminsterSwitch
         dp.Color = accessory.Data.DefaultSafeColor;
         dp.Owner = sid;
         dp.TargetObject = tid;
-        dp.Scale = new Vector2(4, 20);
+        dp.Scale = new Vector2(6, 20);
         dp.DestoryAt = 5000;
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Rect, dp);
 
