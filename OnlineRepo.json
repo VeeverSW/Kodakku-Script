@@ -12,5 +12,12 @@
     "Version": "0.0.0.1",
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/DohnMheg.cs"
+  },
+  {
+    "Name": "血战苍穹魔科学研究所",
+    "Guid": "dd08165c-b709-4100-a96e-65f2c7ae4f3b",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/03-Heavensward/the-Aetherochemical-Research-Facility.cs"
   }
 ]
