@@ -30,5 +30,13 @@
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/Yuweyawata-Field-Station.cs",
     "UpdateInfo": "v0.0.0.1，地火有朝一日应该能写（Boss3顺时针地火不确定是否有没有问题）"
+  },
+  {
+    "Name": "终极之战(解限版)",
+    "Guid": "100df6f8-d8ce-44f7-9fb0-431eca0f2825",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/06-EndWalker/the-Minstrels-Ballad-Endsingers-Aria.cs",
+    "UpdateInfo": "v0.0.0.1，解限用"
   }
 ]
