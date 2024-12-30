@@ -139,9 +139,8 @@ public class the_Minstrels_Ballad_Endsingers_Aria
     [ScriptMethod(name: "反讽", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:28720"])]
     public void Eironeia(Event @event, ScriptAccessory accessory)
     {
-        string tname = @event["TargetName"]?.ToString() ?? "未知目标";
-        accessory.Method.TextInfo($"与{tname}分摊", duration: 4700, true);
-        if (isTTS) accessory.Method.TTS($"与{tname}分摊");
+        accessory.Method.TextInfo($"分组分摊", duration: 4700, true);
+        if (isTTS) accessory.Method.TTS($"分组分摊");
 
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = "反讽(分摊)";
