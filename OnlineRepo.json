@@ -2,41 +2,41 @@
   {
     "Name": "遇袭集落水滩村",
     "Guid": "a407d364-b2bd-4e12-9332-70ca3829ece7",
-    "Version": "0.0.0.4",
+    "Version": "0.0.0.5",
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/HolminsterSwitch.cs",
-    "UpdateInfo": "用户设置中增加isTTS按钮，用来控制TTS的开关"
+    "UpdateInfo": "支持DR TTS"
   },
   {
     "Name": "水妖幻园多恩美格禁园",
     "Guid": "d8fbc4be-b2c3-43a5-93f7-2901b40d0921",
-    "Version": "0.0.0.2",
+    "Version": "0.0.0.3",
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/DohnMheg.cs",
-    "UpdateInfo": "用户设置中增加isTTS按钮，用来控制TTS的开关"
+    "UpdateInfo": "支持DR TTS"
   },
   {
     "Name": "血战苍穹魔科学研究所",
     "Guid": "dd08165c-b709-4100-a96e-65f2c7ae4f3b",
-    "Version": "0.0.0.2",
+    "Version": "0.0.0.3",
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/03-Heavensward/the-Aetherochemical-Research-Facility.cs",
-    "UpdateInfo": "用户设置中增加isTTS按钮，用来控制TTS的开关"
+    "UpdateInfo": "支持DR TTS"
   },
   {
     "Name": "Yuweyawata Field Station",
     "Guid": "992e47a8-17d0-4379-891b-0762c0509257",
-    "Version": "0.0.0.3",
+    "Version": "0.0.0.4",
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/Yuweyawata-Field-Station.cs",
-    "UpdateInfo": "v0.0.0.3，修复boss1分散播报，删除顺时针播报"
+    "UpdateInfo": "支持DR TTS"
   },
   {
     "Name": "终极之战(解限版)",
     "Guid": "100df6f8-d8ce-44f7-9fb0-431eca0f2825",
-    "Version": "0.0.0.1",
+    "Version": "0.0.0.2",
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/06-EndWalker/the-Minstrels-Ballad-Endsingers-Aria.cs",
-    "UpdateInfo": "v0.0.0.1，解限用"
+    "UpdateInfo": "支持DR TTS"
   }
 ]
