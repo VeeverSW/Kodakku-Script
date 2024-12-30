@@ -26,10 +26,10 @@
   {
     "Name": "Yuweyawata Field Station",
     "Guid": "992e47a8-17d0-4379-891b-0762c0509257",
-    "Version": "0.0.0.2",
+    "Version": "0.0.0.3",
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/Yuweyawata-Field-Station.cs",
-    "UpdateInfo": "v0.0.0.2，修复boss1分散播报"
+    "UpdateInfo": "v0.0.0.3，修复boss1分散播报，删除顺时针播报"
   },
   {
     "Name": "终极之战(解限版)",

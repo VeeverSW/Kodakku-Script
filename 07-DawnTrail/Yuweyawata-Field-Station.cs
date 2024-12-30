@@ -17,7 +17,7 @@ using System.Collections.Generic;
 namespace Veever.DawnTrail.YuweyawataFieldStation;
 
 [ScriptType(name: "Yuweyawata Field Station", territorys: [1242], guid: "992e47a8-17d0-4379-891b-0762c0509257",
-    version: "0.0.0.2", author: "Veever")]
+    version: "0.0.0.3", author: "Veever")]
 
 public class YuweyawataFieldStation
 {
@@ -196,27 +196,15 @@ public class YuweyawataFieldStation
         }
     }
 
-    [ScriptMethod(name: "Lightning Storm", eventType: EventTypeEnum.TargetIcon, eventCondition: ["Id:013B"])]
+    [ScriptMethod(name: "Lightning Storm", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:40637"])]
     public void LightningStorm(Event @event, ScriptAccessory accessory)
     {
-        if (LightningStormTTSCount == 0)
+        if (LightningStormTTSCount == 0 || LightningStormTTSCount == 4 || LightningStormTTSCount == 7 || LightningStormTTSCount == 12)
         {
             accessory.Method.TextInfo("全体分散", duration: 4700, true);
             if (isTTS) accessory.Method.TTS("全体分散");
-            LightningStormTTSCount++;
         }
-        if (LightningStormTTSCount == 3)
-        {
-            accessory.Method.TextInfo("全体分散", duration: 4700, true);
-            if (isTTS) accessory.Method.TTS("全体分散");
-            LightningStormTTSCount++;
-        }
-        if (LightningStormTTSCount == 7)
-        {
-            accessory.Method.TextInfo("全体分散", duration: 4700, true);
-            if (isTTS) accessory.Method.TTS("全体分散");
-            LightningStormTTSCount++;
-        }
+        LightningStormTTSCount++;
         var dp = accessory.Data.GetDefaultDrawProperties();
 
         dp.Name = "Lightning Storm";
@@ -572,31 +560,31 @@ public class YuweyawataFieldStation
     }
 
     #endregion
-    [ScriptMethod(name: "Rock Blast", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:40611"])]
-    public void RockBlast(Event @event, ScriptAccessory accessory)
-    {
-        var clockwise = new Vector3(33.98f, -87.91f, -723.51f);
-        //var antiClockwise = new Vector3(33.98f, -87.91f, -723.51f);
+    //[ScriptMethod(name: "Rock Blast", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:40611"])]
+    //public void RockBlast(Event @event, ScriptAccessory accessory)
+    //{
+    //    var clockwise = new Vector3(33.98f, -87.91f, -723.51f);
+    //    //var antiClockwise = new Vector3(33.98f, -87.91f, -723.51f);
 
-        Task.Delay(50).ContinueWith(t =>
-        {
-            if (@event.EffectPosition() == clockwise)
-            {
-                accessory.Method.TextInfo("顺时针地火", duration: 4700, true);
-                if (isTTS) accessory.Method.TTS("顺时针弟火");
-                var pos = @event.EffectPosition();
-                pos.X -= 1.5f;
-                var dp = accessory.Data.GetDefaultDrawProperties();
-                dp.Name = "Clockwise Safe Area";
-                dp.Color = accessory.Data.DefaultSafeColor;
-                dp.Position = pos;
-                dp.Scale = new Vector2(3);
-                dp.DestoryAt = 14000;
-                accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
-            }
+    //    Task.Delay(50).ContinueWith(t =>
+    //    {
+    //        if (@event.EffectPosition() == clockwise)
+    //        {
+    //            accessory.Method.TextInfo("顺时针地火", duration: 4700, true);
+    //            if (isTTS) accessory.Method.TTS("顺时针弟火");
+    //            var pos = @event.EffectPosition();
+    //            pos.X -= 1.5f;
+    //            var dp = accessory.Data.GetDefaultDrawProperties();
+    //            dp.Name = "Clockwise Safe Area";
+    //            dp.Color = accessory.Data.DefaultSafeColor;
+    //            dp.Position = pos;
+    //            dp.Scale = new Vector2(3);
+    //            dp.DestoryAt = 14000;
+    //            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
+    //        }
            
-        });
-    }
+    //    });
+    //}
 
 }
 
