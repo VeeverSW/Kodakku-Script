@@ -38,5 +38,13 @@
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/06-EndWalker/the-Minstrels-Ballad-Endsingers-Aria.cs",
     "UpdateInfo": "支持DR TTS"
+  },
+  {
+    "Name": "讨伐彷徨死灵（指路+自动打断）",
+    "Guid": "8b28e087-549e-4a88-96db-50e1e7cc5214",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Under-the-Armor.cs",
+    "UpdateInfo": "v0.0.0.1, 由于国际服不支持查表，所有职业都会尝试下踢&扫腿"
   }
 ]
