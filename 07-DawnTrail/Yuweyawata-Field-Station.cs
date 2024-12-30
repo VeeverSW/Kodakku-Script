@@ -17,7 +17,7 @@ using System.Collections.Generic;
 namespace Veever.DawnTrail.YuweyawataFieldStation;
 
 [ScriptType(name: "Yuweyawata Field Station", territorys: [1242], guid: "992e47a8-17d0-4379-891b-0762c0509257",
-    version: "0.0.0.1", author: "Veever")]
+    version: "0.0.0.2", author: "Veever")]
 
 public class YuweyawataFieldStation
 {
@@ -200,6 +200,18 @@ public class YuweyawataFieldStation
     public void LightningStorm(Event @event, ScriptAccessory accessory)
     {
         if (LightningStormTTSCount == 0)
+        {
+            accessory.Method.TextInfo("全体分散", duration: 4700, true);
+            if (isTTS) accessory.Method.TTS("全体分散");
+            LightningStormTTSCount++;
+        }
+        if (LightningStormTTSCount == 3)
+        {
+            accessory.Method.TextInfo("全体分散", duration: 4700, true);
+            if (isTTS) accessory.Method.TTS("全体分散");
+            LightningStormTTSCount++;
+        }
+        if (LightningStormTTSCount == 7)
         {
             accessory.Method.TextInfo("全体分散", duration: 4700, true);
             if (isTTS) accessory.Method.TTS("全体分散");
