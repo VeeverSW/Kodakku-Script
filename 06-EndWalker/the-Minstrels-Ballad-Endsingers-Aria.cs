@@ -29,10 +29,7 @@ public class the_Minstrels_Ballad_Endsingers_Aria
 
     public void Init(ScriptAccessory accessory)
     {
-       accessory.Method.RemoveDraw(".*");
-       var x = accessory.Data.PartyList.IndexOf(accessory.Data.Me);
-        accessory.Method.SendChat($"/e index: {x}");
-        
+       accessory.Method.RemoveDraw(".*");   
     }
 
     [ScriptMethod(name: "绝望的锁链", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:28701"])]
