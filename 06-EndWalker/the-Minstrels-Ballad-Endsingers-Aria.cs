@@ -18,10 +18,20 @@ using ECommons;
 namespace Veever.DawnTrail.theMinstrelsBalladEndsingersAria;
 
 [ScriptType(name: "终极之战(解限版)", territorys: [998], guid: "100df6f8-d8ce-44f7-9fb0-431eca0f2825",
-    version: "0.0.0.2", author: "Veever")]
+    version: "0.0.0.3", author: "Veever", note: noteStr)]
 
 public class the_Minstrels_Ballad_Endsingers_Aria
 {
+    const string noteStr =
+    """
+    v0.0.0.3:
+    1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
+    2. 以前的这几个脚本的底层扩展目前懒得重构（就能加啥随便加了）
+    鸭门。
+    """;
+    [UserSetting("文字横幅提示开关")]
+    public bool isText { get; set; } = true;
+
     [UserSetting("TTS开关")]
     public bool isTTS { get; set; } = true;
 
@@ -63,7 +73,7 @@ public class the_Minstrels_Ballad_Endsingers_Aria
         if (isLeftSide || isRightSide)
         {
             string sideText = isLeftSide ? "左侧" : "右侧";
-            accessory.Method.TextInfo($"场中集合准备向{sideText}拉线", duration: 4700, true);
+            if (isText) accessory.Method.TextInfo($"场中集合准备向{sideText}拉线", duration: 4700, true);
             if (isTTS)
             {
                 accessory.Method.TTS($"场中集合准备向{sideText}拉线");
@@ -126,7 +136,7 @@ public class the_Minstrels_Ballad_Endsingers_Aria
     [ScriptMethod(name: "傲慢", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:28717"])]
     public void Hubris(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("双T死刑", duration: 4700, true);
+        if (isText) accessory.Method.TextInfo("双T死刑", duration: 4700, true);
         if (isTTS) accessory.Method.TTS("双T死刑");
         if (isDRTTS) accessory.Method.SendChat($"/pdr tts 双T死刑");
     }
@@ -134,7 +144,7 @@ public class the_Minstrels_Ballad_Endsingers_Aria
     [ScriptMethod(name: "AOE", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(28718|28662)$"])]
     public void AOE(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("AOE", duration: 4700, true);
+        if (isText) accessory.Method.TextInfo("AOE", duration: 4700, true);
         if (isTTS) accessory.Method.TTS("AOE");
         if (isDRTTS) accessory.Method.SendChat($"/pdr tts AOE");
     }
@@ -142,7 +152,7 @@ public class the_Minstrels_Ballad_Endsingers_Aria
     [ScriptMethod(name: "反讽", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:28720"])]
     public void Eironeia(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo($"分组分摊", duration: 4700, true);
+        if (isText) accessory.Method.TextInfo($"分组分摊", duration: 4700, true);
         if (isTTS) accessory.Method.TTS($"分组分摊");
         if (isDRTTS) accessory.Method.SendChat($"/pdr tts 分组分摊");
 
@@ -174,7 +184,7 @@ public class the_Minstrels_Ballad_Endsingers_Aria
     [ScriptMethod(name: "蓝色天体撞击", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(286[67]7)$"])]
     public void BlueStar(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("击退到安全位置", duration: 4700, true);
+        if (isText) accessory.Method.TextInfo("击退到安全位置", duration: 4700, true);
         if (isTTS) accessory.Method.TTS("击退到安全位置");
         if (isDRTTS) accessory.Method.SendChat($"/pdr tts 击退到安全位置");
 

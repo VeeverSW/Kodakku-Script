@@ -17,7 +17,7 @@ using System.Collections.Generic;
 namespace Veever.DawnTrail.YuweyawataFieldStation;
 
 [ScriptType(name: "Yuweyawata Field Station", territorys: [1242], guid: "992e47a8-17d0-4379-891b-0762c0509257",
-    version: "0.0.0.4", author: "Veever")]
+    version: "0.0.0.5", author: "Veever", note: noteStr)]
 
 public class YuweyawataFieldStation
 {
@@ -25,8 +25,17 @@ public class YuweyawataFieldStation
     private readonly object LeapingEarthLock = new object();
     private readonly object JaggedEdgeLock = new object();
     public int LeapingEarthResult;
-    
 
+    const string noteStr =
+    """
+    v0.0.0.5:
+    1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
+    2. 以前的这几个脚本的底层扩展目前懒得重构（就能加啥随便加了）
+    3. 删除顺时针地火判断
+    鸭门。
+    """;
+    [UserSetting("文字横幅提示开关")]
+    public bool isText { get; set; } = true;
 
     [UserSetting("TTS开关")]
     public bool isTTS { get; set; } = true;
@@ -158,7 +167,7 @@ public class YuweyawataFieldStation
     [ScriptMethod(name: "Electrical Overload", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:40635"])]
     public void ElectricalOverload(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("AOE", duration: 4700, true);
+        if (isText) accessory.Method.TextInfo("AOE", duration: 4700, true);
         if (isTTS) accessory.Method.TTS("AOE");
         if (isDRTTS) accessory.Method.SendChat("/pdr tts AOE");
     }
@@ -205,7 +214,7 @@ public class YuweyawataFieldStation
     {
         if (LightningStormTTSCount == 0 || LightningStormTTSCount == 4 || LightningStormTTSCount == 7 || LightningStormTTSCount == 12)
         {
-            accessory.Method.TextInfo("全体分散", duration: 4700, true);
+            if (isText) accessory.Method.TextInfo("全体分散", duration: 4700, true);
             if (isTTS) accessory.Method.TTS("全体分散");
             if (isDRTTS) accessory.Method.SendChat("/pdr tts 全体分散");
         }
@@ -226,7 +235,7 @@ public class YuweyawataFieldStation
     {
         if (RawElectropeCount == 0)
         {
-            accessory.Method.TextInfo("优先攻击小怪", duration: 4700, true);
+            if (isText) accessory.Method.TextInfo("优先攻击小怪", duration: 4700, true);
             if (isTTS) accessory.Method.TTS("优先攻击小怪");
             if (isDRTTS) accessory.Method.SendChat("/pdr tts 优先攻击小怪");
             RawElectropeCount++;
@@ -238,7 +247,7 @@ public class YuweyawataFieldStation
     public async void SparkingFissure(Event @event, ScriptAccessory accessory)
     {
         await Task.Delay(8700);
-        accessory.Method.TextInfo("AOE", duration: 3700, true);
+        if (isText) accessory.Method.TextInfo("AOE", duration: 3700, true);
         if (isTTS) accessory.Method.TTS("AOE");
         if (isDRTTS) accessory.Method.SendChat("/pdr tts AOE");
     }
@@ -256,7 +265,7 @@ public class YuweyawataFieldStation
     [ScriptMethod(name: "Boss2死刑", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:40658"])]
     public void Boss2Tankbuster(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("死刑准备", duration: 4700, true);
+        if (isText) accessory.Method.TextInfo("死刑准备", duration: 4700, true);
         if (isTTS) accessory.Method.TTS("死刑准备");
         if (isDRTTS) accessory.Method.SendChat("/pdr tts 死刑准备");
     }
@@ -264,7 +273,7 @@ public class YuweyawataFieldStation
     [ScriptMethod(name: "Phantom Flood", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:40644"])]
     public void PhantomFlood(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("去Boss脚下", duration: 4700, true);
+        if (isText) accessory.Method.TextInfo("去Boss脚下", duration: 4700, true);
         if (isTTS) accessory.Method.TTS("去Boss脚下");
         if (isDRTTS) accessory.Method.SendChat("/pdr tts 去Boss脚下");
 
@@ -306,7 +315,7 @@ public class YuweyawataFieldStation
     {
         if (TelltaleTearsTTSCount == 0)
         {
-            accessory.Method.TextInfo("分散, 不要重叠", duration: 4700, true);
+            if (isText) accessory.Method.TextInfo("分散, 不要重叠", duration: 4700, true);
             if (isTTS) accessory.Method.TTS("分散, 不要重叠");
             if (isDRTTS) accessory.Method.SendChat("/pdr tts 分散, 不要重叠");
             TelltaleTearsTTSCount++;
@@ -325,7 +334,7 @@ public class YuweyawataFieldStation
     [ScriptMethod(name: "Necrohazard", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:40646"])]
     public void Necrohazard(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("远离场中, 注意目压", duration: 4700, true);
+        if (isText) accessory.Method.TextInfo("远离场中, 注意目压", duration: 4700, true);
         if (isTTS) accessory.Method.TTS("远离场中, 注意目压");
         if (isDRTTS) accessory.Method.SendChat("/pdr tts 远离场中, 注意目压");
 
@@ -342,7 +351,7 @@ public class YuweyawataFieldStation
     [ScriptMethod(name: "Bloodburst", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:40647"])]
     public async void Bloodburst(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("AOE", duration: 4700, true);
+        if (isText) accessory.Method.TextInfo("AOE", duration: 4700, true);
         if (isTTS) accessory.Method.TTS("AOE");
         if (isDRTTS) accessory.Method.SendChat("/pdr tts AOE");
     }
@@ -351,7 +360,7 @@ public class YuweyawataFieldStation
     public void SoulDouse(Event @event, ScriptAccessory accessory)
     {
         string tname = @event["TargetName"]?.ToString() ?? "未知目标";
-        accessory.Method.TextInfo($"与{tname}分摊", duration: 4700, true);
+        if (isText) accessory.Method.TextInfo($"与{tname}分摊", duration: 4700, true);
         if (isTTS) accessory.Method.TTS($"与{tname}分摊");
         if (isDRTTS) accessory.Method.SendChat($"/pdr tts 与{tname}分摊");
 
@@ -375,7 +384,7 @@ public class YuweyawataFieldStation
     [ScriptMethod(name: "Raging Claw", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:40613"])]
     public void RagingClaw(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("去Boss身后", duration: 4700, true);
+        if (isText) accessory.Method.TextInfo("去Boss身后", duration: 4700, true);
         if (isTTS) accessory.Method.TTS("去Boss身后");
         if (isDRTTS) accessory.Method.SendChat("/pdr tts 去Boss身后");
 
@@ -495,7 +504,7 @@ public class YuweyawataFieldStation
             {
                 if (JaggedEdgeCount == 0 || JaggedEdgeCount == 4 || JaggedEdgeCount == 7)
                 {
-                    accessory.Method.TextInfo("分散, 不要重叠", duration: 4700, true);
+                    if (isText) accessory.Method.TextInfo("分散, 不要重叠", duration: 4700, true);
                     if (isTTS) accessory.Method.TTS("分散, 不要重叠");
                     if (isDRTTS) accessory.Method.SendChat("/pdr tts 分散, 不要重叠");
                 }
@@ -529,7 +538,7 @@ public class YuweyawataFieldStation
     [ScriptMethod(name: "Beastly Roar", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:40610"])]
     public void BeastlyRoar(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("远离Boss", duration: 7000, true);
+        if (isText) accessory.Method.TextInfo("远离Boss", duration: 7000, true);
         if (isTTS) accessory.Method.TTS("远离Boss");
         if (isDRTTS) accessory.Method.SendChat("/pdr tts 远离Boss");
 
@@ -547,7 +556,7 @@ public class YuweyawataFieldStation
     public void TuraliStoneIV(Event @event, ScriptAccessory accessory)
     {
         string tname = @event["TargetName"]?.ToString() ?? "未知目标";
-        accessory.Method.TextInfo($"与{tname}分摊", duration: 4700, true);
+        if (isText) accessory.Method.TextInfo($"与{tname}分摊", duration: 4700, true);
         if (isTTS) accessory.Method.TTS($"与{tname}分摊");
         if (isDRTTS) accessory.Method.SendChat($"/pdr tts 与{tname}分摊");
 
@@ -565,7 +574,7 @@ public class YuweyawataFieldStation
     [ScriptMethod(name: "Sonic Howl", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:40618"])]
     public async void SonicHowl(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("AOE", duration: 4700, true);
+        if (isText) accessory.Method.TextInfo("AOE", duration: 4700, true);
         if (isTTS) accessory.Method.TTS("AOE");
         if (isDRTTS) accessory.Method.SendChat("/pdr tts AOE");
     }
@@ -573,7 +582,7 @@ public class YuweyawataFieldStation
     [ScriptMethod(name: "Boss3死刑", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:40619"])]
     public void Boss3Tankbuster(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("死刑准备", duration: 4700, true);
+        if (isText) accessory.Method.TextInfo("死刑准备", duration: 4700, true);
         if (isTTS) accessory.Method.TTS("死刑准备");
         if (isDRTTS) accessory.Method.SendChat("/pdr tts 死刑准备");
     }

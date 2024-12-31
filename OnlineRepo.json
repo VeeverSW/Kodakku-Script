@@ -2,49 +2,57 @@
   {
     "Name": "遇袭集落水滩村",
     "Guid": "a407d364-b2bd-4e12-9332-70ca3829ece7",
-    "Version": "0.0.0.5",
+    "Version": "0.0.0.6",
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/HolminsterSwitch.cs",
-    "UpdateInfo": "支持DR TTS"
+    "UpdateInfo": "支持TTS开关/DR TTS开关/文字横幅"
   },
   {
     "Name": "水妖幻园多恩美格禁园",
     "Guid": "d8fbc4be-b2c3-43a5-93f7-2901b40d0921",
-    "Version": "0.0.0.3",
+    "Version": "0.0.0.4",
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/DohnMheg.cs",
-    "UpdateInfo": "支持DR TTS"
+    "UpdateInfo": "支持TTS开关/DR TTS开关/文字横幅"
   },
   {
     "Name": "血战苍穹魔科学研究所",
     "Guid": "dd08165c-b709-4100-a96e-65f2c7ae4f3b",
-    "Version": "0.0.0.3",
+    "Version": "0.0.0.4",
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/03-Heavensward/the-Aetherochemical-Research-Facility.cs",
-    "UpdateInfo": "支持DR TTS"
+    "UpdateInfo": "支持TTS开关/DR TTS开关/文字横幅"
   },
   {
     "Name": "Yuweyawata Field Station",
     "Guid": "992e47a8-17d0-4379-891b-0762c0509257",
-    "Version": "0.0.0.4",
+    "Version": "0.0.0.5",
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/Yuweyawata-Field-Station.cs",
-    "UpdateInfo": "支持DR TTS"
+    "UpdateInfo": "支持TTS开关/DR TTS开关/文字横幅"
   },
   {
     "Name": "终极之战(解限版)",
     "Guid": "100df6f8-d8ce-44f7-9fb0-431eca0f2825",
-    "Version": "0.0.0.2",
+    "Version": "0.0.0.3",
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/06-EndWalker/the-Minstrels-Ballad-Endsingers-Aria.cs",
-    "UpdateInfo": "支持DR TTS"
+    "UpdateInfo": "支持TTS开关/DR TTS开关/文字横幅"
   },
   {
     "Name": "讨伐彷徨死灵（指路+自动打断）",
     "Guid": "8b28e087-549e-4a88-96db-50e1e7cc5214",
-    "Version": "0.0.0.1",
+    "Version": "0.0.0.2",
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Under-the-Armor.cs",
-    "UpdateInfo": "v0.0.0.1, 由于国际服不支持查表，所有职业都会尝试下踢&扫腿"
+    "UpdateInfo": "支持TTS开关/DR TTS开关/文字横幅"
+  },
+  {
+    "Name": "光之战士歼灭战",
+    "Guid": "864c6d7e-20bd-49b6-93ec-31b4d70e1afd",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/the-Seat-of-Sacrifice.cs",
+    "UpdateInfo": "v0.0.0.1, 现已支持几乎所有机制播报及绘图"
   }
 ]

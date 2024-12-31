@@ -16,7 +16,7 @@ using System.Runtime.Intrinsics.Arm;
 namespace Veever.Heavensward.AetherochemicalResearchFacility;
 
 [ScriptType(name: "血战苍穹魔科学研究所", territorys: [1110], guid: "dd08165c-b709-4100-a96e-65f2c7ae4f3b",
-    version: "0.0.0.3", author: "Veever")]
+    version: "0.0.0.4", author: "Veever", note: noteStr)]
 
 public class AetherochemicalResearchFacility
 {
@@ -28,7 +28,15 @@ public class AetherochemicalResearchFacility
     private readonly object fireLock = new object();
     private readonly object iceLock = new object();
     private readonly object tetherLock = new object();
-
+    const string noteStr =
+    """
+    v0.0.0.4:
+    1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
+    2. 以前的这几个脚本的底层扩展目前懒得重构（就能加啥随便加了）
+    鸭门。
+    """;
+    [UserSetting("文字横幅提示开关")]
+    public bool isText { get; set; } = true;
     [UserSetting("TTS开关")]
     public bool isTTS { get; set; } = true;
     [UserSetting("DR TTS开关")]
@@ -47,7 +55,7 @@ public class AetherochemicalResearchFacility
     [ScriptMethod(name: "Boss1魔导炮塔", eventType: EventTypeEnum.AddCombatant, eventCondition: ["DataId:regex:^(373[67])$"])]
     public void Boss1MagitekTurret(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("集火魔导炮塔", duration: 10000, true);
+        if (isText) accessory.Method.TextInfo("集火魔导炮塔", duration: 10000, true);
         if (isTTS) accessory.Method.TTS("集火魔导炮塔");
         if (isDRTTS) accessory.Method.SendChat($"/pdr tts 集火魔导炮塔");
         var dp = accessory.Data.GetDefaultDrawProperties();
@@ -63,7 +71,7 @@ public class AetherochemicalResearchFacility
     [ScriptMethod(name: "Boss1魔导激光", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:4321"])]
     public void Boss1MagitekRay(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("躲避激光", duration: 2700, true);
+        if (isText) accessory.Method.TextInfo("躲避激光", duration: 2700, true);
         if (isTTS) accessory.Method.TTS("躲避激光");
         if (isDRTTS) accessory.Method.SendChat($"/pdr tts 躲避激光");
     }
@@ -71,7 +79,7 @@ public class AetherochemicalResearchFacility
     [ScriptMethod(name: "Boss1魔导扩散弹", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:4316"])]
     public void Boss1MagitekSpread(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("去boss身后", duration: 4200, true);
+        if (isText) accessory.Method.TextInfo("去boss身后", duration: 4200, true);
         if (isTTS) accessory.Method.TTS("去boss身后");
         if (isDRTTS) accessory.Method.SendChat($"/pdr tts 去boss身后");
     }
@@ -84,7 +92,7 @@ public class AetherochemicalResearchFacility
     [ScriptMethod(name: "Boss2顺劈播报", eventType: EventTypeEnum.Chat, eventCondition: ["Message:启动合成生物性能评测系统——赫鲁玛奇斯。"])]
     public void Boss2Notification(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("此Boss大多数技能均为顺劈，非坦克职业不要站在Boss正面", duration: 5000, true);
+        if (isText) accessory.Method.TextInfo("此Boss大多数技能均为顺劈，非坦克职业不要站在Boss正面", duration: 5000, true);
         if (isTTS) accessory.Method.TTS("此Boss大多数技能均为顺劈，非坦克职业不要站在Boss正面");
         if (isDRTTS) accessory.Method.SendChat($"/pdr tts 此Boss大多数技能均为顺劈，非坦克职业不要站在Boss正面");
     }
@@ -92,7 +100,7 @@ public class AetherochemicalResearchFacility
     [ScriptMethod(name: "Boss2石化", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:4331"])]
     public void Boss2Petrifaction(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("背对Boss", duration: 2700, true);
+        if (isText) accessory.Method.TextInfo("背对Boss", duration: 2700, true);
         if (isTTS) accessory.Method.TTS("背对Boss");
         if (isDRTTS) accessory.Method.SendChat($"/pdr tts 背对Boss");
     }
@@ -101,7 +109,7 @@ public class AetherochemicalResearchFacility
     [ScriptMethod(name: "Boss2弹道导弹", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:4771"])]
     public void Boss2BallisticMissile(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("双人分摊，不要超过两个人", duration: 4000, true);
+        if (isText) accessory.Method.TextInfo("双人分摊，不要超过两个人", duration: 4000, true);
         if (isTTS) accessory.Method.TTS("双人分摊，不要超过两个人");
         if (isDRTTS) accessory.Method.SendChat($"/pdr tts 双人分摊，不要超过两个人");
 
@@ -130,7 +138,7 @@ public class AetherochemicalResearchFacility
         dp.DestoryAt = 5500;
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
 
-        accessory.Method.TextInfo($"与{tname}分摊", duration: 4000, true);
+        if (isText) accessory.Method.TextInfo($"与{tname}分摊", duration: 4000, true);
         if (isTTS) accessory.Method.TTS($"与{tname}分摊");
         if (isDRTTS) accessory.Method.SendChat($"/pdr tts 与{tname}分摊");
     }
@@ -141,7 +149,7 @@ public class AetherochemicalResearchFacility
     [ScriptMethod(name: "Boss3AOE", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:31885"])]
     public void Boss3AOE(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("AOE", duration: 4700, true);
+        if (isText) accessory.Method.TextInfo("AOE", duration: 4700, true);
         if (isTTS) accessory.Method.TTS("AOE");
         if (isDRTTS) accessory.Method.SendChat($"/pdr tts AOE");
     }
@@ -171,7 +179,7 @@ public class AetherochemicalResearchFacility
     [ScriptMethod(name: "Boss3黑夜波", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:32790"])]
     public void Boss3GripofNight(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("去boss身后", duration: 5700, true);
+        if (isText) accessory.Method.TextInfo("去boss身后", duration: 5700, true);
         if (isTTS) accessory.Method.TTS("去boss身后");
         if (isDRTTS) accessory.Method.SendChat($"/pdr tts 去boss身后");
     }
@@ -193,7 +201,7 @@ public class AetherochemicalResearchFacility
                 //accessory.Method.SendChat($"iceCount:{iceCount}, fireCount: {fireCount}, TetherCount: {TetherCount}");
                 if (iceCount == 1)
                 {
-                    accessory.Method.TextInfo("进入绿色安全区", duration: 5700, true);
+                    if (isText) accessory.Method.TextInfo("进入绿色安全区", duration: 5700, true);
                     if (isTTS) accessory.Method.TTS("进入绿色安全区");
                     if (isDRTTS) accessory.Method.SendChat($"/pdr tts 进入绿色安全区");
                 }
@@ -207,7 +215,7 @@ public class AetherochemicalResearchFacility
     public void Boss3EndofDays(Event @event, ScriptAccessory accessory)
     {
         string tname = @event["TargetName"]?.ToString() ?? "未知目标";
-        accessory.Method.TextInfo($"与 {tname} 分摊", duration: 4700, true);
+        if (isText) accessory.Method.TextInfo($"与 {tname} 分摊", duration: 4700, true);
 
         var dp = accessory.Data.GetDefaultDrawProperties();
 
@@ -240,7 +248,7 @@ public class AetherochemicalResearchFacility
     [ScriptMethod(name: "Boss3AOE2", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(319[10]0)$"])]
     public void Boss3AOE2(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("AOE", duration: 4700, true);
+        if (isText) accessory.Method.TextInfo("AOE", duration: 4700, true);
         if (isTTS) accessory.Method.TTS("AOE");
         if (isDRTTS) accessory.Method.SendChat($"/pdr tts AOE");
     }
@@ -248,7 +256,7 @@ public class AetherochemicalResearchFacility
     [ScriptMethod(name: "Boss3大AOE", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:33024"])]
     public void Boss3Annihilation(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("大AOE", duration: 6000, true);
+        if (isText) accessory.Method.TextInfo("大AOE", duration: 6000, true);
         if (isTTS) accessory.Method.TTS("大AOE");
         if (isDRTTS) accessory.Method.SendChat($"/pdr tts 大AOE");
     }
@@ -257,7 +265,7 @@ public class AetherochemicalResearchFacility
     [ScriptMethod(name: "Boss3死刑", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:31911"])]
     public void Boss3Tankbuster(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("死刑准备", duration: 4700, true);
+        if (isText) accessory.Method.TextInfo("死刑准备", duration: 4700, true);
         if (isTTS) accessory.Method.TTS("死刑准备");
         if (isDRTTS) accessory.Method.SendChat($"/pdr tts 死刑准备");
     }
@@ -277,7 +285,7 @@ public class AetherochemicalResearchFacility
         dp.DestoryAt = 5500;
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
 
-        accessory.Method.TextInfo($"与{tname}分摊", duration: 5000, true);
+        if (isText) accessory.Method.TextInfo($"与{tname}分摊", duration: 5000, true);
         if (isTTS) accessory.Method.TTS($"与{tname}分摊");
         if (isDRTTS) accessory.Method.SendChat($"/pdr tts 与{tname}分摊");
     }
@@ -288,12 +296,12 @@ public class AetherochemicalResearchFacility
         if (@event.TargetId() == accessory.Data.Me)
         {
             await Task.Delay(36000 - 2000);
-            accessory.Method.TextInfo("集合，等连线判定后拉线", duration: 1500, true);
+            if (isText) accessory.Method.TextInfo("集合，等连线判定后拉线", duration: 1500, true);
             if (isTTS) accessory.Method.TTS("集合，等连线判定后拉线");
             if (isDRTTS) accessory.Method.SendChat($"/pdr tts 集合，等连线判定后拉线");
 
             await Task.Delay(2500);
-            accessory.Method.TextInfo("拉开连线", duration: 4000, true);
+            if (isText) accessory.Method.TextInfo("拉开连线", duration: 4000, true);
             if (isTTS) accessory.Method.TTS("拉开连线");
             if (isDRTTS) accessory.Method.SendChat($"/pdr tts 拉开连线");
         }
@@ -304,7 +312,7 @@ public class AetherochemicalResearchFacility
     public void Boss3EntropicFlame(Event @event, ScriptAccessory accessory)
     {
         string tname = @event["TargetName"]?.ToString() ?? "未知目标";
-        accessory.Method.TextInfo($"与 {tname} 分摊", duration: 4700, true);
+        if (isText) accessory.Method.TextInfo($"与 {tname} 分摊", duration: 4700, true);
 
         var dp = accessory.Data.GetDefaultDrawProperties();
 
@@ -323,7 +331,7 @@ public class AetherochemicalResearchFacility
     [ScriptMethod(name: "Boss3集火立体魔法阵提醒", eventType: EventTypeEnum.AddCombatant, eventCondition: ["DataId:15788"])]
     public void Boss3ArcaneSphere(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("集中攻击立体魔法阵", duration: 4700, true);
+        if (isText) accessory.Method.TextInfo("集中攻击立体魔法阵", duration: 4700, true);
         if (isTTS) accessory.Method.TTS("集中攻击立体魔法阵");
         if (isDRTTS) accessory.Method.SendChat($"/pdr tts 集中攻击立体魔法阵");
     }
