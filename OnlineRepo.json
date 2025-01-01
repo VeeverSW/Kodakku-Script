@@ -54,5 +54,13 @@
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/the-Seat-of-Sacrifice.cs",
     "UpdateInfo": "v0.0.0.1, 现已支持几乎所有机制播报及绘图"
+  },
+  {
+    "Name": "佐拉加歼灭战",
+    "Guid": "7a6d317c-b176-4e94-9fbc-3bc833be1338",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/Everkeep.cs",
+    "UpdateInfo": "v0.0.0.1"
   }
 ]
