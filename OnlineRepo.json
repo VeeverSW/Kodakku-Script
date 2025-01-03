@@ -1,66 +1,170 @@
 [
   {
-    "Name": "遇袭集落水滩村",
+    "Name": "LV.71 遇袭集落水滩村",
     "Guid": "a407d364-b2bd-4e12-9332-70ca3829ece7",
-    "Version": "0.0.0.6",
+    "Version": "0.0.0.7",
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/HolminsterSwitch.cs",
-    "UpdateInfo": "支持TTS开关/DR TTS开关/文字横幅"
+    "UpdateInfo": "v0.0.0.7，更新名字方便整理"
   },
   {
-    "Name": "水妖幻园多恩美格禁园",
+    "Name": "LV.73 水妖幻园多恩美格禁园",
     "Guid": "d8fbc4be-b2c3-43a5-93f7-2901b40d0921",
-    "Version": "0.0.0.4",
+    "Version": "0.0.0.5",
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/DohnMheg.cs",
-    "UpdateInfo": "支持TTS开关/DR TTS开关/文字横幅"
+    "UpdateInfo": "v0.0.0.5，更新名字方便整理"
   },
   {
-    "Name": "血战苍穹魔科学研究所",
+    "Name": "LV.60 血战苍穹魔科学研究所",
     "Guid": "dd08165c-b709-4100-a96e-65f2c7ae4f3b",
-    "Version": "0.0.0.4",
+    "Version": "0.0.0.5",
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/03-Heavensward/the-Aetherochemical-Research-Facility.cs",
-    "UpdateInfo": "支持TTS开关/DR TTS开关/文字横幅"
+    "UpdateInfo": "v0.0.0.5，更新名字方便整理"
   },
   {
     "Name": "Yuweyawata Field Station",
     "Guid": "992e47a8-17d0-4379-891b-0762c0509257",
-    "Version": "0.0.0.5",
+    "Version": "0.0.0.6",
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/Yuweyawata-Field-Station.cs",
-    "UpdateInfo": "支持TTS开关/DR TTS开关/文字横幅"
+    "UpdateInfo": "v0.0.0.6，更新名字方便整理"
   },
   {
-    "Name": "终极之战(解限版)",
+    "Name": "LV.90 终极之战(解限版)",
     "Guid": "100df6f8-d8ce-44f7-9fb0-431eca0f2825",
-    "Version": "0.0.0.3",
+    "Version": "0.0.0.4",
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/06-EndWalker/the-Minstrels-Ballad-Endsingers-Aria.cs",
-    "UpdateInfo": "支持TTS开关/DR TTS开关/文字横幅"
+    "UpdateInfo": "v0.0.0.4，更新名字方便整理"
   },
   {
-    "Name": "讨伐彷徨死灵（指路+自动打断）",
+    "Name": "LV.10 讨伐彷徨死灵（指路+自动打断）",
     "Guid": "8b28e087-549e-4a88-96db-50e1e7cc5214",
-    "Version": "0.0.0.2",
+    "Version": "0.0.0.3",
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Under-the-Armor.cs",
-    "UpdateInfo": "支持TTS开关/DR TTS开关/文字横幅"
+    "UpdateInfo": "v0.0.0.3，更新名字方便整理"
   },
   {
-    "Name": "光之战士歼灭战",
+    "Name": "LV.80 光之战士歼灭战",
     "Guid": "864c6d7e-20bd-49b6-93ec-31b4d70e1afd",
-    "Version": "0.0.0.1",
+    "Version": "0.0.0.2",
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/the-Seat-of-Sacrifice.cs",
-    "UpdateInfo": "v0.0.0.1, 现已支持几乎所有机制播报及绘图"
+    "UpdateInfo": "v0.0.0.2，更新名字方便整理"
   },
   {
-    "Name": "佐拉加歼灭战",
+    "Name": "LV.99 佐拉加歼灭战",
     "Guid": "7a6d317c-b176-4e94-9fbc-3bc833be1338",
-    "Version": "0.0.0.1",
+    "Version": "0.0.0.2",
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/Everkeep.cs",
+    "UpdateInfo": "v0.0.0.2，更新名字方便整理"
+  },
+  {
+    "Name": "LV.10 完成集团战训练！",
+    "Guid": "6747a004-9234-4b32-9daf-75f6e384061c",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Basic-Training-Enemy-Parties.cs",
+    "UpdateInfo": "v0.0.0.1"
+  },
+  {
+    "Name": "LV.15 突破所有关门，讨伐最深处的敌人！",
+    "Guid": "72889f91-2654-400c-9112-69d4a063557c",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Basic-Training-Enemy-Strongholds.cs",
+    "UpdateInfo": "v0.0.0.1"
+  },
+  {
+    "Name": "LV.15 捕获金币龟！",
+    "Guid": "8513e0c9-5a1e-4748-a852-c6150d1c80e4",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Basic-Training-Enemy-Strongholds.cs",
+    "UpdateInfo": "v0.0.0.1"
+  },
+  {
+    "Name": "LV.20 驱除剧毒妖花！",
+    "Guid": "ffdb31c2-0517-430e-924e-159766aea93d",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Pulling-Poison-Posies.cs",
+    "UpdateInfo": "v0.0.0.1"
+  },
+  {
+    "Name": "LV.20 消灭恶徒团伙寄生蜂团！",
+    "Guid": "69177d90-6983-4af4-a3e2-ad1e6ab28635",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Stinging-Back.cs",
+    "UpdateInfo": "v0.0.0.1"
+  },
+  {
+    "Name": "LV.25 讨伐梦幻之布拉奇希奥！",
+    "Guid": "862174b8-ed10-4981-bd86-9538a019ef74",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/All-s-Well-that-Ends-in-the-Well.cs",
+    "UpdateInfo": "v0.0.0.1"
+  },
+  {
+    "Name": "LV.25 击溃哥布林炸弹军团！",
+    "Guid": "f63ef61a-5fe6-437a-afb4-513dafecbb54",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Flicking-Sticks-and-Taking-Names.cs",
+    "UpdateInfo": "v0.0.0.1"
+  },
+  {
+    "Name": "LV.30 讨伐污染源头魔界花！",
+    "Guid": "3113eeb5-96d8-48a8-9069-e1e3e5232ee1",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/More-than-a-Feeler.cs",
+    "UpdateInfo": "v0.0.0.1"
+  },
+  {
+    "Name": "LV.30 讨伐坑道中出现的妖异！",
+    "Guid": "9106a502-2bcb-41ac-8598-6c76bd1061ae",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Annoy-the-Void.cs",
+    "UpdateInfo": "v0.0.0.1"
+  },
+  {
+    "Name": "LV.35 注意无敌的眷属，讨伐大型妖异！",
+    "Guid": "70cf9a76-fc90-4f2b-9471-504472fb1b1e",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Shadow-and-Claw.cs",
+    "UpdateInfo": "v0.0.0.1"
+  },
+  {
+    "Name": "LV.35 讨伐爆弹怪的女王！",
+    "Guid": "2279725d-b2c4-4624-b7c6-3ae514c19fa5",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Long-Live-the-Queen.cs",
+    "UpdateInfo": "v0.0.0.1"
+  },
+  {
+    "Name": "LV.40 歼灭特殊阵型的妖异！",
+    "Guid": "35d901f8-4861-4d5b-b279-59affb7a740f",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Ward-Up.cs",
+    "UpdateInfo": "v0.0.0.1"
+  },
+  {
+    "Name": "LV.40 制止三方混战的巨人族，守住遗物！",
+    "Guid": "32e7ed24-f55c-48b0-8a40-3fa7442dd6df",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Solemn-Trinity.cs",
     "UpdateInfo": "v0.0.0.1"
   }
 ]
