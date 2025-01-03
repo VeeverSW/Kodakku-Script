@@ -17,16 +17,17 @@ using System.ComponentModel;
 
 namespace Veever.A_Realm_Reborn.UndertheArmor;
 
-[ScriptType(name: "讨伐彷徨死灵", territorys: [190], guid: "8b28e087-549e-4a88-96db-50e1e7cc5214",
-    version: "0.0.0.2", author: "Veever", note: noteStr)]
+[ScriptType(name: "LV.10 讨伐彷徨死灵", territorys: [190], guid: "8b28e087-549e-4a88-96db-50e1e7cc5214",
+    version: "0.0.0.3", author: "Veever", note: noteStr)]
 
 public class Under_the_Armor
 {
     const string noteStr =
     """
-    v0.0.0.2:
+    v0.0.0.3:
     1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
     2. 加了个开关，这本也没有TTS，不要看了.jpg
+    3. v0.0.0.3，更新名字方便整理
     鸭门。
     """;
     [UserSetting("文字横幅提示开关")]
@@ -55,7 +56,7 @@ public class Under_the_Armor
         dp.Color = accessory.Data.DefaultSafeColor;
         dp.ScaleMode |= ScaleMode.YByDistance;
         dp.TargetPosition = @event.SourcePosition();
-        dp.Scale = new(2);
+        dp.Scale = new(1);
         dp.DestoryAt = long.MaxValue;
         accessory.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Displacement, dp);
     }
