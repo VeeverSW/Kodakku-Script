@@ -20,17 +20,18 @@ using System.Runtime.CompilerServices;
 
 namespace Veever.DawnTrail.Everkeep;
 
-[ScriptType(name: "佐拉加歼灭战", territorys: [1200], guid: "7a6d317c-b176-4e94-9fbc-3bc833be1338",
-    version: "0.0.0.1", author: "Veever", note: noteStr)]
+[ScriptType(name: "LV.99 佐拉加歼灭战", territorys: [1200], guid: "7a6d317c-b176-4e94-9fbc-3bc833be1338",
+    version: "0.0.0.2", author: "Veever", note: noteStr)]
 
 public class Everkeep
 {
     const string noteStr =
     """
-    v0.0.0.1:
+    v0.0.0.2:
     1. 利刃冲目前实现方式为枚举，不确定是否有多余情况。如果遇到画错/漏画的情况，请dc带回放私信我（十分感谢）
     2. 现在支持文字横幅/TTS开关/DR TTS开关（在用户设置里面）（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
     鸭门。
+    3. v0.0.0.2，更新名字方便整理
     """;
 
     [UserSetting("文字横幅提示开关")]
