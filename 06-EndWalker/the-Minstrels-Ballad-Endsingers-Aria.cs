@@ -15,7 +15,7 @@ using System.Runtime.Intrinsics.Arm;
 using System.Collections.Generic;
 using ECommons;
 
-namespace Veever.DawnTrail.theMinstrelsBalladEndsingersAria;
+namespace Veever.EndWalker.theMinstrelsBalladEndsingersAria;
 
 [ScriptType(name: "LV.90 终极之战(解限版)", territorys: [998], guid: "100df6f8-d8ce-44f7-9fb0-431eca0f2825",
     version: "0.0.0.4", author: "Veever", note: noteStr)]
@@ -28,7 +28,7 @@ public class the_Minstrels_Ballad_Endsingers_Aria
     1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
     2. 以前的这几个脚本的底层扩展目前懒得重构（就能加啥随便加了）
     3. v0.0.0.4，更新名字方便整理
-    鸭门。
+    鸭门。 
     """;
     [UserSetting("文字横幅提示开关")]
     public bool isText { get; set; } = true;
