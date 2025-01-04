@@ -16,8 +16,8 @@ using System.Collections.Generic;
 
 namespace Veever.DawnTrail.YuweyawataFieldStation;
 
-[ScriptType(name: "Yuweyawata Field Station", territorys: [1242], guid: "992e47a8-17d0-4379-891b-0762c0509257",
-    version: "0.0.0.5", author: "Veever", note: noteStr)]
+[ScriptType(name: "LV.100 Yuweyawata Field Station", territorys: [1242], guid: "992e47a8-17d0-4379-891b-0762c0509257",
+    version: "0.0.0.6", author: "Veever", note: noteStr)]
 
 public class YuweyawataFieldStation
 {
@@ -28,10 +28,11 @@ public class YuweyawataFieldStation
 
     const string noteStr =
     """
-    v0.0.0.5:
+    v0.0.0.6:
     1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
     2. 以前的这几个脚本的底层扩展目前懒得重构（就能加啥随便加了）
     3. 删除顺时针地火判断
+    4. v0.0.0.6，更新名字方便整理
     鸭门。
     """;
     [UserSetting("文字横幅提示开关")]
