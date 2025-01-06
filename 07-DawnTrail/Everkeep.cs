@@ -21,17 +21,17 @@ using System.Runtime.CompilerServices;
 namespace Veever.DawnTrail.Everkeep;
 
 [ScriptType(name: "LV.99 佐拉加歼灭战", territorys: [1200], guid: "7a6d317c-b176-4e94-9fbc-3bc833be1338",
-    version: "0.0.0.2", author: "Veever", note: noteStr)]
+    version: "0.0.0.3", author: "Veever", note: noteStr)]
 
 public class Everkeep
 {
     const string noteStr =
     """
-    v0.0.0.2:
+    v0.0.0.3:
     1. 利刃冲目前实现方式为枚举，不确定是否有多余情况。如果遇到画错/漏画的情况，请dc带回放私信我（十分感谢）
     2. 现在支持文字横幅/TTS开关/DR TTS开关（在用户设置里面）（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
     鸭门。
-    3. v0.0.0.2，更新名字方便整理
+    3. v0.0.0.3, 增加4个利刃冲枚举，预计还剩2种可能不画（SW西南角落）的（如果遇到没有画出来的请dc带回放私信我）
     """;
 
     [UserSetting("文字横幅提示开关")]
@@ -270,14 +270,18 @@ public class Everkeep
             List<Vector3> NEList = new List<Vector3>
             {
             new Vector3(122.98f, 0.00f, 66.41f),
-            new Vector3(130.05f, 0.00f, 73.48f)
+            new Vector3(130.05f, 0.00f, 73.48f),
+            new Vector3(133.59f, 0.00f, 77.02f),
+            new Vector3(126.52f, 0.00f, 69.95f)
             };
 
             // Always Big XX
             List<Vector3> NWList = new List<Vector3>
             {
             new Vector3(69.95f, 0.00f, 73.48f),
-            new Vector3(77.02f, 0.00f, 66.41f)
+            new Vector3(77.02f, 0.00f, 66.41f),
+            new Vector3(73.48f, 0.00f, 69.95f),
+            new Vector3(66.41f, 0.00f, 77.02f),
             };
 
             // Always XX
@@ -291,7 +295,9 @@ public class Everkeep
             List<Vector3> SEList = new List<Vector3>
             {
             new Vector3(133.59f, 0.00f, 122.98f),
-            new Vector3(126.52f, 0.00f, 130.05f)
+            new Vector3(126.52f, 0.00f, 130.05f),
+            new Vector3(122.98f, 0.00f, 133.59f),
+            new Vector3(130.05f, 0.00f, 126.52f),
             };
 
             List<Vector3> vectorList = new List<Vector3>
@@ -345,6 +351,24 @@ public class Everkeep
                 tPos.Z = tPos.Z + 4;
                 Draw(accessory, dpPos, tPos);
             }
+            if (@event.SourcePosition() == NEList[2])
+            {
+                if (isDebug) accessory.Method.SendChat($"/e NEList[2]");
+                var dpPos = vectorList[0];
+                var tPos = dpPos;
+                tPos.X = tPos.X - 4;
+                tPos.Z = tPos.Z + 4;
+                Draw(accessory, dpPos, tPos);
+            }
+            if (@event.SourcePosition() == NEList[3])
+            {
+                if (isDebug) accessory.Method.SendChat($"/e NEList[3]");
+                var dpPos = vectorList[2];
+                var tPos = dpPos;
+                tPos.X = tPos.X - 4;
+                tPos.Z = tPos.Z + 4;
+                Draw(accessory, dpPos, tPos);
+            }
             // NWList
             if (@event.SourcePosition() == NWList[0])
             {
@@ -359,6 +383,24 @@ public class Everkeep
             {
                 if (isDebug) accessory.Method.SendChat($"/e NWList[1]");
                 var dpPos = vectorList[5];
+                var tPos = dpPos;
+                tPos.X = tPos.X + 4;
+                tPos.Z = tPos.Z + 4;
+                Draw(accessory, dpPos, tPos);
+            }
+            if (@event.SourcePosition() == NWList[2])
+            {
+                if (isDebug) accessory.Method.SendChat($"/e NWList[2]");
+                var dpPos = vectorList[4];
+                var tPos = dpPos;
+                tPos.X = tPos.X + 4;
+                tPos.Z = tPos.Z + 4;
+                Draw(accessory, dpPos, tPos);
+            }
+            if (@event.SourcePosition() == NWList[3])
+            {
+                if (isDebug) accessory.Method.SendChat($"/e NWList[3]");
+                var dpPos = vectorList[6];
                 var tPos = dpPos;
                 tPos.X = tPos.X + 4;
                 tPos.Z = tPos.Z + 4;
@@ -397,6 +439,24 @@ public class Everkeep
             {
                 if (isDebug) accessory.Method.SendChat($"/e SEList[1]");
                 var dpPos = vectorList[7];
+                var tPos = dpPos;
+                tPos.X = tPos.X + 4;
+                tPos.Z = tPos.Z + 4;
+                Draw(accessory, dpPos, tPos);
+            }
+            if (@event.SourcePosition() == SEList[2])
+            {
+                if (isDebug) accessory.Method.SendChat($"/e SEList[2]");
+                var dpPos = vectorList[6];
+                var tPos = dpPos;
+                tPos.X = tPos.X + 4;
+                tPos.Z = tPos.Z + 4;
+                Draw(accessory, dpPos, tPos);
+            }
+            if (@event.SourcePosition() == SEList[3])
+            {
+                if (isDebug) accessory.Method.SendChat($"/e SEList[2]");
+                var dpPos = vectorList[4];
                 var tPos = dpPos;
                 tPos.X = tPos.X + 4;
                 tPos.Z = tPos.Z + 4;

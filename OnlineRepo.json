@@ -58,10 +58,10 @@
   {
     "Name": "LV.99 佐拉加歼灭战",
     "Guid": "7a6d317c-b176-4e94-9fbc-3bc833be1338",
-    "Version": "0.0.0.2",
+    "Version": "0.0.0.3",
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/Everkeep.cs",
-    "UpdateInfo": "v0.0.0.2，更新名字方便整理"
+    "UpdateInfo": "v0.0.0.3, 增加4个利刃冲枚举，预计还剩2种可能不画（SW西南角落）的（如果遇到没有画出来的请dc带回放私信我）"
   },
   {
     "Name": "LV.10 完成集团战训练！",
