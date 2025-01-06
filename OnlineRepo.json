@@ -166,5 +166,13 @@
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Solemn-Trinity.cs",
     "UpdateInfo": "v0.0.0.1"
+  },
+  {
+    "Name": "LV.81 异形楼阁佐特塔",
+    "Guid": "98a97134-f87b-4386-aad9-2a99e81794ab",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/06-EndWalker/the-Tower-of-Zot.cs",
+    "UpdateInfo": "v0.0.0.1 Update!"
   }
 ]
