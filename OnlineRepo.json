@@ -174,5 +174,13 @@
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/06-EndWalker/the-Tower-of-Zot.cs",
     "UpdateInfo": "v0.0.0.1 Update!"
+  },
+  {
+    "Name": "金蝶-小雏鸟的营救者",
+    "Guid": "4359482a-b7a8-4eb1-9a42-ffa3c79d6b7b",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/00-Other/Cliffhanger.cs",
+    "UpdateInfo": "v0.0.0.1 Update! 目前仅支持经典版"
   }
 ]
