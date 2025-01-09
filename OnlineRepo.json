@@ -182,5 +182,13 @@
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/00-Other/Cliffhanger.cs",
     "UpdateInfo": "v0.0.0.1 Update! 目前仅支持经典版"
+  },
+  {
+    "Name": "LV.80 魔法宫殿宇宙宫",
+    "Guid": "b3a2febd-73ff-44a9-a897-22fa50c74ff3",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/the-Grand-Cosmos.cs",
+    "UpdateInfo": "v0.0.0.1 Update! 支持点位指路"
   }
 ]
