@@ -19,18 +19,19 @@ using System.Reflection;
 namespace Veever.Shadowbringers.theSeatofSacrifice;
 
 [ScriptType(name: "LV.80 光之战士歼灭战", territorys: [922], guid: "864c6d7e-20bd-49b6-93ec-31b4d70e1afd",
-    version: "0.0.0.2", author: "Veever", note: noteStr)]
+    version: "0.0.0.3", author: "Veever", note: noteStr)]
 
 public class theSeatofSacrifice
 {
     const string noteStr =
     """
-    v0.0.0.2:
+    v0.0.0.3:
     1. 现已支持几乎所有机制播报及绘图
     2. 支持DR 自动动态演练开关（默认为打开状态）
     3. 目前光明剑不确定是否只有两个情况，如果有更多的情况没有画出来的话请带arr回放在dc向我反馈
     4. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
-    5. v0.0.0.2，更新名字方便整理
+    5. v0.0.0.3，删除自动动态演练开关 关闭后会offload的方法
+    6. 更新光之剑出现在东西侧的情况
     鸭门。
     """;
 
@@ -212,7 +213,7 @@ public class theSeatofSacrifice
         if(@event.Index() == 0x14)
         {
             var dp = accessory.Data.GetDefaultDrawProperties();
-            dp.Name = "光之剑";
+            dp.Name = "光之剑南北1";
             dp.Color = new Vector4(253 / 255.0f, 223 / 255.0f, 196 / 255.0f, 1.0f);
             dp.Position = new Vector3(100.00f, 0.00f, 80.00f);
             dp.TargetPosition = new Vector3(100.00f, 0.00f, 100.00f);
@@ -224,9 +225,35 @@ public class theSeatofSacrifice
         if (@event.Index() == 0x16)
         {
             var dp = accessory.Data.GetDefaultDrawProperties();
-            dp.Name = "光之剑";
+            dp.Name = "光之剑南北2";
             dp.Color = new Vector4(253 / 255.0f, 223 / 255.0f, 196 / 255.0f, 1.0f);
             dp.Position = new Vector3(100.00f, 0.00f, 120.00f);
+            dp.TargetPosition = new Vector3(100.00f, 0.00f, 100.00f);
+            dp.Radian = float.Pi / 180 * 53;
+            dp.Scale = new(60);
+            dp.DestoryAt = 11000;
+            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Fan, dp);
+        }
+
+        if (@event.Index() == 0x15)
+        {
+            var dp = accessory.Data.GetDefaultDrawProperties();
+            dp.Name = "光之剑东西1";
+            dp.Color = new Vector4(253 / 255.0f, 223 / 255.0f, 196 / 255.0f, 1.0f);
+            dp.Position = new Vector3(80.00f, 0.00f, 100.00f);
+            dp.TargetPosition = new Vector3(100.00f, 0.00f, 100.00f);
+            dp.Radian = float.Pi / 180 * 53;
+            dp.Scale = new(60);
+            dp.DestoryAt = 11000;
+            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Fan, dp);
+        }
+
+        if (@event.Index() == 0x17)
+        {
+            var dp = accessory.Data.GetDefaultDrawProperties();
+            dp.Name = "光之剑东西2";
+            dp.Color = new Vector4(253 / 255.0f, 223 / 255.0f, 196 / 255.0f, 1.0f);
+            dp.Position = new Vector3(120.00f, 0.00f, 100.00f);
             dp.TargetPosition = new Vector3(100.00f, 0.00f, 100.00f);
             dp.Radian = float.Pi / 180 * 53;
             dp.Scale = new(60);
@@ -254,7 +281,6 @@ public class theSeatofSacrifice
         if (isText) accessory.Method.TextInfo("AOE", duration: 4700, true);
         accessory.TTS("AOE", isTTS, isDRTTS);
         if (isDRQTE) accessory.Method.SendChat("/pdr load autoQTE");
-        if (!isDRQTE) accessory.Method.SendChat("/pdr unload autoQTE");
     }
 
     [ScriptMethod(name: "究极·交汇", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:21627"])]
