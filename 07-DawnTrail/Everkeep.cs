@@ -21,17 +21,16 @@ using System.Runtime.CompilerServices;
 namespace Veever.DawnTrail.Everkeep;
 
 [ScriptType(name: "LV.99 佐拉加歼灭战", territorys: [1200], guid: "7a6d317c-b176-4e94-9fbc-3bc833be1338",
-    version: "0.0.0.3", author: "Veever", note: noteStr)]
+    version: "0.0.0.4", author: "Veever", note: noteStr)]
 
 public class Everkeep
 {
     const string noteStr =
     """
-    v0.0.0.3:
-    1. 利刃冲目前实现方式为枚举，不确定是否有多余情况。如果遇到画错/漏画的情况，请dc带回放私信我（十分感谢）
-    2. 现在支持文字横幅/TTS开关/DR TTS开关（在用户设置里面）（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
+    v0.0.0.4:
+    1. 现在支持文字横幅/TTS开关/DR TTS开关（在用户设置里面）（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
     鸭门。
-    3. v0.0.0.3, 增加4个利刃冲枚举，预计还剩2种可能不画（SW西南角落）的（如果遇到没有画出来的请dc带回放私信我）
+    2. v0.0.0.4, 现已支持所有利刃冲情况，如果依然遇到画错/漏画的情况，请dc带回放私信我（十分感谢）
     """;
 
     [UserSetting("文字横幅提示开关")]
@@ -281,14 +280,16 @@ public class Everkeep
             new Vector3(69.95f, 0.00f, 73.48f),
             new Vector3(77.02f, 0.00f, 66.41f),
             new Vector3(73.48f, 0.00f, 69.95f),
-            new Vector3(66.41f, 0.00f, 77.02f),
+            new Vector3(66.41f, 0.00f, 77.02f)
             };
 
             // Always XX
             List<Vector3> SWList = new List<Vector3>
             {
             new Vector3(66.41f, 0.00f, 122.98f),
-            new Vector3(73.48f, 0.00f, 130.05f)
+            new Vector3(73.48f, 0.00f, 130.05f),
+            new Vector3(69.95f, 0.00f, 126.52f),
+            new Vector3(77.02f, 0.00f, 133.59f)
             };
 
             // Always Big XX
@@ -297,7 +298,7 @@ public class Everkeep
             new Vector3(133.59f, 0.00f, 122.98f),
             new Vector3(126.52f, 0.00f, 130.05f),
             new Vector3(122.98f, 0.00f, 133.59f),
-            new Vector3(130.05f, 0.00f, 126.52f),
+            new Vector3(130.05f, 0.00f, 126.52f)
             };
 
             List<Vector3> vectorList = new List<Vector3>
@@ -333,6 +334,7 @@ public class Everkeep
 
             // handle Method
             // NEList
+            #region NEList
             if (@event.SourcePosition() == NEList[0])
             {
                 if (isDebug) accessory.Method.SendChat($"/e NEList[0]");
@@ -369,7 +371,9 @@ public class Everkeep
                 tPos.Z = tPos.Z + 4;
                 Draw(accessory, dpPos, tPos);
             }
+            #endregion
             // NWList
+            #region NWList
             if (@event.SourcePosition() == NWList[0])
             {
                 if (isDebug) accessory.Method.SendChat($"/e NWList[0]");
@@ -406,7 +410,9 @@ public class Everkeep
                 tPos.Z = tPos.Z + 4;
                 Draw(accessory, dpPos, tPos);
             }
+            #endregion
             // SWList
+            #region SWList
             if (@event.SourcePosition() == SWList[0])
             {
                 if (isDebug) accessory.Method.SendChat($"/e SWList[0]");
@@ -425,7 +431,27 @@ public class Everkeep
                 tPos.Z = tPos.Z + 4;
                 Draw(accessory, dpPos, tPos);
             }
+            if (@event.SourcePosition() == SWList[2])
+            {
+                if (isDebug) accessory.Method.SendChat($"/e SWList[2]");
+                var dpPos = vectorList[0];
+                var tPos = dpPos;
+                tPos.X = tPos.X - 4;
+                tPos.Z = tPos.Z + 4;
+                Draw(accessory, dpPos, tPos);
+            }
+            if (@event.SourcePosition() == SWList[3])
+            {
+                if (isDebug) accessory.Method.SendChat($"/e SWList[3]");
+                var dpPos = vectorList[2];
+                var tPos = dpPos;
+                tPos.X = tPos.X - 4;
+                tPos.Z = tPos.Z + 4;
+                Draw(accessory, dpPos, tPos);
+            }
+            #endregion
             // SEList
+            #region SEList
             if (@event.SourcePosition() == SEList[0])
             {
                 if (isDebug) accessory.Method.SendChat($"/e SEList[0]");
@@ -462,6 +488,7 @@ public class Everkeep
                 tPos.Z = tPos.Z + 4;
                 Draw(accessory, dpPos, tPos);
             }
+            #endregion
             ForgedTrackCount++;
         }
     }
