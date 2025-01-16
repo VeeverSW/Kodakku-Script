@@ -154,10 +154,10 @@
   {
     "Name": "LV.40 歼灭特殊阵型的妖异！",
     "Guid": "35d901f8-4861-4d5b-b279-59affb7a740f",
-    "Version": "0.0.0.1",
+    "Version": "0.0.0.2",
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Ward-Up.cs",
-    "UpdateInfo": "v0.0.0.1"
+    "UpdateInfo": "v0.0.0.2, 删除async, 小小优化一下"
   },
   {
     "Name": "LV.40 制止三方混战的巨人族，守住遗物！",

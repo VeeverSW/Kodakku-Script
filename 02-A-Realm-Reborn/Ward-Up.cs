@@ -20,15 +20,16 @@ using System.Windows;
 namespace Veever.A_Realm_Reborn.WardUp;
 
 [ScriptType(name: "LV.40 歼灭特殊阵型的妖异！", territorys: [299], guid: "35d901f8-4861-4d5b-b279-59affb7a740f",
-    version: "0.0.0.1", author: "Veever", note: noteStr)]
+    version: "0.0.0.2", author: "Veever", note: noteStr)]
 
 public class Ward_Up
 {
     const string noteStr =
     """
-    v0.0.0.1:
+    v0.0.0.2:
     1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
     2. 标点开关以及本地开关都在用户设置里面，可自行选择关闭或者开启（默认本地开启）
+    3. 删除async, 小小优化一下
     鸭门。
     """;
     [UserSetting("文字横幅提示开关")]
@@ -63,7 +64,7 @@ public class Ward_Up
 
 
     [ScriptMethod(name: "无敌提示", eventType: EventTypeEnum.StatusAdd, eventCondition: ["StatusID:325"])]
-    public async void GOD(Event @event, ScriptAccessory accessory)
+    public void GOD(Event @event, ScriptAccessory accessory)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = $"无敌提示";
@@ -81,14 +82,14 @@ public class Ward_Up
     }
 
     [ScriptMethod(name: "无敌提示删除", eventType: EventTypeEnum.StatusRemove, eventCondition: ["StatusID:325"])]
-    public async void delGod(Event @event, ScriptAccessory accessory)
+    public void delGod(Event @event, ScriptAccessory accessory)
     {
         accessory.Method.RemoveDraw("无敌提示");
         accessory.Method.MarkClear();
     }
 
     [ScriptMethod(name: "恐怖眼", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:740"])]
-    public async void bigExplosion(Event @event, ScriptAccessory accessory)
+    public void bigExplosion(Event @event, ScriptAccessory accessory)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = $"恐怖眼";
