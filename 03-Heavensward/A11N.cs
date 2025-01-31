@@ -35,8 +35,8 @@ public class A11N
     [ScriptMethod(name: "汽油弹钢铁", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:6850"])]
     public void 汽油弹钢铁(Event @event, ScriptAccessory accessory)
     {
-        if (isText) accessory.Method.TextInfo("钢铁范围", duration: 2000, true);
-        accessory.TTS("钢铁范围", isTTS, isDRTTS);
+        if (isText) accessory.Method.TextInfo("钢铁", duration: 2000, true);
+        accessory.TTS("钢铁", isTTS, isDRTTS);
         
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = "汽油弹钢铁区域";
@@ -50,8 +50,8 @@ public class A11N
     [ScriptMethod(name: "汽油弹月环", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:6851"])]
     public void 汽油弹月环(Event @event, ScriptAccessory accessory)
     {
-        if (isText) accessory.Method.TextInfo("月环范围", duration: 2000, true);
-        accessory.TTS("月环范围", isTTS, isDRTTS);
+        if (isText) accessory.Method.TextInfo("月环", duration: 2000, true);
+        accessory.TTS("月环", isTTS, isDRTTS);
         
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = "汽油弹月环";
