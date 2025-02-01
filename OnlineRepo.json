@@ -190,5 +190,29 @@
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/the-Grand-Cosmos.cs",
     "UpdateInfo": "v0.0.0.1 Update! 支持点位指路"
+  },
+  {
+    "Name": "LV.60 亚历山大机神城 天动之章1",
+    "Guid": "7cb80e0d-e693-6ca9-c46e-c96b0ec5d109",
+    "Version": "0.0.0.1",
+    "Author": "Meva",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/refs/heads/main/03-Heavensward/A9N.cs",
+    "UpdateInfo": "v0.0.0.1 Update! "
+  },
+  {
+    "Name": "LV.60 亚历山大机神城 天动之章3",
+    "Guid": "c9446d8e-118d-ec98-fcbc-732213b0a265",
+    "Version": "0.0.0.1",
+    "Author": "Meva",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/refs/heads/main/03-Heavensward/A11N.cs",
+    "UpdateInfo": "v0.0.0.1 Update! "
+  },
+  {
+    "Name": "LV.60 亚历山大机神城 天动之章4",
+    "Guid": "c77e794f-f3bc-37fc-810b-bb153ba399c1",
+    "Version": "0.0.0.1",
+    "Author": "Meva",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/refs/heads/main/03-Heavensward/A12N.cs",
+    "UpdateInfo": "v0.0.0.1 Update! "
   }
 ]
