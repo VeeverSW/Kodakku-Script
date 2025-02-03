@@ -10,12 +10,12 @@ using System.Linq;
 
 namespace Meva.Heavensward.KodakkuAssist.Alexander;
 
-[ScriptType(name: "A9N", territorys: [580], guid: "7cb80e0d-e693-6ca9-c46e-c96b0ec5d109", version: "0.0.0.1", author: "Meva", note: noteStr)]
+[ScriptType(name: "LV.60 亚历山大机神城 天动之章1", territorys: [580], guid: "7cb80e0d-e693-6ca9-c46e-c96b0ec5d109", version: "0.0.0.2", author: "Meva", note: noteStr)]
 public class A9N
 {
     const string noteStr =
         """
-        v0.0.0.1:
+        v0.0.0.2: 更改名字
         """;
     
     [UserSetting("文字横幅提示开关")]
