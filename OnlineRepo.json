@@ -196,7 +196,7 @@
     "Guid": "7cb80e0d-e693-6ca9-c46e-c96b0ec5d109",
     "Version": "0.0.0.2",
     "Author": "Meva",
-    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/refs/heads/main/03-Heavensward/A9N.cs",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/03-Heavensward/A9N.cs",
     "UpdateInfo": "v0.0.0.2 更新名字 "
   },
   {
@@ -204,7 +204,7 @@
     "Guid": "c9446d8e-118d-ec98-fcbc-732213b0a265",
     "Version": "0.0.0.2",
     "Author": "Meva",
-    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/refs/heads/main/03-Heavensward/A11N.cs",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/03-Heavensward/A11N.cs",
     "UpdateInfo": "v0.0.0.2 更新名字 "
   },
   {
@@ -212,7 +212,15 @@
     "Guid": "c77e794f-f3bc-37fc-810b-bb153ba399c1",
     "Version": "0.0.0.2",
     "Author": "Meva",
-    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/refs/heads/main/03-Heavensward/A12N.cs",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/03-Heavensward/A12N.cs",
     "UpdateInfo": "v0.0.0.2 更新名字 "
+  },
+  {
+    "Name": "PVPMarker",
+    "Guid": "7be8cf60-b58a-42e4-abe1-11202b3f3f4e",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/00-Other/PVPMarker.cs",
+    "UpdateInfo": "v0.0.0.1 Update! "
   }
 ]
