@@ -222,5 +222,13 @@
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/00-Other/PVPMarker.cs",
     "UpdateInfo": "v0.0.0.1 Update! "
+  },
+  {
+    "Name": "PVPMarker(API11)(当前国际服专用)",
+    "Guid": "98f639f8-095b-4d68-8d46-0bc38c4cd552",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/00-Other/PVPMarker(API11).cs",
+    "UpdateInfo": "v0.0.0.1 Update! "
   }
 ]
