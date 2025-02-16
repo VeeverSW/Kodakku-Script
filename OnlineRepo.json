@@ -50,10 +50,10 @@
   {
     "Name": "LV.80 光之战士歼灭战",
     "Guid": "864c6d7e-20bd-49b6-93ec-31b4d70e1afd",
-    "Version": "0.0.0.3",
+    "Version": "0.0.0.4",
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/the-Seat-of-Sacrifice.cs",
-    "UpdateInfo": "v0.0.0.3 删除自动动态演练开关 关闭后会offload的方法; 更新光之剑出现在东西侧的情况"
+    "UpdateInfo": "v0.0.0.4 可能解决了光之剑东西侧画反的问题（回放太少所以不清楚是否解决，如果还是画错请dc@我）"
   },
   {
     "Name": "LV.99 佐拉加歼灭战",
