@@ -15,7 +15,7 @@ public class A12N
 {
     const string noteStr =
         """
-        v0.0.0.2:
+        v0.0.0.3:
         1. 现在支持文字横幅/TTS开关/DR TTS开关（在用户设置里面）（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
         2. 更新名字
         """;
