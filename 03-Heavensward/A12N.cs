@@ -15,7 +15,7 @@ public class A12N
 {
     const string noteStr =
         """
-        v0.0.0.2:
+        v0.0.0.3:
         1. 现在支持文字横幅/TTS开关/DR TTS开关（在用户设置里面）（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
         2. 更新名字
         """;
@@ -49,7 +49,7 @@ public class A12N
         dp.Name = "十字圣礼1";
         dp.Owner = @event.SourceId();
         dp.Color = accessory.Data.DefaultDangerColor; 
-        dp.Scale = new(15.5f, 60.0f); // X=半径15.5，Y=长度60
+        dp.Scale = new(16.0f, 60.0f); // X=半径16，Y=长度60
         dp.DestoryAt = 5000;
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Straight, dp);
     }
@@ -62,7 +62,7 @@ public class A12N
         dp.Name = "十字圣礼2";
         dp.Owner = @event.SourceId();
         dp.Color = accessory.Data.DefaultDangerColor;
-        dp.Scale = new(15.5f, 60.0f);
+        dp.Scale = new(16.0f, 60.0f);
         dp.Rotation = float.Pi / 2;
         dp.DestoryAt = 5000;
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Straight, dp);

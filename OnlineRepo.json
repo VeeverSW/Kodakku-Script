@@ -210,10 +210,10 @@
   {
     "Name": "LV.60 亚历山大机神城 天动之章4",
     "Guid": "c77e794f-f3bc-37fc-810b-bb153ba399c1",
-    "Version": "0.0.0.2",
+    "Version": "0.0.0.3",
     "Author": "Meva",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/03-Heavensward/A12N.cs",
-    "UpdateInfo": "v0.0.0.2 更新名字 "
+    "UpdateInfo": "v0.0.0.3 修复十字圣礼范围 "
   },
   {
     "Name": "PVPMarker(API11)",
