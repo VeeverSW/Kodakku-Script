@@ -7,6 +7,8 @@
 
 
 - Use this link: `https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/refs/heads/main/OnlineRepo.json`
+- Or download the Local version in **Releases**
+
 
 #
 
