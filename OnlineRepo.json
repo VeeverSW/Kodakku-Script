@@ -216,15 +216,7 @@
     "UpdateInfo": "v0.0.0.2 更新名字 "
   },
   {
-    "Name": "PVPMarker",
-    "Guid": "7be8cf60-b58a-42e4-abe1-11202b3f3f4e",
-    "Version": "0.0.0.1",
-    "Author": "Veever",
-    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/00-Other/PVPMarker.cs",
-    "UpdateInfo": "v0.0.0.1 Update! "
-  },
-  {
-    "Name": "PVPMarker(API11)(当前国际服专用)",
+    "Name": "PVPMarker(API11)",
     "Guid": "98f639f8-095b-4d68-8d46-0bc38c4cd552",
     "Version": "0.0.0.1",
     "Author": "Veever",
