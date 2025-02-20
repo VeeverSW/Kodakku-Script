@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Meva.Heavensward.KodakkuAssist.Alexander;
 
-[ScriptType(name: "LV.60 亚历山大机神城 天动之章4", territorys: [583], guid: "c77e794f-f3bc-37fc-810b-bb153ba399c1", version: "0.0.0.2", author: "Meva", note:noteStr)]
+[ScriptType(name: "LV.60 亚历山大机神城 天动之章4", territorys: [583], guid: "c77e794f-f3bc-37fc-810b-bb153ba399c1", version: "0.0.0.3", author: "Meva", note:noteStr)]
 public class A12N
 {
     const string noteStr =
