@@ -24,12 +24,12 @@
     "UpdateInfo": "v0.0.0.5，更新名字方便整理"
   },
   {
-    "Name": "LV.100 Yuweyawata Field Station",
+    "Name": "LV.100 废弃据点玉韦亚瓦塔实验站",
     "Guid": "992e47a8-17d0-4379-891b-0762c0509257",
-    "Version": "0.0.0.6",
+    "Version": "0.0.0.7",
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/Yuweyawata-Field-Station.cs",
-    "UpdateInfo": "v0.0.0.6，更新名字方便整理"
+    "UpdateInfo": "v0.0.0.7，更新中文名字"
   },
   {
     "Name": "LV.90 终极之战(解限版)",
