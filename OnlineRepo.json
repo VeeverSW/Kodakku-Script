@@ -230,5 +230,18 @@
     "Author": "Veever",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/The-Jade-Stoa-Unreal.cs",
     "UpdateInfo": "v0.0.0.1 Update! 本脚本使用攻略为子言攻略，请在打本之前调整好!可达鸭的小队排序!（很重要，影响指路和机制播报）"
+  },
+  {
+    "Name": "加加财富天坑",
+    "Guid": "64620549-e269-49c0-b0ae-76edec024864",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "Repo": "https://github.com/VeeverSW/Kodakku-Script",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/Cenote-Ja-Ja-Gural.cs",
+    "Note": "加加财富天坑只根据自己下底的arr进行绘制，没有后面天箭绘画的情况 \n 如果你有此方面的素材可以dc私信提供给我，我会加入到绘制里",
+    "UpdateInfo": "v0.0.0.1 Update!",
+    "TerritoryIds": [
+      1209
+    ]
   }
 ]
