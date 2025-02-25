@@ -21,7 +21,7 @@ using System.Xml.Linq;
 namespace Veever.DawnTrail.YuweyawataFieldStation;
 
 [ScriptType(name: "LV.100 废弃据点玉韦亚瓦塔实验站", territorys: [1242], guid: "992e47a8-17d0-4379-891b-0762c0509257",
-    version: "0.0.1.0", author: "Veever", note: noteStr)]
+    version: "0.0.1.1", author: "Veever", note: noteStr)]
 
 public class YuweyawataFieldStation
 {
@@ -33,7 +33,7 @@ public class YuweyawataFieldStation
 
     const string noteStr =
     """
-    v0.0.1.0:
+    v0.0.1.1:
     1. 绘制了顺逆时针地火与穿洞前地火，如果有漏画（Boss出现在场地东侧or南侧核爆）的情况，请在dc@我，并附上arr文件
     鸭门。
     """;
@@ -563,7 +563,7 @@ public class YuweyawataFieldStation
         dp.Position = @event.EffectPosition();
         dp.Scale = new Vector2(5);
         dp.DestoryAt = 1200;
-        accessory.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Circle, dp);
+        accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
     }
 
     [ScriptMethod(name: "Beastly Roar", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:40610"])]
