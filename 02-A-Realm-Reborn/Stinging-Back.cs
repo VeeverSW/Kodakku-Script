@@ -19,13 +19,13 @@ using ECommons.Reflection;
 namespace Veever.A_Realm_Reborn.StingingBack;
 
 [ScriptType(name: "LV.20 消灭恶徒团伙寄生蜂团！", territorys: [192], guid: "69177d90-6983-4af4-a3e2-ad1e6ab28635",
-    version: "0.0.0.1", author: "Veever", note: noteStr)]
+    version: "0.0.0.2", author: "Veever", note: noteStr)]
 
 public class Stinging_Back
 {
     const string noteStr =
     """
-    v0.0.0.1:
+    v0.0.0.2:
     1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
     2. 标点开关以及本地开关都在用户设置里面，可自行选择关闭或者开启（默认本地开启）
     鸭门。
@@ -34,10 +34,10 @@ public class Stinging_Back
     public bool isText { get; set; } = true;
 
     [UserSetting("TTS开关")]
-    public bool isTTS { get; set; } = true;
+    public bool isTTS { get; set; } = false;
 
     [UserSetting("DR TTS开关")]
-    public bool isDRTTS { get; set; } = false;
+    public bool isDRTTS { get; set; } = true;
 
     [UserSetting("标点开关")]
     public bool isMark { get; set; } = true;

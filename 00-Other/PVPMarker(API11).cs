@@ -29,13 +29,13 @@ using System.Reflection;
 namespace Veever.Other.PVPMarker_API11;
 // 431: 尘封，554: 碎冰, 888：草原
 [ScriptType(name: "PVPMarker(API11)", territorys: [431, 554, 888, 791], guid: "98f639f8-095b-4d68-8d46-0bc38c4cd552",
-    version: "0.0.0.1", author: "Veever", note: noteStr)]
+    version: "0.0.0.2", author: "Veever", note: noteStr)]
 
 public class PVPMarker_API11
 {
     const string noteStr =
     """
-    v0.0.0.1:
+    v0.0.0.2:
     --------快进罩子听我展开复仇计划--------
     ！初次使用请调整好方法设置里面的选项！
     1. 标点开关以及本地开关都在用户设置里面，可自行选择关闭或者开启（默认本地开启）;
@@ -60,7 +60,7 @@ public class PVPMarker_API11
     public bool isTTS { get; set; } = false;
 
     [UserSetting("DR TTS开关")]
-    public bool isDRTTS { get; set; } = false;
+    public bool isDRTTS { get; set; } = true;
 
     [UserSetting("Debug开关, 非开发用请关闭")]
     public bool isDebug { get; set; } = false;

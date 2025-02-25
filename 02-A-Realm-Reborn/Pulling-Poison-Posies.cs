@@ -19,13 +19,13 @@ using ECommons.Reflection;
 namespace Veever.A_Realm_Reborn.PullingPoisonPosies;
 
 [ScriptType(name: "LV.20 驱除剧毒妖花！", territorys: [191], guid: "ffdb31c2-0517-430e-924e-159766aea93d",
-    version: "0.0.0.1", author: "Veever", note: noteStr)]
+    version: "0.0.0.2", author: "Veever", note: noteStr)]
 
 public class Pulling_Poison_Posies
 {
     const string noteStr =
     """
-    v0.0.0.1:
+    v0.0.0.2:
     1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
     鸭门。
     """;
@@ -33,10 +33,10 @@ public class Pulling_Poison_Posies
     public bool isText { get; set; } = true;
 
     [UserSetting("TTS开关")]
-    public bool isTTS { get; set; } = true;
+    public bool isTTS { get; set; } = false;
 
     [UserSetting("DR TTS开关")]
-    public bool isDRTTS { get; set; } = false;
+    public bool isDRTTS { get; set; } = true;
 
     [UserSetting("Debug开关")]
     public bool isDebug { get; set; } = false;

@@ -19,13 +19,13 @@ using ECommons.Reflection;
 namespace Veever.A_Realm_Reborn.MorethanaFeeler;
 
 [ScriptType(name: "LV.30 讨伐污染源头魔界花！", territorys: [221], guid: "3113eeb5-96d8-48a8-9069-e1e3e5232ee1",
-    version: "0.0.0.1", author: "Veever", note: noteStr)]
+    version: "0.0.0.2", author: "Veever", note: noteStr)]
 
 public class More_than_a_Feeler
 {
     const string noteStr =
     """
-    v0.0.0.1:
+    v0.0.0.2:
     1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
     2. 标点开关以及本地开关都在用户设置里面，可自行选择关闭或者开启（默认本地开启）
     鸭门。
@@ -34,10 +34,10 @@ public class More_than_a_Feeler
     public bool isText { get; set; } = true;
 
     [UserSetting("TTS开关")]
-    public bool isTTS { get; set; } = true;
+    public bool isTTS { get; set; } = false;
 
     [UserSetting("DR TTS开关")]
-    public bool isDRTTS { get; set; } = false;
+    public bool isDRTTS { get; set; } = true;
 
     [UserSetting("标点开关")]
     public bool isMark { get; set; } = true;

@@ -10,20 +10,20 @@ using System.Linq;
 
 namespace Meva.Heavensward.KodakkuAssist.Alexander;
 
-[ScriptType(name: "LV.60 亚历山大机神城 天动之章1", territorys: [580], guid: "7cb80e0d-e693-6ca9-c46e-c96b0ec5d109", version: "0.0.0.2", author: "Meva", note: noteStr)]
+[ScriptType(name: "LV.60 亚历山大机神城 天动之章1", territorys: [580], guid: "7cb80e0d-e693-6ca9-c46e-c96b0ec5d109", version: "0.0.0.3", author: "Meva", note: noteStr)]
 public class A9N
 {
     const string noteStr =
         """
-        v0.0.0.2: 更改名字
+        v0.0.0.3
         """;
     
     [UserSetting("文字横幅提示开关")]
     public bool isText { get; set; } = true;
     [UserSetting("TTS开关")]
-    public bool isTTS { get; set; } = true;
+    public bool isTTS { get; set; } = false;
     [UserSetting("DR TTS开关")]
-    public bool isDRTTS { get; set; } = false;
+    public bool isDRTTS { get; set; } = true;
 
     public void Init(ScriptAccessory accessory)
     {

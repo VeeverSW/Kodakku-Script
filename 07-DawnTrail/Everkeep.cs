@@ -21,13 +21,13 @@ using System.Runtime.CompilerServices;
 namespace Veever.DawnTrail.Everkeep;
 
 [ScriptType(name: "LV.99 佐拉加歼灭战", territorys: [1200], guid: "7a6d317c-b176-4e94-9fbc-3bc833be1338",
-    version: "0.0.0.4", author: "Veever", note: noteStr)]
+    version: "0.0.0.6", author: "Veever", note: noteStr)]
 
 public class Everkeep
 {
     const string noteStr =
     """
-    v0.0.0.4:
+    v0.0.0.6:
     1. 现在支持文字横幅/TTS开关/DR TTS开关（在用户设置里面）（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
     鸭门。
     2. v0.0.0.4, 现已支持所有利刃冲情况，如果依然遇到画错/漏画的情况，请dc带回放私信我（十分感谢）
@@ -36,9 +36,9 @@ public class Everkeep
     [UserSetting("文字横幅提示开关")]
     public bool isText { get; set; } = true;
     [UserSetting("TTS开关(不要与DR TTS开关同时开启)")]
-    public bool isTTS { get; set; } = true;
+    public bool isTTS { get; set; } = false;
     [UserSetting("DR TTS开关(不要与TTS开关同时开启)")]
-    public bool isDRTTS { get; set; } = false;
+    public bool isDRTTS { get; set; } = true;
     [UserSetting("Debug开关")]
     public bool isDebug { get; set; } = false;
 

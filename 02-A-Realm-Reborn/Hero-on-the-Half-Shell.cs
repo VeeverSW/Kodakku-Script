@@ -19,13 +19,13 @@ using ECommons.Reflection;
 namespace Veever.A_Realm_Reborn.HeroontheHalfShell;
 
 [ScriptType(name: "LV.15 捕获金币龟！", territorys: [216], guid: "8513e0c9-5a1e-4748-a852-c6150d1c80e4",
-    version: "0.0.0.1", author: "Veever", note: noteStr)]
+    version: "0.0.0.2", author: "Veever", note: noteStr)]
 
 public class Hero_on_the_Half_Shell
 {
     const string noteStr =
     """
-    v0.0.0.1:
+    v0.0.0.2:
     1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
     鸭门。
     """;
@@ -33,10 +33,10 @@ public class Hero_on_the_Half_Shell
     public bool isText { get; set; } = true;
 
     [UserSetting("TTS开关")]
-    public bool isTTS { get; set; } = true;
+    public bool isTTS { get; set; } = false;
 
     [UserSetting("DR TTS开关")]
-    public bool isDRTTS { get; set; } = false;
+    public bool isDRTTS { get; set; } = true;
 
     [UserSetting("Debug开关")]
     public bool isDebug { get; set; } = false;

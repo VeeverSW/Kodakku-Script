@@ -28,13 +28,13 @@ using System.Xml.Linq;
 namespace Veever.Shadowbringers.theGrandCosmos;
 
 [ScriptType(name: "LV.80 魔法宫殿宇宙宫", territorys: [884], guid: "b3a2febd-73ff-44a9-a897-22fa50c74ff3",
-    version: "0.0.0.1", author: "Veever", note: noteStr)]
+    version: "0.0.0.2", author: "Veever", note: noteStr)]
 
 public class the_Grand_Cosmos
 {
     const string noteStr =
     """
-    v0.0.0.1:
+    v0.0.0.2:
     1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
     2. 标点开关以及本地开关都在用户设置里面，可自行选择关闭或者开启（默认本地开启）
     3. 有生之年!可能会!添加新的扫帚紫圈的判定方式
@@ -50,10 +50,10 @@ public class the_Grand_Cosmos
     public bool isText { get; set; } = true;
 
     [UserSetting("TTS开关")]
-    public bool isTTS { get; set; } = true;
+    public bool isTTS { get; set; } = false;
 
     [UserSetting("DR TTS开关")]
-    public bool isDRTTS { get; set; } = false;
+    public bool isDRTTS { get; set; } = true;
 
     [UserSetting("标点开关")]
     public bool isMark { get; set; } = true;

@@ -19,13 +19,13 @@ using System.Reflection;
 namespace Veever.Shadowbringers.theSeatofSacrifice;
 
 [ScriptType(name: "LV.80 光之战士歼灭战", territorys: [922], guid: "864c6d7e-20bd-49b6-93ec-31b4d70e1afd",
-    version: "0.0.0.4", author: "Veever", note: noteStr)]
+    version: "0.0.0.5", author: "Veever", note: noteStr)]
 
 public class theSeatofSacrifice
 {
     const string noteStr =
     """
-    v0.0.0.4:
+    v0.0.0.5:
     1. 现已支持几乎所有机制播报及绘图
     2. 支持DR 自动动态演练开关（默认为打开状态）
     3. 目前光明剑不确定是否只有两个情况，如果有更多的情况没有画出来的话请带arr回放在dc向我反馈
@@ -39,9 +39,9 @@ public class theSeatofSacrifice
     [UserSetting("文字横幅提示开关")]
     public bool isText { get; set; } = true;
     [UserSetting("TTS开关(不要与DR TTS开关同时开启)")]
-    public bool isTTS { get; set; } = true;
+    public bool isTTS { get; set; } = false;
     [UserSetting("DR TTS开关(不要与TTS开关同时开启)")]
-    public bool isDRTTS { get; set; } = false;
+    public bool isDRTTS { get; set; } = true;
     [UserSetting("DR 自动动态演练开关")]
     public bool isDRQTE { get; set; } = true;
 

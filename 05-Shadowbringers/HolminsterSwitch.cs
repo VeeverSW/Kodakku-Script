@@ -11,24 +11,23 @@ using System.Reflection.Metadata;
 namespace Veever.Shadowbringers.HolminsterSwitch;
 
 [ScriptType(name: "LV.71 遇袭集落水滩村", territorys: [837], guid: "a407d364-b2bd-4e12-9332-70ca3829ece7",
-    version:"0.0.0.7", author: "Veever", note: noteStr)]
+    version:"0.0.0.8", author: "Veever", note: noteStr)]
 
 public class HolminsterSwitch
 {
     const string noteStr =
     """
-    v0.0.0.7:
+    v0.0.0.8:
     1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
     2. 以前的这几个脚本的底层扩展目前懒得重构（就能加啥随便加了）
-    3. v0.0.0.7，更新名字方便整理
     鸭门。
     """;
     [UserSetting("文字横幅提示开关")]
     public bool isText { get; set; } = true;
     [UserSetting("TTS开关")]
-    public bool isTTS { get; set; } = true;
+    public bool isTTS { get; set; } = false;
     [UserSetting("DR TTS开关")]
-    public bool isDRTTS { get; set; } = false;
+    public bool isDRTTS { get; set; } = true;
 
     public void Init(ScriptAccessory accessory)
     {

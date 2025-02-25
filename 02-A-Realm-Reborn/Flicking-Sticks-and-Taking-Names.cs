@@ -19,13 +19,13 @@ using ECommons.Reflection;
 namespace Veever.A_Realm_Reborn.FlickingSticksandTakingNames;
 
 [ScriptType(name: "LV.25 击溃哥布林炸弹军团！", territorys: [219], guid: "f63ef61a-5fe6-437a-afb4-513dafecbb54",
-    version: "0.0.0.1", author: "Veever", note: noteStr)]
+    version: "0.0.0.2", author: "Veever", note: noteStr)]
 
 public class Flicking_Sticks_and_Taking_Names
 {
     const string noteStr =
     """
-    v0.0.0.1:
+    v0.0.0.2:
     1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
     鸭门。
     """;
@@ -33,10 +33,10 @@ public class Flicking_Sticks_and_Taking_Names
     public bool isText { get; set; } = true;
 
     [UserSetting("TTS开关")]
-    public bool isTTS { get; set; } = true;
+    public bool isTTS { get; set; } = false;
 
     [UserSetting("DR TTS开关")]
-    public bool isDRTTS { get; set; } = false;
+    public bool isDRTTS { get; set; } = true;
 
     [UserSetting("Debug开关")]
     public bool isDebug { get; set; } = false;

@@ -20,26 +20,25 @@ using System.Windows;
 namespace Veever.A_Realm_Reborn.WardUp;
 
 [ScriptType(name: "LV.40 歼灭特殊阵型的妖异！", territorys: [299], guid: "35d901f8-4861-4d5b-b279-59affb7a740f",
-    version: "0.0.0.2", author: "Veever", note: noteStr)]
+    version: "0.0.0.3", author: "Veever", note: noteStr)]
 
 public class Ward_Up
 {
     const string noteStr =
     """
-    v0.0.0.2:
+    v0.0.0.3:
     1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
     2. 标点开关以及本地开关都在用户设置里面，可自行选择关闭或者开启（默认本地开启）
-    3. 删除async, 小小优化一下
     鸭门。
     """;
     [UserSetting("文字横幅提示开关")]
     public bool isText { get; set; } = true;
 
     [UserSetting("TTS开关")]
-    public bool isTTS { get; set; } = true;
+    public bool isTTS { get; set; } = false;
 
     [UserSetting("DR TTS开关")]
-    public bool isDRTTS { get; set; } = false;
+    public bool isDRTTS { get; set; } = true;
 
     [UserSetting("标点开关")]
     public bool isMark { get; set; } = true;
