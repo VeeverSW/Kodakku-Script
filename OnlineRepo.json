@@ -26,10 +26,15 @@
   {
     "Name": "LV.100 废弃据点玉韦亚瓦塔实验站",
     "Guid": "992e47a8-17d0-4379-891b-0762c0509257",
-    "Version": "0.0.0.7",
+    "Version": "0.0.1.0",
     "Author": "Veever",
+    "Repo": "https://github.com/VeeverSW/Kodakku-Script",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/Yuweyawata-Field-Station.cs",
-    "UpdateInfo": "v0.0.0.7，更新中文名字"
+    "Note": "",
+    "UpdateInfo": "v0.0.1.0，新增绘制了顺逆时针地火与穿洞前地火\n如果有漏画（Boss出现在场地东侧or南侧核爆）的情况，请在dc@我，并附上arr文件",
+    "TerritoryIds": [
+      1242
+    ]
   },
   {
     "Name": "LV.90 终极之战(解限版)",

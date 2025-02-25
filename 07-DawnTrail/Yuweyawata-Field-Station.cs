@@ -13,38 +13,44 @@ using System.Threading.Tasks;
 using Dalamud.Game.ClientState.Objects.Types;
 using System.Runtime.Intrinsics.Arm;
 using System.Collections.Generic;
+using ECommons.DalamudServices;
+using ECommons.GameFunctions;
+using ECommons.MathHelpers;
+using System.Xml.Linq;
 
 namespace Veever.DawnTrail.YuweyawataFieldStation;
 
 [ScriptType(name: "LV.100 废弃据点玉韦亚瓦塔实验站", territorys: [1242], guid: "992e47a8-17d0-4379-891b-0762c0509257",
-    version: "0.0.0.7", author: "Veever", note: noteStr)]
+    version: "0.0.1.0", author: "Veever", note: noteStr)]
 
 public class YuweyawataFieldStation
 {
-    public int RawElectropeCount, TelltaleTearsTTSCount, LightningStormTTSCount, DarkTwoCount, JaggedEdgeCount;
+    //^(?!.*((武僧|机工士|龙骑士|学者|舞者|蝰蛇剑士|暗黑骑士|(朝日|夕月)小仙女|炽天使|白魔法师|战士|骑士|召唤师|宝石兽|亚灵神巴哈姆特|亚灵神不死鸟|迦楼罗之灵|泰坦之灵|伊弗利特之灵|后式自走人偶)\] (Used|Cast|Cancel|Add))).*$
+    public int RawElectropeCount, TelltaleTearsTTSCount, LightningStormTTSCount, DarkTwoCount, JaggedEdgeCount, RockBlastNaviCount, RagingClawCount;
     private readonly object LeapingEarthLock = new object();
     private readonly object JaggedEdgeLock = new object();
     public int LeapingEarthResult;
 
     const string noteStr =
     """
-    v0.0.0.7:
-    1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
-    2. 以前的这几个脚本的底层扩展目前懒得重构（就能加啥随便加了）
-    3. 删除顺时针地火判断
+    v0.0.1.0:
+    1. 绘制了顺逆时针地火与穿洞前地火，如果有漏画（Boss出现在场地东侧or南侧核爆）的情况，请在dc@我，并附上arr文件
     鸭门。
     """;
     [UserSetting("文字横幅提示开关")]
     public bool isText { get; set; } = true;
 
     [UserSetting("TTS开关")]
-    public bool isTTS { get; set; } = true;
+    public bool isTTS { get; set; } = false;
 
     [UserSetting("DR TTS开关")]
-    public bool isDRTTS { get; set; } = false;
+    public bool isDRTTS { get; set; } = true;
 
+    [UserSetting("Debug开关, 非开发用请关闭")]
+    public bool isDebug { get; set; } = false;
 
-    public void Init(ScriptAccessory accessory)
+    
+    public async void Init(ScriptAccessory accessory)
     {
         accessory.Method.RemoveDraw(".*");
         LightningStormTTSCount = 0;
@@ -53,6 +59,18 @@ public class YuweyawataFieldStation
         DarkTwoCount = 0;
         JaggedEdgeCount = 0;
         LeapingEarthResult = 0;
+        RockBlastNaviCount = 0;
+        RagingClawCount = 0;
+
+        await Task.Delay(50);
+
+
+    } 
+       
+    public void DebugMsg(string str, ScriptAccessory accessory)
+    {
+        if (!isDebug) return;
+        accessory.Method.SendChat($"/e [DEBUG] {str}");
     }
 
     #region 小怪
@@ -168,8 +186,7 @@ public class YuweyawataFieldStation
     public void ElectricalOverload(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("AOE", duration: 4700, true);
-        if (isTTS) accessory.Method.TTS("AOE");
-        if (isDRTTS) accessory.Method.SendChat("/pdr tts AOE");
+        accessory.TTS("AOE", isTTS, isDRTTS);
     }
 
     [ScriptMethod(name: "CellShock", eventType: EventTypeEnum.EnvControl, eventCondition: ["State:regex:^(00020001|00200010)$"])]
@@ -210,13 +227,13 @@ public class YuweyawataFieldStation
     }
 
     [ScriptMethod(name: "Lightning Storm", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:40637"])]
-    public void LightningStorm(Event @event, ScriptAccessory accessory)
+    public async void LightningStorm(Event @event, ScriptAccessory accessory)
     {
+        await Task.Delay(50);
         if (LightningStormTTSCount == 0 || LightningStormTTSCount == 4 || LightningStormTTSCount == 7 || LightningStormTTSCount == 12)
         {
             if (isText) accessory.Method.TextInfo("全体分散", duration: 4700, true);
-            if (isTTS) accessory.Method.TTS("全体分散");
-            if (isDRTTS) accessory.Method.SendChat("/pdr tts 全体分散");
+            accessory.TTS("全体分散", isTTS, isDRTTS);
         }
         LightningStormTTSCount++;
         var dp = accessory.Data.GetDefaultDrawProperties();
@@ -236,8 +253,7 @@ public class YuweyawataFieldStation
         if (RawElectropeCount == 0)
         {
             if (isText) accessory.Method.TextInfo("优先攻击小怪", duration: 4700, true);
-            if (isTTS) accessory.Method.TTS("优先攻击小怪");
-            if (isDRTTS) accessory.Method.SendChat("/pdr tts 优先攻击小怪");
+            accessory.TTS("优先攻击小怪", isTTS, isDRTTS);
             RawElectropeCount++;
         }
     }
@@ -248,8 +264,7 @@ public class YuweyawataFieldStation
     {
         await Task.Delay(8700);
         if (isText) accessory.Method.TextInfo("AOE", duration: 3700, true);
-        if (isTTS) accessory.Method.TTS("AOE");
-        if (isDRTTS) accessory.Method.SendChat("/pdr tts AOE");
+        accessory.TTS("AOE", isTTS, isDRTTS);
     }
 
 
@@ -266,16 +281,14 @@ public class YuweyawataFieldStation
     public void Boss2Tankbuster(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("死刑准备", duration: 4700, true);
-        if (isTTS) accessory.Method.TTS("死刑准备");
-        if (isDRTTS) accessory.Method.SendChat("/pdr tts 死刑准备");
+        accessory.TTS("死刑准备", isTTS, isDRTTS);
     }
 
     [ScriptMethod(name: "Phantom Flood", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:40644"])]
     public void PhantomFlood(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("去Boss脚下", duration: 4700, true);
-        if (isTTS) accessory.Method.TTS("去Boss脚下");
-        if (isDRTTS) accessory.Method.SendChat("/pdr tts 去Boss脚下");
+        accessory.TTS("去Boss脚下", isTTS, isDRTTS);
 
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = "Phantom Flood";
@@ -316,8 +329,8 @@ public class YuweyawataFieldStation
         if (TelltaleTearsTTSCount == 0)
         {
             if (isText) accessory.Method.TextInfo("分散, 不要重叠", duration: 4700, true);
-            if (isTTS) accessory.Method.TTS("分散, 不要重叠");
-            if (isDRTTS) accessory.Method.SendChat("/pdr tts 分散, 不要重叠");
+            accessory.TTS("分散, 不要重叠", isTTS, isDRTTS);
+
             TelltaleTearsTTSCount++;
         }
         var dp = accessory.Data.GetDefaultDrawProperties();
@@ -335,8 +348,7 @@ public class YuweyawataFieldStation
     public void Necrohazard(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("远离场中, 注意目压", duration: 4700, true);
-        if (isTTS) accessory.Method.TTS("远离场中, 注意目压");
-        if (isDRTTS) accessory.Method.SendChat("/pdr tts 远离场中, 注意目压");
+        accessory.TTS("远离场中, 注意目压", isTTS, isDRTTS);
 
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = "Telltale Tears";
@@ -352,8 +364,7 @@ public class YuweyawataFieldStation
     public async void Bloodburst(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("AOE", duration: 4700, true);
-        if (isTTS) accessory.Method.TTS("AOE");
-        if (isDRTTS) accessory.Method.SendChat("/pdr tts AOE");
+        accessory.TTS("AOE", isTTS, isDRTTS);
     }
 
     [ScriptMethod(name: "Soul Douse", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:40651"])]
@@ -361,8 +372,7 @@ public class YuweyawataFieldStation
     {
         string tname = @event["TargetName"]?.ToString() ?? "未知目标";
         if (isText) accessory.Method.TextInfo($"与{tname}分摊", duration: 4700, true);
-        if (isTTS) accessory.Method.TTS($"与{tname}分摊");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts 与{tname}分摊");
+        accessory.TTS($"与{tname}分摊", isTTS, isDRTTS);
 
         var dp = accessory.Data.GetDefaultDrawProperties();
 
@@ -385,8 +395,7 @@ public class YuweyawataFieldStation
     public void RagingClaw(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("去Boss身后", duration: 4700, true);
-        if (isTTS) accessory.Method.TTS("去Boss身后");
-        if (isDRTTS) accessory.Method.SendChat("/pdr tts 去Boss身后");
+        accessory.TTS($"去Boss身后", isTTS, isDRTTS);
 
         var dp = accessory.Data.GetDefaultDrawProperties();
 
@@ -397,6 +406,20 @@ public class YuweyawataFieldStation
         dp.Radian = float.Pi / 180 * 180;
         dp.DestoryAt = 5400;
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Fan, dp);
+
+        if (RagingClawCount != 0)
+        {
+            var dp1 = accessory.Data.GetDefaultDrawProperties();
+            dp1.Name = "Raging Claw Navi";
+            dp1.Owner = accessory.Data.Me;
+            dp1.Color = accessory.Data.DefaultSafeColor;
+            dp1.ScaleMode |= ScaleMode.YByDistance;
+            dp1.TargetPosition = @event.TargetPosition();
+            dp1.Scale = new Vector2(2f);
+            dp1.DestoryAt = 4500;
+            accessory.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Displacement, dp1);
+        }
+        RagingClawCount++;
     }
 
     [ScriptMethod(name: "Boulder Dance", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(4060[78])$"])]
@@ -500,16 +523,11 @@ public class YuweyawataFieldStation
     {
         lock (JaggedEdgeLock)
         {
-            Task.Delay(50).ContinueWith(t =>
+            if (@event.TargetId() == accessory.Data.Me)
             {
-                if (JaggedEdgeCount == 0 || JaggedEdgeCount == 4 || JaggedEdgeCount == 7)
-                {
-                    if (isText) accessory.Method.TextInfo("分散, 不要重叠", duration: 4700, true);
-                    if (isTTS) accessory.Method.TTS("分散, 不要重叠");
-                    if (isDRTTS) accessory.Method.SendChat("/pdr tts 分散, 不要重叠");
-                }
-                JaggedEdgeCount++;
-            });
+                if (isText) accessory.Method.TextInfo("分散, 不要重叠", duration: 4700, true);
+                accessory.TTS("分散, 不要重叠", isTTS, isDRTTS);
+            }
             var dp = accessory.Data.GetDefaultDrawProperties();
 
             dp.Name = "Jagged Edge";
@@ -535,12 +553,25 @@ public class YuweyawataFieldStation
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
     }
 
+    [ScriptMethod(name: "Leaping Earth", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:40606"])]
+    public void LeapingEarth(Event @event, ScriptAccessory accessory)
+    {
+        var dp = accessory.Data.GetDefaultDrawProperties();
+        dp.Name = "Leaping Earth";
+        dp.Color = new Vector4(1, 1, 0, 1);
+        dp.ScaleMode = ScaleMode.ByTime;
+        dp.Position = @event.EffectPosition();
+        dp.Scale = new Vector2(5);
+        dp.DestoryAt = 1200;
+        accessory.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Circle, dp);
+    }
+
     [ScriptMethod(name: "Beastly Roar", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:40610"])]
     public void BeastlyRoar(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("远离Boss", duration: 7000, true);
-        if (isTTS) accessory.Method.TTS("远离Boss");
-        if (isDRTTS) accessory.Method.SendChat("/pdr tts 远离Boss");
+        accessory.TTS("远离Boss", isTTS, isDRTTS);
+
 
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = "Beastly Roar";
@@ -557,8 +588,8 @@ public class YuweyawataFieldStation
     {
         string tname = @event["TargetName"]?.ToString() ?? "未知目标";
         if (isText) accessory.Method.TextInfo($"与{tname}分摊", duration: 4700, true);
-        if (isTTS) accessory.Method.TTS($"与{tname}分摊");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts 与{tname}分摊");
+        accessory.TTS($"与{tname}分摊", isTTS, isDRTTS);
+
 
         var dp = accessory.Data.GetDefaultDrawProperties();
 
@@ -571,51 +602,182 @@ public class YuweyawataFieldStation
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
     }
 
-    [ScriptMethod(name: "Sonic Howl", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:40618"])]
-    public async void SonicHowl(Event @event, ScriptAccessory accessory)
+    [ScriptMethod(name: "AOE", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(40618|40603)$"])]
+    public void BOSS3AOE(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("AOE", duration: 4700, true);
-        if (isTTS) accessory.Method.TTS("AOE");
-        if (isDRTTS) accessory.Method.SendChat("/pdr tts AOE");
+        accessory.TTS($"AOE", isTTS, isDRTTS);
+
     }
 
     [ScriptMethod(name: "Boss3死刑", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:40619"])]
     public void Boss3Tankbuster(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("死刑准备", duration: 4700, true);
-        if (isTTS) accessory.Method.TTS("死刑准备");
-        if (isDRTTS) accessory.Method.SendChat("/pdr tts 死刑准备");
+        accessory.TTS($"死刑准备", isTTS, isDRTTS);
+    }
+
+    [ScriptMethod(name: "岩石冲击-画图", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:40611"])]
+    public void RockBlast(Event @event, ScriptAccessory accessory)
+    {
+        var dp = accessory.Data.GetDefaultDrawProperties();
+        dp.Name = "Rock Blast";
+        dp.Color = accessory.Data.DefaultDangerColor;
+        dp.Position = @event.EffectPosition();
+        dp.Scale = new Vector2(5f);
+        dp.DestoryAt = 700;
+        accessory.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Circle, dp);
+    }
+
+    [ScriptMethod(name: "岩石冲击-引导", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:40611"])]
+    public void RockBlastNavi(Event @event, ScriptAccessory accessory)
+    {
+        Task.Delay(50);
+        DebugMsg($"In Navi", accessory);
+        DebugMsg($"Rotation: {@event.SourceRotation()}", accessory);
+        DebugMsg($"RockBlastNaviCount: {RockBlastNaviCount}", accessory);
+        if (RockBlastNaviCount == 0) 
+        {
+            WaitToRemove(accessory);
+            DebugMsg($"RockBlastNavi: IN", accessory);
+            switch (@event.SourceRotation())
+            {
+                // North ClockWise
+                case 1.57f:
+                    DebugMsg($"In 1.57",accessory);
+                    var dp = accessory.Data.GetDefaultDrawProperties();
+                    dp.Name = "Rock BlastNavi rect right Half 1.57";
+                    dp.Color = new Vector4(1, 1, 0, 1);
+                    dp.Position = new Vector3(33.52f, -87.90f, -709.22f);
+                    dp.Radian = float.Pi;
+                    dp.Rotation = float.Pi / 2;
+                    dp.Scale = new Vector2(40f);
+                    dp.DestoryAt = 5000;
+                    accessory.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Fan, dp);
+                    var Npos1 = new Vector3(27.94f, -87.90f, -698.07f); 
+                    var NTpos1 = new Vector3(20.98f, -87.90f, -710.16f);
+                    DrawDisplacement(accessory, Npos1, NTpos1, 14f, 10000, "1.57 Arrow1");
+
+                    var Npos2 = new Vector3(20.98f, -87.90f, -710.16f);
+                    var NTpos2 = new Vector3(28.00f, -87.90f, -721.33f);
+                    DrawDisplacement(accessory, Npos2, NTpos2, 14f, 10000, "1.57 Arrow2");
+
+                    var Npos3 = new Vector3(28.47f, -87.90f, -721.85f);
+                    var NTpos3 = new Vector3(39.54f, -87.90f, -721.92f);
+                    DrawDisplacement(accessory, Npos3, NTpos3, 11f, 10000, "1.57 Arrow3");
+
+                    return;
+
+                // North AntiClockWise
+                case -1.57f:
+                    DebugMsg($"In M-1.57", accessory);
+                    DebugMsg($"Rotation: {@event.SourceRotation()}", accessory);
+                    var dp1 = accessory.Data.GetDefaultDrawProperties();
+                    dp1.Name = "Rock BlastNavi rect right Half -1.57";
+                    dp1.Color = new Vector4(1, 1, 0, 1);
+                    dp1.Position = new Vector3(33.52f, -87.90f, -709.22f);
+                    dp1.Radian = float.Pi;
+                    dp1.Rotation = -float.Pi / 2;
+                    dp1.Scale = new Vector2(40f);
+                    dp1.DestoryAt = 5000;
+                    accessory.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Fan, dp1);
+
+                    var Npos1_1 = new Vector3(37.41f, -87.90f, -697.52f);
+                    var NTpos1_1 = new Vector3(50.98f, -87.90f, -710.16f);
+                    DrawDisplacement(accessory, Npos1_1, NTpos1_1, 14f, 10000, "-1.57 Arrow1");
+
+                    var Npos2_2 = new Vector3(47.62f, -87.90f, -706.97f);
+                    var NTpos2_2 = new Vector3(42.00f, -87.90f, -721.33f);
+                    DrawDisplacement(accessory, Npos2_2, NTpos2_2, 14f, 10000, "-1.57 Arrow2");
+
+                    var Npos3_3 = new Vector3(42.51f, -87.90f, -719.83f);
+                    var NTpos3_3 = new Vector3(29.74f, -87.90f, -722.10f);
+                    DrawDisplacement(accessory, Npos3_3, NTpos3_3, 11f, 10000, "-1.57 Arrow3");
+
+                    return;
+
+                // West ClockWise
+                case 3.14f:
+                    var dp2 = accessory.Data.GetDefaultDrawProperties();
+                    dp2.Name = "Rock BlastNavi rect right Half 3.14";
+                    dp2.Color = new Vector4(1, 1, 0, 1);
+                    dp2.Position = new Vector3(33.52f, -87.90f, -709.22f);
+                    dp2.Radian = float.Pi;
+                    dp2.Rotation = float.Pi;
+                    dp2.Scale = new Vector2(40f);
+                    dp2.DestoryAt = 5000;
+                    accessory.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Fan, dp2);
+
+                    var Wpos1 = new Vector3(45.78f, -87.90f, -704.25f);
+                    var WTpos1 = new Vector3(33.73f, -87.90f, -695.72f);
+                    DrawDisplacement(accessory, Wpos1, WTpos1, 14f, 10000, "3.14 Arrow1");
+
+                    var Wpos2 = new Vector3(34.41f, -87.90f, -696.13f);
+                    var WTpos2 = new Vector3(21.66f, -87.90f, -703.56f);
+                    DrawDisplacement(accessory, Wpos2, WTpos2, 14f, 10000, "3.14 Arrow2");
+
+                    var Wpos3 = new Vector3(22.33f, -87.90f, -703.18f);
+                    var WTpos3 = new Vector3(21.61f, -87.90f, -714.67f);
+                    DrawDisplacement(accessory, Wpos3, WTpos3, 11f, 10000, "3.14 Arrow3");
+
+                    return;
+
+                // West AntiClockWise
+                case -0f:
+                    var dp3 = accessory.Data.GetDefaultDrawProperties();
+                    dp3.Name = "Rock BlastNavi rect right Half 3.14";
+                    dp3.Color = new Vector4(1, 1, 0, 1);
+                    dp3.Position = new Vector3(33.52f, -87.90f, -709.22f);
+                    dp3.Radian = float.Pi;
+                    dp3.Rotation = float.Pi / 180;
+                    dp3.Scale = new Vector2(40f);
+                    dp3.DestoryAt = 5000;
+                    accessory.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Fan, dp3);
+
+                    var Wpos1_1 = new Vector3(46.51f, -87.90f, -714.42f);
+                    var WTpos1_1 = new Vector3(35.83f, -87.90f, -724.43f);
+                    DrawDisplacement(accessory, Wpos1_1, WTpos1_1, 14f, 10000, "-3.14 Arrow1");
+
+                    var Wpos2_2 = new Vector3(36.30f, -87.90f, -724.04f);
+                    var WTpos2_2 = new Vector3(22.96f, -87.90f, -717.39f);
+                    DrawDisplacement(accessory, Wpos2_2, WTpos2_2, 15f, 10000, "-3.14 Arrow2");
+
+                    var Wpos3_3 = new Vector3(22.86f, -87.90f, -717.37f);
+                    var WTpos3_3 = new Vector3(21.23f, -87.90f, -706.96f);
+                    DrawDisplacement(accessory, Wpos3_3, WTpos3_3, 11f, 10000, "-3.14 Arrow3");
+
+                    return;
+
+            }
+        }
+        RockBlastNaviCount++;
+    }
+
+
+    private void DrawDisplacement(ScriptAccessory accessory, Vector3 pos, Vector3 target, float scale, int duration, string name, int delay = 0)
+    {
+        var dp = accessory.Data.GetDefaultDrawProperties();
+        dp.Name = name;
+        //dp.Owner = accessory.Data.Me;
+        dp.Color = accessory.Data.DefaultSafeColor;
+        //dp.ScaleMode |= ScaleMode.YByDistance;
+        dp.Position = pos;
+        dp.TargetPosition = target;
+        dp.Scale = new Vector2(2f, scale);
+        dp.Delay = delay;
+        dp.DestoryAt = duration;
+        accessory.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Displacement, dp);
+    }
+
+    private async void WaitToRemove(ScriptAccessory accessory)
+    {
+        await Task.Delay(20000);
+        RockBlastNaviCount = 0;
+        DebugMsg("Successfully RockBlastNaviCount = 0", accessory);
     }
 
     #endregion
-    //[ScriptMethod(name: "Rock Blast", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:40611"])]
-    //public void RockBlast(Event @event, ScriptAccessory accessory)
-    //{
-    //    var clockwise = new Vector3(33.98f, -87.91f, -723.51f);
-    //    //var antiClockwise = new Vector3(33.98f, -87.91f, -723.51f);
-
-    //    Task.Delay(50).ContinueWith(t =>
-    //    {
-    //        if (@event.EffectPosition() == clockwise)
-    //        {
-    //            accessory.Method.TextInfo("顺时针地火", duration: 4700, true);
-    //            if (isTTS) accessory.Method.TTS("顺时针弟火");
-    //            var pos = @event.EffectPosition();
-    //            pos.X -= 1.5f;
-    //            var dp = accessory.Data.GetDefaultDrawProperties();
-    //            dp.Name = "Clockwise Safe Area";
-    //            dp.Color = accessory.Data.DefaultSafeColor;
-    //            dp.Position = pos;
-    //            dp.Scale = new Vector2(3);
-    //            dp.DestoryAt = 14000;
-    //            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
-    //        }
-           
-    //    });
-    //}
-
 }
-
 
 
 public static class EventExtensions
@@ -636,6 +798,11 @@ public static class EventExtensions
         }
     }
 
+    public static uint Id(this Event @event)
+    {
+        return JsonConvert.DeserializeObject<uint>(@event["Id"]);
+    }
+
     public static uint ActionId(this Event @event)
     {
         return JsonConvert.DeserializeObject<uint>(@event["ActionId"]);
@@ -646,15 +813,34 @@ public static class EventExtensions
         return ParseHexId(@event["SourceId"], out var id) ? id : 0;
     }
 
+    public static uint SourceDataId(this Event @event)
+    {
+        return JsonConvert.DeserializeObject<uint>(@event["SourceDataId"]);
+    }
+
+    public static uint DataId(this Event @event)
+    {
+        return JsonConvert.DeserializeObject<uint>(@event["DataId"]);
+    }
+
+    public static uint Command(this Event @event)
+    {
+        return ParseHexId(@event["Command"], out var cid) ? cid : 0;
+    }
 
     public static string DurationMilliseconds(this Event @event)
     {
         return JsonConvert.DeserializeObject<string>(@event["DurationMilliseconds"]) ?? string.Empty;
     }
 
-    public static uint SourceRotation(this Event @event)
+    public static float SourceRotation(this Event @event)
     {
-        return ParseHexId(@event["SourceRotation"], out var sourceRotation) ? sourceRotation : 0;
+        return JsonConvert.DeserializeObject<float>(@event["SourceRotation"]);
+    }
+
+    public static float TargetRotation(this Event @event)
+    {
+        return JsonConvert.DeserializeObject<float>(@event["TargetRotation"]);
     }
 
     public static byte Index(this Event @event)
@@ -669,7 +855,12 @@ public static class EventExtensions
 
     public static string SourceName(this Event @event)
     {
-        return JsonConvert.DeserializeObject<string>(@event["SourceName"]) ?? string.Empty;
+        return @event["SourceName"];
+    }
+
+    public static string TargetName(this Event @event)
+    {
+        return @event["TargetName"];
     }
 
     public static uint TargetId(this Event @event)
@@ -691,5 +882,82 @@ public static class EventExtensions
     {
         return JsonConvert.DeserializeObject<Vector3>(@event["EffectPosition"]);
     }
+
+    public static uint DirectorId(this Event @event)
+    {
+        return ParseHexId(@event["DirectorId"], out var id) ? id : 0;
+    }
+
+    public static uint StatusId(this Event @event)
+    {
+        return JsonConvert.DeserializeObject<uint>(@event["StatusId"]);
+    }
+
+    public static uint StackCount(this Event @event)
+    {
+        return JsonConvert.DeserializeObject<uint>(@event["StackCount"]);
+    }
+
+    public static uint Param(this Event @event)
+    {
+        return JsonConvert.DeserializeObject<uint>(@event["Param"]);
+    }
+
+    public static string Operate(this Event @event)
+    {
+        return @event["Operate"];
+    }
 }
 
+
+public static class Extensions
+{
+    public static void TTS(this ScriptAccessory accessory, string text, bool isTTS, bool isDRTTS)
+    {
+        if (isDRTTS)
+        {
+            accessory.Method.SendChat($"/pdr tts {text}");
+        }
+        else if (isTTS)
+        {
+            accessory.Method.TTS(text);
+        }
+    }
+}
+
+public static class IbcHelper
+{
+    public static IBattleChara? GetById(uint id)
+    {
+        return (IBattleChara?)Svc.Objects.SearchByEntityId(id);
+    }
+
+    public static IBattleChara? GetMe()
+    {
+        return Svc.ClientState.LocalPlayer;
+    }
+
+    public static IGameObject? GetFirstByDataId(uint dataId)
+    {
+        return Svc.Objects.Where(x => x.DataId == dataId).FirstOrDefault();
+    }
+
+    public static IEnumerable<IGameObject?> GetByDataId(uint dataId)
+    {
+        return Svc.Objects.Where(x => x.DataId == dataId);
+    }
+}
+
+public static unsafe class IBattleCharaExtensions
+{
+    public static bool HasStatus(this IBattleChara ibc, uint statusId, float remaining = -1)
+    {
+        return ibc.StatusList.Any(s => s.StatusId == statusId && s.RemainingTime > remaining);
+    }
+
+    public static uint Tethering(this IBattleChara ibc, int index = 0)
+    {
+        return ibc.Struct()->Vfx.Tethers[index].TargetId.ObjectId;
+    }
+
+}
