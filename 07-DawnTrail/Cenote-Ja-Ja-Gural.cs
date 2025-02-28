@@ -29,13 +29,13 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 namespace Veever.DawnTrail.Cenote_Ja_Ja_Gural;
 
 [ScriptType(name: "加加财富天坑", territorys: [1209], guid: "64620549-e269-49c0-b0ae-76edec024864",
-    version: "0.0.0.1", author: "Veever", note: noteStr)]
+    version: "0.0.0.2", author: "Veever", note: noteStr)]
 
 public class Cenote_Ja_Ja_Gural
 {
     const string noteStr =
     """
-    v0.0.0.1:
+    v0.0.0.2:
     1. 加加财富天坑只根据自己下底的arr进行绘制，没有后面天箭绘画的情况
     2. 如果你有此方面的素材可以dc私信提供给我，我会加入到绘制里
     鸭门。
@@ -117,6 +117,18 @@ public class Cenote_Ja_Ja_Gural
         }
         DebugMsg($"{AetherialLightCount}", accessory);
         AetherialLightCount++;
+    }
+
+    [ScriptMethod(name: "火焰剑", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^3825[15]$"])]
+    public void FlameBlade(Event @event, ScriptAccessory accessory)
+    {
+        var dp = accessory.Data.GetDefaultDrawProperties();
+        dp.Name = "Flame Blade";
+        dp.Owner = @event.SourceId();
+        dp.Color = accessory.Data.DefaultDangerColor;
+        dp.Scale = new(5f, 40f);
+        dp.DestoryAt = 2200;
+        accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Straight, dp);
     }
 }
 

@@ -4,24 +4,33 @@
     "Guid": "a407d364-b2bd-4e12-9332-70ca3829ece7",
     "Version": "0.0.0.8",
     "Author": "Veever",
+    "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/HolminsterSwitch.cs",
-    "UpdateInfo": "v0.0.0.8，更改默认为DR TTS"
+    "Note": "",
+    "UpdateInfo": "v0.0.0.8，更改默认为DR TTS",
+    "TerritoryIds": []
   },
   {
     "Name": "LV.73 水妖幻园多恩美格禁园",
     "Guid": "d8fbc4be-b2c3-43a5-93f7-2901b40d0921",
     "Version": "0.0.0.6",
     "Author": "Veever",
+    "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/DohnMheg.cs",
-    "UpdateInfo": "v0.0.0.6，更改默认为DR TTS"
+    "Note": "",
+    "UpdateInfo": "v0.0.0.6，更改默认为DR TTS",
+    "TerritoryIds": []
   },
   {
     "Name": "LV.60 血战苍穹魔科学研究所",
     "Guid": "dd08165c-b709-4100-a96e-65f2c7ae4f3b",
     "Version": "0.0.0.6",
     "Author": "Veever",
+    "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/03-Heavensward/the-Aetherochemical-Research-Facility.cs",
-    "UpdateInfo": "v0.0.0.6，更改默认为DR TTS"
+    "Note": "",
+    "UpdateInfo": "v0.0.0.6，更改默认为DR TTS",
+    "TerritoryIds": []
   },
   {
     "Name": "LV.100 废弃据点玉韦亚瓦塔实验站",
@@ -41,212 +50,300 @@
     "Guid": "100df6f8-d8ce-44f7-9fb0-431eca0f2825",
     "Version": "0.0.0.5",
     "Author": "Veever",
+    "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/06-EndWalker/the-Minstrels-Ballad-Endsingers-Aria.cs",
-    "UpdateInfo": "v0.0.0.5，更改默认为DR TTS"
+    "Note": "",
+    "UpdateInfo": "v0.0.0.5，更改默认为DR TTS",
+    "TerritoryIds": []
   },
   {
     "Name": "LV.10 讨伐彷徨死灵（指路+自动打断）",
     "Guid": "8b28e087-549e-4a88-96db-50e1e7cc5214",
     "Version": "0.0.0.4",
     "Author": "Veever",
+    "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Under-the-Armor.cs",
-    "UpdateInfo": "v0.0.0.4，更改默认为DR TTS"
+    "Note": "",
+    "UpdateInfo": "v0.0.0.4，更改默认为DR TTS",
+    "TerritoryIds": []
   },
   {
     "Name": "LV.80 光之战士歼灭战",
     "Guid": "864c6d7e-20bd-49b6-93ec-31b4d70e1afd",
     "Version": "0.0.0.5",
     "Author": "Veever",
+    "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/the-Seat-of-Sacrifice.cs",
-    "UpdateInfo": "v0.0.0.5 更改默认为DR TTS"
+    "Note": "",
+    "UpdateInfo": "v0.0.0.5 更改默认为DR TTS",
+    "TerritoryIds": []
   },
   {
     "Name": "LV.99 佐拉加歼灭战",
     "Guid": "7a6d317c-b176-4e94-9fbc-3bc833be1338",
     "Version": "0.0.0.6",
     "Author": "Veever",
+    "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/Everkeep.cs",
-    "UpdateInfo": "v0.0.0.6, 更改默认为DR TTS"
+    "Note": "",
+    "UpdateInfo": "v0.0.0.6, 更改默认为DR TTS",
+    "TerritoryIds": []
   },
   {
     "Name": "LV.10 完成集团战训练！",
     "Guid": "6747a004-9234-4b32-9daf-75f6e384061c",
     "Version": "0.0.0.2",
     "Author": "Veever",
+    "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Basic-Training-Enemy-Parties.cs",
-    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS"
+    "Note": "",
+    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS",
+    "TerritoryIds": []
   },
   {
     "Name": "LV.15 突破所有关门，讨伐最深处的敌人！",
     "Guid": "72889f91-2654-400c-9112-69d4a063557c",
     "Version": "0.0.0.2",
     "Author": "Veever",
+    "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Basic-Training-Enemy-Strongholds.cs",
-    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS"
+    "Note": "",
+    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS",
+    "TerritoryIds": []
   },
   {
     "Name": "LV.15 捕获金币龟！",
     "Guid": "8513e0c9-5a1e-4748-a852-c6150d1c80e4",
     "Version": "0.0.0.2",
     "Author": "Veever",
+    "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Hero-on-the-Half-Shell.cs",
-    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS"
+    "Note": "",
+    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS",
+    "TerritoryIds": []
   },
   {
     "Name": "LV.20 驱除剧毒妖花！",
     "Guid": "ffdb31c2-0517-430e-924e-159766aea93d",
     "Version": "0.0.0.2",
     "Author": "Veever",
+    "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Pulling-Poison-Posies.cs",
-    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS"
+    "Note": "",
+    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS",
+    "TerritoryIds": []
   },
   {
     "Name": "LV.20 消灭恶徒团伙寄生蜂团！",
     "Guid": "69177d90-6983-4af4-a3e2-ad1e6ab28635",
     "Version": "0.0.0.2",
     "Author": "Veever",
+    "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Stinging-Back.cs",
-    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS"
+    "Note": "",
+    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS",
+    "TerritoryIds": []
   },
   {
     "Name": "LV.25 讨伐梦幻之布拉奇希奥！",
     "Guid": "862174b8-ed10-4981-bd86-9538a019ef74",
     "Version": "0.0.0.2",
     "Author": "Veever",
+    "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/All-s-Well-that-Ends-in-the-Well.cs",
-    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS"
+    "Note": "",
+    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS",
+    "TerritoryIds": []
   },
   {
     "Name": "LV.25 击溃哥布林炸弹军团！",
     "Guid": "f63ef61a-5fe6-437a-afb4-513dafecbb54",
     "Version": "0.0.0.2",
     "Author": "Veever",
+    "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Flicking-Sticks-and-Taking-Names.cs",
-    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS"
+    "Note": "",
+    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS",
+    "TerritoryIds": []
   },
   {
     "Name": "LV.30 讨伐污染源头魔界花！",
     "Guid": "3113eeb5-96d8-48a8-9069-e1e3e5232ee1",
     "Version": "0.0.0.2",
     "Author": "Veever",
+    "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/More-than-a-Feeler.cs",
-    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS"
+    "Note": "",
+    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS",
+    "TerritoryIds": []
   },
   {
     "Name": "LV.30 讨伐坑道中出现的妖异！",
     "Guid": "9106a502-2bcb-41ac-8598-6c76bd1061ae",
     "Version": "0.0.0.2",
     "Author": "Veever",
+    "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Annoy-the-Void.cs",
-    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS"
+    "Note": "",
+    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS",
+    "TerritoryIds": []
   },
   {
     "Name": "LV.35 注意无敌的眷属，讨伐大型妖异！",
     "Guid": "70cf9a76-fc90-4f2b-9471-504472fb1b1e",
     "Version": "0.0.0.2",
     "Author": "Veever",
+    "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Shadow-and-Claw.cs",
-    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS"
+    "Note": "",
+    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS",
+    "TerritoryIds": []
   },
   {
     "Name": "LV.35 讨伐爆弹怪的女王！",
     "Guid": "2279725d-b2c4-4624-b7c6-3ae514c19fa5",
     "Version": "0.0.0.2",
     "Author": "Veever",
+    "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Long-Live-the-Queen.cs",
-    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS"
+    "Note": "",
+    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS",
+    "TerritoryIds": []
   },
   {
     "Name": "LV.40 歼灭特殊阵型的妖异！",
     "Guid": "35d901f8-4861-4d5b-b279-59affb7a740f",
     "Version": "0.0.0.3",
     "Author": "Veever",
+    "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Ward-Up.cs",
-    "UpdateInfo": "v0.0.0.3，更改默认为DR TTS"
+    "Note": "",
+    "UpdateInfo": "v0.0.0.3，更改默认为DR TTS",
+    "TerritoryIds": []
   },
   {
     "Name": "LV.40 制止三方混战的巨人族，守住遗物！",
     "Guid": "32e7ed24-f55c-48b0-8a40-3fa7442dd6df",
     "Version": "0.0.0.2",
     "Author": "Veever",
+    "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Solemn-Trinity.cs",
-    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS"
+    "Note": "",
+    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS",
+    "TerritoryIds": []
   },
   {
     "Name": "LV.81 异形楼阁佐特塔",
     "Guid": "98a97134-f87b-4386-aad9-2a99e81794ab",
     "Version": "0.0.0.2",
     "Author": "Veever",
+    "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/06-EndWalker/the-Tower-of-Zot.cs",
-    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS"
+    "Note": "",
+    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS",
+    "TerritoryIds": []
   },
   {
     "Name": "金蝶-小雏鸟的营救者",
     "Guid": "4359482a-b7a8-4eb1-9a42-ffa3c79d6b7b",
     "Version": "0.0.0.1",
     "Author": "Veever",
+    "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/00-Other/Cliffhanger.cs",
-    "UpdateInfo": "v0.0.0.1 Update! 目前仅支持经典版"
+    "Note": "",
+    "UpdateInfo": "v0.0.0.1 Update! 目前仅支持经典版",
+    "TerritoryIds": []
   },
   {
     "Name": "LV.80 魔法宫殿宇宙宫",
     "Guid": "b3a2febd-73ff-44a9-a897-22fa50c74ff3",
     "Version": "0.0.0.2",
     "Author": "Veever",
+    "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/the-Grand-Cosmos.cs",
-    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS"
+    "Note": "",
+    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS",
+    "TerritoryIds": []
   },
   {
     "Name": "LV.60 亚历山大机神城 天动之章1",
     "Guid": "7cb80e0d-e693-6ca9-c46e-c96b0ec5d109",
     "Version": "0.0.0.3",
     "Author": "Meva",
+    "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/03-Heavensward/A9N.cs",
-    "UpdateInfo": "v0.0.0.3，更改默认为DR TTS "
+    "Note": "",
+    "UpdateInfo": "v0.0.0.3，更改默认为DR TTS ",
+    "TerritoryIds": []
   },
   {
     "Name": "LV.60 亚历山大机神城 天动之章3",
     "Guid": "c9446d8e-118d-ec98-fcbc-732213b0a265",
     "Version": "0.0.0.3",
     "Author": "Meva",
+    "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/03-Heavensward/A11N.cs",
-    "UpdateInfo": "v0.0.0.3，更改默认为DR TTS "
+    "Note": "",
+    "UpdateInfo": "v0.0.0.3，更改默认为DR TTS ",
+    "TerritoryIds": []
   },
   {
     "Name": "LV.60 亚历山大机神城 天动之章4",
     "Guid": "c77e794f-f3bc-37fc-810b-bb153ba399c1",
     "Version": "0.0.0.4",
     "Author": "Meva",
+    "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/03-Heavensward/A12N.cs",
-    "UpdateInfo": "v0.0.0.4，更改默认为DR TTS "
+    "Note": "",
+    "UpdateInfo": "v0.0.0.4，更改默认为DR TTS ",
+    "TerritoryIds": []
   },
   {
     "Name": "PVPMarker(API11)",
     "Guid": "98f639f8-095b-4d68-8d46-0bc38c4cd552",
     "Version": "0.0.0.2",
     "Author": "Veever",
+    "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/00-Other/PVPMarker(API11).cs",
-    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS"
+    "Note": "",
+    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS",
+    "TerritoryIds": []
   },
   {
     "Name": "LV.100 白虎幻巧战",
     "Guid": "29193d9d-a2c5-4a0d-875b-943a06790b95",
     "Version": "0.0.0.1",
     "Author": "Veever",
+    "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/The-Jade-Stoa-Unreal.cs",
-    "UpdateInfo": "v0.0.0.1 Update! 本脚本使用攻略为子言攻略，请在打本之前调整好!可达鸭的小队排序!（很重要，影响指路和机制播报）"
+    "Note": "",
+    "UpdateInfo": "v0.0.0.1 Update! 本脚本使用攻略为子言攻略，请在打本之前调整好!可达鸭的小队排序!（很重要，影响指路和机制播报）",
+    "TerritoryIds": []
   },
   {
     "Name": "加加财富天坑",
     "Guid": "64620549-e269-49c0-b0ae-76edec024864",
-    "Version": "0.0.0.1",
+    "Version": "0.0.0.2",
     "Author": "Veever",
     "Repo": "https://github.com/VeeverSW/Kodakku-Script",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/Cenote-Ja-Ja-Gural.cs",
-    "Note": "加加财富天坑只根据自己下底的arr进行绘制，没有后面天箭绘画的情况 \n如果你有此方面的素材可以dc私信提供给我，我会加入到绘制里",
-    "UpdateInfo": "v0.0.0.1 Update!",
+    "Note": "v0.0.0.2:\r\n1. 加加财富天坑只根据自己下底的arr进行绘制，没有后面天箭绘画的情况\r\n2. 如果你有此方面的素材可以dc私信提供给我，我会加入到绘制里\r\n鸭门。",
+    "UpdateInfo": "v0.0.0.2 增加火焰剑（宇宙天箭青春版）的绘制",
     "TerritoryIds": [
       1209
+    ]
+  },
+  {
+    "Name": "LV.28 名门府邸静语庄园",
+    "Guid": "964f1a0a-5b2a-4473-b41b-a170bc823f67",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "Repo": "",
+    "DownloadUrl": "",
+    "Note": "v0.0.0.1:\r\n\r\n鸭门。",
+    "UpdateInfo": "",
+    "TerritoryIds": [
+      1040
     ]
   }
 ]
