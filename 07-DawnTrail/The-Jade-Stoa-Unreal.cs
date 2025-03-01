@@ -29,13 +29,13 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 namespace Veever.DawnTrail.The_Jade_Stoa_Unreal;
 
 [ScriptType(name: "LV.100 白虎幻巧战", territorys: [1239], guid: "29193d9d-a2c5-4a0d-875b-943a06790b95",
-    version: "0.0.0.1", author: "Veever", note: noteStr)]
+    version: "0.0.0.2", author: "Veever", note: noteStr)]
 
 public class The_Jade_Stoa_Unreal
 {
     const string noteStr =
     """
-    v0.0.0.1:
+    v0.0.0.2:
     1. 本脚本使用攻略为子言攻略，请在打本之前调整好!可达鸭的小队排序!（很重要，影响指路和机制播报）
     2. 如果懒得调也不想看需要小队位置判定的指路，可以在用户设置里面关闭指路开关
     鸭门。
@@ -237,6 +237,20 @@ public class The_Jade_Stoa_Unreal
         dp.InnerScale = new Vector2(1.48f);
         dp.DestoryAt = 10000;
         accessory.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Donut, dp);
+    }
+
+    [ScriptMethod(name: "空中东方躲球", eventType: EventTypeEnum.ActionEffect, eventCondition: ["ActionId:39952"])]
+    public void EasternBall(Event @event, ScriptAccessory accessory)
+    {
+        var dp = accessory.Data.GetDefaultDrawProperties();
+        dp.Name = "空中东方躲球标记";
+        dp.Color = new Vector4(1.0f, 1.0f, 0.0f, 1f);
+        var pos = @event.EffectPosition();
+        pos.Y = 0;
+        dp.Position = pos;
+        dp.Scale = new Vector2(2f);
+        dp.DestoryAt = 5000;
+        accessory.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Circle, dp);
     }
 
     [ScriptMethod(name: "妖风标记", eventType: EventTypeEnum.StatusAdd, eventCondition: ["StatusID:1481"])]

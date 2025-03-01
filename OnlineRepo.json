@@ -312,13 +312,15 @@
   {
     "Name": "LV.100 白虎幻巧战",
     "Guid": "29193d9d-a2c5-4a0d-875b-943a06790b95",
-    "Version": "0.0.0.1",
+    "Version": "0.0.0.2",
     "Author": "Veever",
     "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/The-Jade-Stoa-Unreal.cs",
-    "Note": "",
-    "UpdateInfo": "v0.0.0.1 Update! 本脚本使用攻略为子言攻略，请在打本之前调整好!可达鸭的小队排序!（很重要，影响指路和机制播报）",
-    "TerritoryIds": []
+    "Note": "v0.0.0.2:\r\n1. 本脚本使用攻略为子言攻略，请在打本之前调整好!可达鸭的小队排序!（很重要，影响指路和机制播报）\r\n2. 如果懒得调也不想看需要小队位置判定的指路，可以在用户设置里面关闭指路开关\r\n鸭门。",
+    "UpdateInfo": "v0.0.0.2 更新了在空中躲东方弹幕时的绘制",
+    "TerritoryIds": [
+      1239
+    ]
   },
   {
     "Name": "加加财富天坑",
