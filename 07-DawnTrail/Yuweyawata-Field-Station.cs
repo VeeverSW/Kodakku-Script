@@ -21,7 +21,7 @@ using System.Xml.Linq;
 namespace Veever.DawnTrail.YuweyawataFieldStation;
 
 [ScriptType(name: "LV.100 废弃据点玉韦亚瓦塔实验站", territorys: [1242], guid: "992e47a8-17d0-4379-891b-0762c0509257",
-    version: "0.0.1.1", author: "Veever", note: noteStr)]
+    version: "0.0.2.0", author: "Veever", note: noteStr)]
 
 public class YuweyawataFieldStation
 {
@@ -33,8 +33,8 @@ public class YuweyawataFieldStation
 
     const string noteStr =
     """
-    v0.0.1.1:
-    1. 绘制了顺逆时针地火与穿洞前地火，如果有漏画（Boss出现在场地东侧or南侧核爆）的情况，请在dc@我，并附上arr文件
+    v0.0.2.0:
+    1. 如果有漏画（Boss出现在南侧核爆）错画的情况，请在dc@我，并附上arr文件
     鸭门。
     """;
     [UserSetting("文字横幅提示开关")]
@@ -63,8 +63,6 @@ public class YuweyawataFieldStation
         RagingClawCount = 0;
 
         await Task.Delay(50);
-
-
     } 
        
     public void DebugMsg(string str, ScriptAccessory accessory)
@@ -79,7 +77,7 @@ public class YuweyawataFieldStation
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
 
-        dp.Name = "Sweeping Gouge";
+        dp.Name = $"SweepingGouge-{@event.SourceId()}";
         //dp.Color = new Vector4(1.0f, 1.0f, 0.0f, 1.0f);
         dp.Color = accessory.Data.DefaultDangerColor;
         dp.Owner = @event.SourceId();
@@ -89,12 +87,18 @@ public class YuweyawataFieldStation
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Fan, dp);
     }
 
+    [ScriptMethod(name: "Sweeping Gouge Clear", eventType: EventTypeEnum.CancelAction, eventCondition: ["ActionId:40668"], userControl: false)]
+    public void SweepingGougeClear(Event @event, ScriptAccessory accessory)
+    {
+        accessory.Method.RemoveDraw($"SweepingGouge-{@event.SourceId()}");
+    }
+
     [ScriptMethod(name: "Thunderball", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:40666"])]
     public void Thunderball(Event @event, ScriptAccessory accessory)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
 
-        dp.Name = "Sweeping Gouge";
+        dp.Name = $"Thunderball-{@event.SourceId()}";
         //dp.Color = new Vector4(1.0f, 1.0f, 0.0f, 1.0f);
         dp.Color = accessory.Data.DefaultDangerColor;
         dp.ScaleMode = ScaleMode.ByTime;
@@ -103,13 +107,19 @@ public class YuweyawataFieldStation
         dp.DestoryAt = 3700;
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
     }
+    
+    [ScriptMethod(name: "Thunderball Clear", eventType: EventTypeEnum.CancelAction, eventCondition: ["ActionId:40666"], userControl: false)]
+    public void ThunderballClear(Event @event, ScriptAccessory accessory)
+    {
+        accessory.Method.RemoveDraw($"Thunderball-{@event.SourceId()}");
+    }
 
     [ScriptMethod(name: "Catapult", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:40672"])]
     public void Catapult(Event @event, ScriptAccessory accessory)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
 
-        dp.Name = "Catapult";
+        dp.Name = $"Catapult-{@event.SourceId()}";
         dp.Color = accessory.Data.DefaultDangerColor;
         dp.ScaleMode = ScaleMode.ByTime;
         dp.Position = @event.EffectPosition();
@@ -117,13 +127,19 @@ public class YuweyawataFieldStation
         dp.DestoryAt = 3750;
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
     }
-
+    
+    [ScriptMethod(name: "Catapult Clear", eventType: EventTypeEnum.CancelAction, eventCondition: ["ActionId:40672"], userControl: false)]
+    public void CatapultClear(Event @event, ScriptAccessory accessory)
+    {
+        accessory.Method.RemoveDraw($"Catapult-{@event.SourceId()}");
+    }
+    
     [ScriptMethod(name: "Glass Punch", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:40671"])]
     public void GlassPunch(Event @event, ScriptAccessory accessory)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
 
-        dp.Name = "Glass Punch";
+        dp.Name = $"GlassPunch-{@event.SourceId()}";
         dp.Color = accessory.Data.DefaultDangerColor;
         dp.Owner = @event.SourceId();
         dp.ScaleMode = ScaleMode.ByTime;
@@ -132,13 +148,19 @@ public class YuweyawataFieldStation
         dp.DestoryAt = 3750;
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Fan, dp);
     }
+    
+    [ScriptMethod(name: "Glass Punch Clear", eventType: EventTypeEnum.CancelAction, eventCondition: ["ActionId:40671"], userControl: false)]
+    public void GlassPunchClear(Event @event, ScriptAccessory accessory)
+    {
+        accessory.Method.RemoveDraw($"GlassPunch-{@event.SourceId()}");
+    }
 
     [ScriptMethod(name: "Landslip", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:41118"])]
     public void Landslip(Event @event, ScriptAccessory accessory)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
 
-        dp.Name = "Landslip";
+        dp.Name = $"Landslip-{@event.SourceId()}";
         dp.Color = accessory.Data.DefaultDangerColor;
         dp.Owner = @event.SourceId();
         dp.ScaleMode = ScaleMode.ByTime;
@@ -147,13 +169,19 @@ public class YuweyawataFieldStation
         dp.DestoryAt = 3700;
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Fan, dp);
     }
+    
+    [ScriptMethod(name: "Landslip Clear", eventType: EventTypeEnum.CancelAction, eventCondition: ["ActionId:41118"], userControl: false)]
+    public void LandslipClear(Event @event, ScriptAccessory accessory)
+    {
+        accessory.Method.RemoveDraw($"Landslip-{@event.SourceId()}");
+    }
 
     [ScriptMethod(name: "Plummet", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:40676"])]
     public void Plummet(Event @event, ScriptAccessory accessory)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
 
-        dp.Name = "Plummet";
+        dp.Name = $"Plummet-{@event.SourceId()}";
         dp.Color = accessory.Data.DefaultDangerColor;
         dp.ScaleMode = ScaleMode.ByTime;
         dp.Owner = @event.SourceId();
@@ -161,13 +189,19 @@ public class YuweyawataFieldStation
         dp.DestoryAt = 3700;
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
     }
+    
+    [ScriptMethod(name: "Plummet Clear", eventType: EventTypeEnum.CancelAction, eventCondition: ["ActionId:40676"], userControl: false)]
+    public void PlummetClear(Event @event, ScriptAccessory accessory)
+    {
+        accessory.Method.RemoveDraw($"Plummet-{@event.SourceId()}");
+    }
 
     [ScriptMethod(name: "Wild Horn", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:40675"])]
     public void WildHorn(Event @event, ScriptAccessory accessory)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
 
-        dp.Name = "Wild Horn";
+        dp.Name = $"WildHorn-{@event.SourceId()}";
         dp.Color = accessory.Data.DefaultDangerColor;
         dp.Owner = @event.SourceId();
         dp.ScaleMode = ScaleMode.ByTime;
@@ -176,7 +210,12 @@ public class YuweyawataFieldStation
         dp.DestoryAt = 3700;
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Fan, dp);
     }
-
+    
+    [ScriptMethod(name: "Wild Horn Clear", eventType: EventTypeEnum.CancelAction, eventCondition: ["ActionId:40675"], userControl: false)]
+    public void WildHornClear(Event @event, ScriptAccessory accessory)
+    {
+        accessory.Method.RemoveDraw($"WildHorn-{@event.SourceId()}");
+    }
 
     #endregion
 
@@ -696,56 +735,109 @@ public class YuweyawataFieldStation
 
                     return;
 
-                // West ClockWise
+                // West and East ClockWise
                 case 3.14f:
-                    var dp2 = accessory.Data.GetDefaultDrawProperties();
-                    dp2.Name = "Rock BlastNavi rect right Half 3.14";
-                    dp2.Color = new Vector4(1, 1, 0, 1);
-                    dp2.Position = new Vector3(33.52f, -87.90f, -709.22f);
-                    dp2.Radian = float.Pi;
-                    dp2.Rotation = float.Pi;
-                    dp2.Scale = new Vector2(40f);
-                    dp2.DestoryAt = 5000;
-                    accessory.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Fan, dp2);
+                    var Spos = @event.SourcePosition();
+                    if (Spos.X >= 45 && Spos.Z <= -700 && Spos.Z >= -720)
+                    {
+                        var dp2 = accessory.Data.GetDefaultDrawProperties();
+                        dp2.Name = "Rock BlastNavi rect right Half 3.14";
+                        dp2.Color = new Vector4(1, 1, 0, 1);
+                        dp2.Position = new Vector3(33.52f, -87.90f, -709.22f);
+                        dp2.Radian = float.Pi;
+                        dp2.Rotation = float.Pi;
+                        dp2.Scale = new Vector2(40f);
+                        dp2.DestoryAt = 5000;
+                        accessory.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Fan, dp2);
 
-                    var Wpos1 = new Vector3(45.78f, -87.90f, -704.25f);
-                    var WTpos1 = new Vector3(33.73f, -87.90f, -695.72f);
-                    DrawDisplacement(accessory, Wpos1, WTpos1, 14f, 10000, "3.14 Arrow1");
+                        var Epos1 = new Vector3(22.58f, -87.90f, -702.92f);
+                        var ETpos1 = new Vector3(33.42f, -87.90f, -696.70f);
+                        DrawDisplacement(accessory, Epos1, ETpos1, 13f, 10000, "3.14E Arrow1");
 
-                    var Wpos2 = new Vector3(34.41f, -87.90f, -696.13f);
-                    var WTpos2 = new Vector3(21.66f, -87.90f, -703.56f);
-                    DrawDisplacement(accessory, Wpos2, WTpos2, 14f, 10000, "3.14 Arrow2");
+                        var Epos2 = new Vector3(33.83f, -87.90f, -696.47f);
+                        var ETpos2 = new Vector3(45.85f, -87.90f, -703.79f);
+                        DrawDisplacement(accessory, Epos2, ETpos2, 14f, 10000, "3.14E Arrow2");
 
-                    var Wpos3 = new Vector3(22.33f, -87.90f, -703.18f);
-                    var WTpos3 = new Vector3(21.61f, -87.90f, -714.67f);
-                    DrawDisplacement(accessory, Wpos3, WTpos3, 11f, 10000, "3.14 Arrow3");
+                        var Epos3 = new Vector3(45.71f, -87.90f, -703.78f);
+                        var ETpos3 = new Vector3(46.45f, -87.90f, -715.07f);
+                        DrawDisplacement(accessory, Epos3, ETpos3, 11f, 10000, "3.14E Arrow3");
+                    } else
+                    {
+                        var dp2 = accessory.Data.GetDefaultDrawProperties();
+                        dp2.Name = "Rock BlastNavi rect right Half 3.14";
+                        dp2.Color = new Vector4(1, 1, 0, 1);
+                        dp2.Position = new Vector3(33.52f, -87.90f, -709.22f);
+                        dp2.Radian = float.Pi;
+                        dp2.Rotation = float.Pi;
+                        dp2.Scale = new Vector2(40f);
+                        dp2.DestoryAt = 5000;
+                        accessory.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Fan, dp2);
+
+                        var Wpos1 = new Vector3(45.78f, -87.90f, -704.25f);
+                        var WTpos1 = new Vector3(33.73f, -87.90f, -695.72f);
+                        DrawDisplacement(accessory, Wpos1, WTpos1, 14f, 10000, "3.14W Arrow1");
+
+                        var Wpos2 = new Vector3(34.41f, -87.90f, -696.13f);
+                        var WTpos2 = new Vector3(21.66f, -87.90f, -703.56f);
+                        DrawDisplacement(accessory, Wpos2, WTpos2, 14f, 10000, "3.14W Arrow2");
+
+                        var Wpos3 = new Vector3(22.33f, -87.90f, -703.18f);
+                        var WTpos3 = new Vector3(21.61f, -87.90f, -714.67f);
+                        DrawDisplacement(accessory, Wpos3, WTpos3, 11f, 10000, "3.14W Arrow3");
+                    }
 
                     return;
 
-                // West AntiClockWise
+                // West and East AntiClockWise
                 case -0f:
-                    var dp3 = accessory.Data.GetDefaultDrawProperties();
-                    dp3.Name = "Rock BlastNavi rect right Half 3.14";
-                    dp3.Color = new Vector4(1, 1, 0, 1);
-                    dp3.Position = new Vector3(33.52f, -87.90f, -709.22f);
-                    dp3.Radian = float.Pi;
-                    dp3.Rotation = float.Pi / 180;
-                    dp3.Scale = new Vector2(40f);
-                    dp3.DestoryAt = 5000;
-                    accessory.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Fan, dp3);
+                    var Spos0 = @event.SourcePosition();
+                    if (Spos0.X >= 45 && Spos0.Z <= -700 && Spos0.Z >= -720)
+                    {
+                        var dp4 = accessory.Data.GetDefaultDrawProperties();
+                        dp4.Name = "Rock BlastNavi rect right Half 3.14";
+                        dp4.Color = new Vector4(1, 1, 0, 1);
+                        dp4.Position = new Vector3(33.52f, -87.90f, -709.22f);
+                        dp4.Radian = float.Pi;
+                        dp4.Rotation = float.Pi / 180;
+                        dp4.Scale = new Vector2(40f);
+                        dp4.DestoryAt = 5000;
+                        accessory.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Fan, dp4);
 
-                    var Wpos1_1 = new Vector3(46.51f, -87.90f, -714.42f);
-                    var WTpos1_1 = new Vector3(35.83f, -87.90f, -724.43f);
-                    DrawDisplacement(accessory, Wpos1_1, WTpos1_1, 14f, 10000, "-3.14 Arrow1");
+                        var Epos1_1 = new Vector3(22.79f, -87.90f, -717.67f);
+                        var ETpos1_1 = new Vector3(34.76f, -87.90f, -723.53f);
+                        DrawDisplacement(accessory, Epos1_1, ETpos1_1, 14f, 10000, "-0E Arrow1");
 
-                    var Wpos2_2 = new Vector3(36.30f, -87.90f, -724.04f);
-                    var WTpos2_2 = new Vector3(22.96f, -87.90f, -717.39f);
-                    DrawDisplacement(accessory, Wpos2_2, WTpos2_2, 15f, 10000, "-3.14 Arrow2");
+                        var Epos2_2 = new Vector3(35.25f, -87.90f, -723.81f);
+                        var ETpos2_2 = new Vector3(46.42f, -87.90f, -715.65f);
+                        DrawDisplacement(accessory, Epos2_2, ETpos2_2, 13f, 10000, "-0E Arrow2");
 
-                    var Wpos3_3 = new Vector3(22.86f, -87.90f, -717.37f);
-                    var WTpos3_3 = new Vector3(21.23f, -87.90f, -706.96f);
-                    DrawDisplacement(accessory, Wpos3_3, WTpos3_3, 11f, 10000, "-3.14 Arrow3");
+                        var Epos3_3 = new Vector3(45.62f, -87.90f, -716.17f);
+                        var ETpos3_3 = new Vector3(46.61f, -87.90f, -706.54f);
+                        DrawDisplacement(accessory, Epos3_3, ETpos3_3, 11f, 10000, "-0E Arrow3");
+                    } else
+                    {
+                        var dp3 = accessory.Data.GetDefaultDrawProperties();
+                        dp3.Name = "Rock BlastNavi rect right Half 3.14";
+                        dp3.Color = new Vector4(1, 1, 0, 1);
+                        dp3.Position = new Vector3(33.52f, -87.90f, -709.22f);
+                        dp3.Radian = float.Pi;
+                        dp3.Rotation = float.Pi / 180;
+                        dp3.Scale = new Vector2(40f);
+                        dp3.DestoryAt = 5000;
+                        accessory.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Fan, dp3);
 
+                        var Wpos1_1 = new Vector3(46.51f, -87.90f, -714.42f);
+                        var WTpos1_1 = new Vector3(35.83f, -87.90f, -724.43f);
+                        DrawDisplacement(accessory, Wpos1_1, WTpos1_1, 14f, 10000, "-0W Arrow1");
+
+                        var Wpos2_2 = new Vector3(36.30f, -87.90f, -724.04f);
+                        var WTpos2_2 = new Vector3(22.96f, -87.90f, -717.39f);
+                        DrawDisplacement(accessory, Wpos2_2, WTpos2_2, 15f, 10000, "-0W Arrow2");
+
+                        var Wpos3_3 = new Vector3(22.86f, -87.90f, -717.37f);
+                        var WTpos3_3 = new Vector3(21.23f, -87.90f, -706.96f);
+                        DrawDisplacement(accessory, Wpos3_3, WTpos3_3, 11f, 10000, "-0W Arrow3");
+                    }
                     return;
 
             }
