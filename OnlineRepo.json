@@ -244,15 +244,17 @@
     "TerritoryIds": []
   },
   {
-    "Name": "金蝶-小雏鸟的营救者",
+    "Name": "金碟-小雏鸟的营救者",
     "Guid": "4359482a-b7a8-4eb1-9a42-ffa3c79d6b7b",
-    "Version": "0.0.0.1",
+    "Version": "0.0.0.2",
     "Author": "Veever",
-    "Repo": "",
+    "Repo": "https://github.com/VeeverSW/Kodakku-Script",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/00-Other/Cliffhanger.cs",
-    "Note": "",
-    "UpdateInfo": "v0.0.0.1 Update! 目前仅支持经典版",
-    "TerritoryIds": []
+    "Note": "v0.0.0.2:\r\n1. 支持经典版小雏鸟的营救者\r\n2. 炸弹爆炸范围和时间是精准的，请参考画图\r\n3. TODO: 另一版本小雏鸟的营救者（抽到就做）\r\n4. 金碟！！碟！！！！！\r\n鸭门。",
+    "UpdateInfo": "金碟！！碟！！！！！",
+    "TerritoryIds": [
+      144
+    ]
   },
   {
     "Name": "LV.80 魔法宫殿宇宙宫",
