@@ -347,5 +347,18 @@
     "TerritoryIds": [
       1040
     ]
+  },
+  {
+    "Name": "LV.80 伊甸希望乐园 共鸣之章3",
+    "Guid": "7732767d-bfb3-4c96-9719-962ba10cec08",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "Repo": "https://github.com/VeeverSW/Kodakku-Script",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/Edens-Verse-Iconoclasm.cs",
+    "Note": "v0.0.0.1:\r\n1. 此脚本只用了一个arr回放进行测试，如果出现错画的问题，请dc@我并提供arr回放\r\n鸭门。",
+    "UpdateInfo": "v0.0.0.1 !",
+    "TerritoryIds": [
+      904
+    ]
   }
 ]
