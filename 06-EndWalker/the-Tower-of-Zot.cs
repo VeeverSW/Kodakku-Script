@@ -20,13 +20,13 @@ using System.Windows;
 namespace Veever.EndWalker.theTowerofZot;
 
 [ScriptType(name: "LV.81 异形楼阁佐特塔", territorys: [952], guid: "98a97134-f87b-4386-aad9-2a99e81794ab",
-    version: "0.0.0.2", author: "Veever", note: noteStr)]
+    version: "0.0.0.3", author: "Veever", note: noteStr)]
 
 public class the_Tower_of_Zot
 {
     const string noteStr =
     """
-    v0.0.0.2:
+    v0.0.0.3:
     1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
     2. 标点开关以及本地开关都在用户设置里面，可自行选择关闭或者开启（默认本地开启）
     3. Boss1击杀后会生成门指路，绿圈显示为击杀小怪后会打开的门（防止晕头转向）
@@ -97,6 +97,7 @@ public class the_Tower_of_Zot
         dp1.Color = new Vector4(178 / 255.0f, 34 / 255.0f, 34 / 255.0f, 10.0f);
         dp1.Owner = @event.SourceId();
         dp1.DestoryAt = 4000;
+        dp1.Radian = 2 * float.Pi;
         accessory.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Donut, dp1);
 
         if (isText) accessory.Method.TextInfo("钢铁, 可打断", duration: 4000, true);
