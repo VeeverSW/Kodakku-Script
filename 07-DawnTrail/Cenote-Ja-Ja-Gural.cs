@@ -29,13 +29,13 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 namespace Veever.DawnTrail.Cenote_Ja_Ja_Gural;
 
 [ScriptType(name: "加加财富天坑", territorys: [1209], guid: "64620549-e269-49c0-b0ae-76edec024864",
-    version: "0.0.0.2", author: "Veever", note: noteStr)]
+    version: "0.0.0.3", author: "Veever", note: noteStr)]
 
 public class Cenote_Ja_Ja_Gural
 {
     const string noteStr =
     """
-    v0.0.0.2:
+    v0.0.0.3:
     1. 加加财富天坑只根据自己下底的arr进行绘制，没有后面天箭绘画的情况
     2. 如果你有此方面的素材可以dc私信提供给我，我会加入到绘制里
     鸭门。
@@ -70,6 +70,7 @@ public class Cenote_Ja_Ja_Gural
         dp.Scale = new Vector2(5f);
         dp.InnerScale = new Vector2(4.9f);
         dp.DestoryAt = 10000;
+        dp.Radian = 2 * float.Pi;
         accessory.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Donut, dp);
     }
 
