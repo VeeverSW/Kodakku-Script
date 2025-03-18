@@ -20,13 +20,13 @@ using System.Windows;
 namespace Veever.A_Realm_Reborn.ShadowandClaw;
 
 [ScriptType(name: "LV.35 注意无敌的眷属，讨伐大型妖异！", territorys: [223], guid: "70cf9a76-fc90-4f2b-9471-504472fb1b1e",
-    version: "0.0.0.2", author: "Veever", note: noteStr)]
+    version: "0.0.0.3", author: "Veever", note: noteStr)]
 
 public class Shadow_and_Claw
 {
     const string noteStr =
     """
-    v0.0.0.2:
+    v0.0.0.3:
     1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
     2. 标点开关以及本地开关都在用户设置里面，可自行选择关闭或者开启（默认本地开启）
     鸭门。
@@ -133,6 +133,7 @@ public class Shadow_and_Claw
             dp1.Owner = @event.SourceId();
             dp1.Delay = drawEyeDelay;
             dp1.DestoryAt = 2500;
+            dp1.Radian = 2 * float.Pi;
             accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Donut, dp1);
         }
         if (!LocalMark) await Task.Delay(1000);         // 拟人

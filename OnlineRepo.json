@@ -193,13 +193,15 @@
   {
     "Name": "LV.35 注意无敌的眷属，讨伐大型妖异！",
     "Guid": "70cf9a76-fc90-4f2b-9471-504472fb1b1e",
-    "Version": "0.0.0.2",
+    "Version": "0.0.0.3",
     "Author": "Veever",
-    "Repo": "",
+    "Repo": "https://github.com/VeeverSW/Kodakku-Script",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Shadow-and-Claw.cs",
-    "Note": "",
-    "UpdateInfo": "v0.0.0.2，更改默认为DR TTS",
-    "TerritoryIds": []
+    "Note": "v0.0.0.3:\r\n1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）\r\n2. 标点开关以及本地开关都在用户设置里面，可自行选择关闭或者开启（默认本地开启）\r\n鸭门。",
+    "UpdateInfo": "修复了月环画不完的[特性]问题",
+    "TerritoryIds": [
+      223
+    ]
   },
   {
     "Name": "LV.35 讨伐爆弹怪的女王！",
