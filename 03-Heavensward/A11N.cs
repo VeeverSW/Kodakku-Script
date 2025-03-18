@@ -7,17 +7,17 @@ using System.Numerics;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Intrinsics.Arm;
 
 namespace Meva.Heavensward.KodakkuAssist.Alexander;
 
-[ScriptType(name: "LV.60 亚历山大机神城 天动之章3", territorys: [582], guid: "c9446d8e-118d-ec98-fcbc-732213b0a265", version: "0.0.0.3", author: "Meva", note:noteStr)]
+[ScriptType(name: "LV.60 亚历山大机神城 天动之章3", territorys: [582], guid: "c9446d8e-118d-ec98-fcbc-732213b0a265", version: "0.0.0.4", author: "Meva", note:noteStr)]
 public class A11N
 {
     const string noteStr =
         """
-        v0.0.0.3:
+        v0.0.0.4:
         1. 现在支持文字横幅/TTS开关/DR TTS开关（在用户设置里面）（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
-        2. 更新名字
         """;
     
     [UserSetting("文字横幅提示开关")]
@@ -62,6 +62,7 @@ public class A11N
         dp.InnerScale = new Vector2(3);
         dp.Radian = float.Pi * 2;
         dp.DestoryAt = 5000;
+        dp.Radian = 2 * float.Pi;
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Donut, dp);
     }
     #endregion

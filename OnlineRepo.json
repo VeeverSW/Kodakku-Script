@@ -287,13 +287,15 @@
   {
     "Name": "LV.60 亚历山大机神城 天动之章3",
     "Guid": "c9446d8e-118d-ec98-fcbc-732213b0a265",
-    "Version": "0.0.0.3",
+    "Version": "0.0.0.4",
     "Author": "Meva",
-    "Repo": "",
+    "Repo": "https://github.com/VeeverSW/Kodakku-Script",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/03-Heavensward/A11N.cs",
-    "Note": "",
-    "UpdateInfo": "v0.0.0.3，更改默认为DR TTS ",
-    "TerritoryIds": []
+    "Note": "v0.0.0.4:\r\n1. 现在支持文字横幅/TTS开关/DR TTS开关（在用户设置里面）（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）",
+    "UpdateInfo": "修复了月环画不完的[特性]问题",
+    "TerritoryIds": [
+      582
+    ]
   },
   {
     "Name": "LV.60 亚历山大机神城 天动之章4",
