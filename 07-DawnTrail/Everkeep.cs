@@ -21,16 +21,16 @@ using System.Runtime.CompilerServices;
 namespace Veever.DawnTrail.Everkeep;
 
 [ScriptType(name: "LV.99 佐拉加歼灭战", territorys: [1200], guid: "7a6d317c-b176-4e94-9fbc-3bc833be1338",
-    version: "0.0.0.6", author: "Veever", note: noteStr)]
+    version: "0.0.0.7", author: "Veever", note: noteStr)]
 
 public class Everkeep
 {
     const string noteStr =
     """
-    v0.0.0.6:
+    v0.0.0.7:
     1. 现在支持文字横幅/TTS开关/DR TTS开关（在用户设置里面）（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
     鸭门。
-    2. v0.0.0.4, 现已支持所有利刃冲情况，如果依然遇到画错/漏画的情况，请dc带回放私信我（十分感谢）
+    2. 现已支持所有利刃冲情况，如果依然遇到画错/漏画的情况，请dc带回放私信我（十分感谢）
     """;
 
     [UserSetting("文字横幅提示开关")]
@@ -129,6 +129,7 @@ public class Everkeep
         dp1.Color = new Vector4(178 / 255.0f, 34 / 255.0f, 34 / 255.0f, 9.0f);
         dp1.Position = @event.EffectPosition();
         dp1.DestoryAt = 7700;
+        dp1.Radian = 2 * float.Pi;
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Donut, dp1);
     }
 
