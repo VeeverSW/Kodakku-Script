@@ -27,13 +27,13 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 namespace Veever.DawnTrail.the_Underkeep;
 
 [ScriptType(name: "LV.100 the Underkeep", territorys: [1266], guid: "9b381347-ddbf-4f52-98a9-a63d6e0d69bd",
-    version: "0.0.0.1", author: "Veever", note: noteStr)]
+    version: "0.0.0.2", author: "Veever", note: noteStr)]
 
 public class the_Underkeep
 {
     const string noteStr =
     """
-    v0.0.0.1:
+    v0.0.0.2:
     1. 此版本为残疾版(非全部机制绘图)，有的地方没时间精修，有空会精修及更新，在国服更新前肯定会全部完成
     2. Boss2 分身有些思路，下个版本应该能做出来，更新前先人眼看吧.jpg
     3. Boss3的十字炸弹画了但是没画完，先不开放使用
@@ -375,20 +375,20 @@ public class the_Underkeep
             isL = true;
         }
 
-        if (isText) accessory.Method.TextInfo($"{(isL ? "去Boss右侧" : "去Boss左侧")}", duration: 3500, true);
-        if (isTTS) accessory.Method.EdgeTTS($"{(isL ? "去Boss右侧" : "去Boss左侧")}");
+        if (isText) accessory.Method.TextInfo($"{(isL ? "去Boss最后一个分身的右侧" : "去Boss最后一个分身的左侧")}", duration: 3500, true);
+        if (isTTS) accessory.Method.EdgeTTS($"{(isL ? "去Boss最后一个分身的右侧" : "去Boss最后一个分身的左侧")}");
 
-        var dp = accessory.Data.GetDefaultDrawProperties();
-        dp.Name = $"Sector Bisector";
-        dp.Color = new Vector4(0.0f, 0.749f, 1.0f, 1.0f);
-        dp.Owner = @event.TargetId();
-        dp.Scale = new Vector2(45);
-        dp.Radian = float.Pi;
-        dp.Rotation = isL ? float.Pi / 2 : -float.Pi / 2;
-        DebugMsg($"isL: {isL}", accessory);
-        DebugMsg($"Rotation: {dp.Rotation}", accessory);
-        dp.DestoryAt = 4000;
-        accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Fan, dp);
+        //var dp = accessory.Data.GetDefaultDrawProperties();
+        //dp.Name = $"Sector Bisector";
+        //dp.Color = new Vector4(0.0f, 0.749f, 1.0f, 1.0f);
+        //dp.Owner = @event.TargetId();
+        //dp.Scale = new Vector2(45);
+        //dp.Radian = float.Pi;
+        //dp.Rotation = isL ? float.Pi / 2 : -float.Pi / 2;
+        //DebugMsg($"isL: {isL}", accessory);
+        //DebugMsg($"Rotation: {dp.Rotation}", accessory);
+        //dp.DestoryAt = 4000;
+        //accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Fan, dp);
     }
 
     //     [ScriptMethod(name: "Sector Bisector Shadow", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^()$"])]
