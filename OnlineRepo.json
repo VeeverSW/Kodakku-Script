@@ -370,5 +370,18 @@
     "TerritoryIds": [
       904
     ]
+  },
+  {
+    "Name": "LV.100 the Underkeep",
+    "Guid": "9b381347-ddbf-4f52-98a9-a63d6e0d69bd",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "Repo": "https://github.com/VeeverSW/Kodakku-Script",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/the-Underkeep.cs",
+    "Note": "",
+    "UpdateInfo": "v0.0.0.1 !",
+    "TerritoryIds": [
+      1266
+    ]
   }
 ]
