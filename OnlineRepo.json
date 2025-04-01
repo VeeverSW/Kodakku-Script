@@ -387,7 +387,7 @@
   {
     "Name": "門-DOOR",
     "Guid": "2a82c931-25e6-4a81-a1ec-0f8289dca34c",
-    "Version": "0.0.0.0.0.0.0.0.0.0.2",
+    "Version": "0.0.0.3",
     "Author": "Veever",
     "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/00-Other/門.cs",
