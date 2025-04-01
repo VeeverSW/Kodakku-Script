@@ -27,7 +27,7 @@ using System.Diagnostics;
 
 
 [ScriptType(name: "門-DOOR", territorys: [129,132,130], guid: "2a82c931-25e6-4a81-a1ec-0f8289dca34c",
-    version: "48.83.EC.38.33.D2.C7.44.24.20.00.00.00.00.45.33.C9.||.520.2025.4.1", author: "Veever", note: "門-愚人节快乐")]
+    version: "0.0.0.0.0.0.0.0.0.0.2", author: "Veever", note: "門-愚人节快乐")]
 
 public class 門
 {
