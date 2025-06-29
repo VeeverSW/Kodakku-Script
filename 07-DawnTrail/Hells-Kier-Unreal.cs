@@ -1,43 +1,43 @@
-﻿ using System;
- using System.Linq;
- using System.Numerics;
- using Newtonsoft.Json;
- using Dalamud.Utility.Numerics;
- using KodakkuAssist.Script;
- using KodakkuAssist.Module.GameEvent;
- using KodakkuAssist.Module.Draw;
- using KodakkuAssist.Module.Draw.Manager;
- using ECommons.ExcelServices.TerritoryEnumeration;
- using System.Reflection.Metadata;
- using System.Net;
- using System.Threading.Tasks;
- using Dalamud.Game.ClientState.Objects.Types;
- using System.Collections.Generic;
- using System.ComponentModel;
- using ECommons.Reflection;
- using System.Windows;
- using ECommons;
- using ECommons.DalamudServices;
- using ECommons.GameFunctions;
- using FFXIVClientStructs;
- using System.Runtime.InteropServices;
- using System.Xml.Linq;
- using FFXIVClientStructs.FFXIV.Client.UI;
- using System.Runtime.Intrinsics.Arm;
- using ECommons.ExcelServices;
- using FFXIVClientStructs.FFXIV.Client.Game.Character;
+﻿using System;
+using System.Linq;
+using System.Numerics;
+using Newtonsoft.Json;
+using Dalamud.Utility.Numerics;
+using KodakkuAssist.Script;
+using KodakkuAssist.Module.GameEvent;
+using KodakkuAssist.Module.Draw;
+using KodakkuAssist.Module.Draw.Manager;
+using ECommons.ExcelServices.TerritoryEnumeration;
+using System.Reflection.Metadata;
+using System.Net;
+using System.Threading.Tasks;
+using Dalamud.Game.ClientState.Objects.Types;
+using System.Collections.Generic;
+using System.ComponentModel;
+using ECommons.Reflection;
+using System.Windows;
+using ECommons;
+using ECommons.DalamudServices;
+using ECommons.GameFunctions;
+using FFXIVClientStructs;
+using System.Runtime.InteropServices;
+using System.Xml.Linq;
+using FFXIVClientStructs.FFXIV.Client.UI;
+using System.Runtime.Intrinsics.Arm;
+using ECommons.ExcelServices;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using ECommons.GameHelpers;
 
 namespace Veever.DawnTrail.Hells_Kier_Unreal;
 
 [ScriptType(name: "LV.100 朱雀幻巧战", territorys: [1272], guid: "60468283-702c-4ddb-95db-fd81409d5630",
-    version: "0.0.0.1", author: "Veever", note: noteStr)]
+    version: "0.0.0.2", author: "Veever", note: noteStr)]
 
 public class Hells_Kier_Unreal
 {
     const string noteStr =
     """
-    v0.0.0.1:
+    v0.0.0.2:
     1. 本脚本使用攻略为菓子攻略，请在打本之前调整好! 可达鸭的小队排序!!（很重要，影响指路和机制播报）
     2. 如果懒得调也不想看需要小队位置判定的指路，可以在用户设置里面关闭指路开关
     3. 用户设置里面新加入场景标点设置(开局放置ABCD标点)(需要ACT鲶鱼精), 可能在未来弄一个不需要鲶鱼精的方法
@@ -699,7 +699,7 @@ public class Hells_Kier_Unreal
 
 
     [ScriptMethod(name: "东西南北炎", eventType: EventTypeEnum.AddCombatant, eventCondition: ["DataId:regex:^(18394|18393|18392|18391)$"])]
-    public async unsafe void Fire(Event @event, ScriptAccessory accessory)
+    public unsafe void Fire(Event @event, ScriptAccessory accessory)
     {
         // 18391    North
         // 18392    East
@@ -710,7 +710,6 @@ public class Hells_Kier_Unreal
             DebugMsg("Objects is null", accessory);
             return;
         }
-        DrawHelper.DrawCircleObject(accessory, @event.SourceId, new Vector2(5,5), 5000, "1233");
 
         var battleCharas = accessory.Data.Objects.OfType<IBattleChara>();
 
@@ -848,17 +847,15 @@ public class Hells_Kier_Unreal
 
     private unsafe uint[] ScanTether(Event evt, ScriptAccessory sa, uint id)
     {
-        if (sa.Data.Objects == null) return Array.Empty<uint>();
+        if (sa?.Data?.Objects == null) return Array.Empty<uint>();
         List<uint> dataId = [id];
         List<uint> players = [];
         foreach (var fire in sa.Data.Objects.Where(x => dataId.Contains(x.DataId)))
         {
+            if (fire?.Address == null) continue;
             var targetId = ((BattleChara*)fire.Address)->Vfx.Tethers[0].TargetId.ObjectId;
-            var target = sa.Data.Objects.SearchById(targetId);
-            
             players.Add(targetId);
         }
-
         DebugMsg($"players: {string.Join(", ", players)}", sa);
         return players.ToArray();
     }
