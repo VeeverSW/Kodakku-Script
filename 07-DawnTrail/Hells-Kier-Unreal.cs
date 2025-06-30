@@ -31,13 +31,13 @@ using ECommons.GameHelpers;
 namespace Veever.DawnTrail.Hells_Kier_Unreal;
 
 [ScriptType(name: "LV.100 朱雀幻巧战", territorys: [1272], guid: "60468283-702c-4ddb-95db-fd81409d5630",
-    version: "0.0.0.4", author: "Veever", note: noteStr)]
+    version: "0.0.0.5", author: "Veever", note: noteStr)]
 
 public class Hells_Kier_Unreal
 {
     const string noteStr =
     """
-    v0.0.0.4:
+    v0.0.0.5:
     1. 本脚本使用攻略为菓子攻略，请在打本之前调整好! 可达鸭的小队排序!!（很重要，影响指路和机制播报）
     2. 如果懒得调也不想看需要小队位置判定的指路，可以在用户设置里面关闭指路开关
     3. 用户设置里面新加入场景标点设置(开局放置ABCD标点)(需要ACT鲶鱼精), 可能在未来弄一个不需要鲶鱼精的方法
@@ -612,7 +612,7 @@ public class Hells_Kier_Unreal
         dp.Color = accessory.Data.DefaultSafeColor;
         dp.Owner = accessory.Data.Me;
         dp.TargetPosition = @event.TargetPosition();
-        dp.Rotation = @event.SourceRotation() + float.Pi / 2;
+        dp.Rotation = float.Pi;
         dp.Scale = new Vector2(2,11);
         dp.DestoryAt = 4000;
         accessory.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Displacement, dp);

@@ -402,12 +402,12 @@
   {
     "Name": "LV.100 朱雀幻巧战",
     "Guid": "60468283-702c-4ddb-95db-fd81409d5630",
-    "Version": "0.0.0.4",
+    "Version": "0.0.0.5",
     "Author": "Veever",
     "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/Hells-Kier-Unreal.cs",
     "Note": "如有画错请dc反馈",
-    "UpdateInfo": "v0.0.0.4, fix",
+    "UpdateInfo": "v0.0.0.5, fix",
     "TerritoryIds": [
       1272
     ]
