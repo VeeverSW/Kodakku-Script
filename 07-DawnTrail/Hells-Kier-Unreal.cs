@@ -31,13 +31,13 @@ using ECommons.GameHelpers;
 namespace Veever.DawnTrail.Hells_Kier_Unreal;
 
 [ScriptType(name: "LV.100 朱雀幻巧战", territorys: [1272], guid: "60468283-702c-4ddb-95db-fd81409d5630",
-    version: "0.0.0.5", author: "Veever", note: noteStr)]
+    version: "0.0.0.6", author: "Veever", note: noteStr)]
 
 public class Hells_Kier_Unreal
 {
     const string noteStr =
     """
-    v0.0.0.5:
+    v0.0.0.6:
     1. 本脚本使用攻略为菓子攻略，请在打本之前调整好! 可达鸭的小队排序!!（很重要，影响指路和机制播报）
     2. 如果懒得调也不想看需要小队位置判定的指路，可以在用户设置里面关闭指路开关
     3. 用户设置里面新加入场景标点设置(开局放置ABCD标点)(需要ACT鲶鱼精), 可能在未来弄一个不需要鲶鱼精的方法
@@ -84,12 +84,19 @@ public class Hells_Kier_Unreal
     public int isIncandescent = 0;
     public int isMesmerizingMelody = 0;
     public int isRuthlessRefrain = 0;
+    public int IncandescentCount = 0;
+
+    private readonly object IncandescentCountLock = new object();
 
 
     public void Init(ScriptAccessory accessory)
     {
         accessory.Method.RemoveDraw(".*");
         PostWaymark(accessory);
+        isIncandescent = 0;
+        isMesmerizingMelody = 0;
+        isRuthlessRefrain = 0;
+        IncandescentCount = 0;
     }
 
     public void PostWaymark(ScriptAccessory accessory)
@@ -112,13 +119,7 @@ public class Hells_Kier_Unreal
     [ScriptMethod(name: "debug", eventType: EventTypeEnum.Chat, eventCondition: ["Message:debug"])]
     public async void debug(Event @event, ScriptAccessory accessory)
     {
-        var east = IbcHelper.GetFirstByDataId(accessory, 18392);
-        var ob = east?.TargetObjectId;
-
-        DebugMsg($"{ob}, {east?.TargetObject.Name}",accessory);
-
-        DrawHelper.DrawCircleObject(accessory, ob, new Vector2(5,5), 10000, "ob");
-        DrawHelper.DrawCircleObject(accessory, east?.GameObjectId, new Vector2(5,5), 10000, "east");
+        DebugMsg($"isIncandescent: {isIncandescent}", accessory);
     }
 
 
@@ -145,98 +146,109 @@ public class Hells_Kier_Unreal
     [ScriptMethod(name: "008B-分散", eventType: EventTypeEnum.TargetIcon, eventCondition: ["Id:008B"])]
     public void ElectricExcess(Event @event, ScriptAccessory accessory)
     {
-        DebugMsg($"isIncandescent: {isIncandescent}", accessory);
-        var index = accessory.Data.PartyList.IndexOf(accessory.Data.Me);
-
-        var posN = new Vector3(100.01f, 0.00f, 93.97f);
-        var posNE = new Vector3(104.16f, 0.00f, 95.96f);
-        var posE = new Vector3(106.35f, 0.00f, 100.04f);
-        var posSE = new Vector3(104.70f, -0.00f, 104.14f);
-        var posS = new Vector3(100.12f, -0.00f, 106.30f);
-        var posSW = new Vector3(95.76f, 0.00f, 104.66f);
-        var posW = new Vector3(93.72f, 0.00f, 100.07f);
-        var posNW = new Vector3(96.21f, 0.00f, 95.33f);
-
-        // N
-        if (isIncandescent == 1)
+        lock (IncandescentCountLock)
         {
-            if (@event.TargetId() == accessory.Data.Me) {
-                switch (index)
-                {
-                    case 0:
-                        if (isLead) DrawHelper.DrawDisplacement(accessory, posNE, new Vector2(1f, 1f), 5000, "TH_NE");
-                        break;
-                    case 1:
-                        if (isLead) DrawHelper.DrawDisplacement(accessory, posSE, new Vector2(1f, 1f), 5000, "TH_SE");
-                        break;
-                    case 2:
-                        if (isLead) DrawHelper.DrawDisplacement(accessory, posNW, new Vector2(1f, 1f), 5000, "TH_NW");
-                        break;
-                    case 3:
-                        if (isLead) DrawHelper.DrawDisplacement(accessory, posSW, new Vector2(1f, 1f), 5000, "TH_SW");
-                        break;
-                    case 4:
-                        if (isLead) DrawHelper.DrawDisplacement(accessory, posNE, new Vector2(1f, 1f), 5000, "DPS_NE");
-                        break;
-                    case 5:
-                        if (isLead) DrawHelper.DrawDisplacement(accessory, posSE, new Vector2(1f, 1f), 5000, "DPS_SE");
-                        break;
-                    case 6:
-                        if (isLead) DrawHelper.DrawDisplacement(accessory, posNW, new Vector2(1f, 1f), 5000, "DPS_NW");
-                        break;
-                    case 7:
-                        if (isLead) DrawHelper.DrawDisplacement(accessory, posSW, new Vector2(1f, 1f), 5000, "DPS_SW");
-                        break;
-                }
-            } 
-            else 
+            DebugMsg($"isIncandescent: {isIncandescent}", accessory);
+            var index = accessory.Data.PartyList.IndexOf(accessory.Data.Me);
+
+            var posN = new Vector3(100.01f, 0.00f, 93.97f);
+            var posNE = new Vector3(104.16f, 0.00f, 95.96f);
+            var posE = new Vector3(106.35f, 0.00f, 100.04f);
+            var posSE = new Vector3(104.70f, -0.00f, 104.14f);
+            var posS = new Vector3(100.12f, -0.00f, 106.30f);
+            var posSW = new Vector3(95.76f, 0.00f, 104.66f);
+            var posW = new Vector3(93.72f, 0.00f, 100.07f);
+            var posNW = new Vector3(96.21f, 0.00f, 95.33f);
+
+            if (isIncandescent == 1)
             {
-                switch (index)
+                DebugMsg($"IncandescentCount:{IncandescentCount}",accessory);
+                if (@event.TargetId() == accessory.Data.Me)
                 {
-                    case 0:
-                        if (isLead) DrawHelper.DrawDisplacement(accessory, posN, new Vector2(1f, 1f), 5000, "TH_N");
-                        break;
-                    case 1:
-                        if (isLead) DrawHelper.DrawDisplacement(accessory, posE, new Vector2(1f, 1f), 5000, "TH_E");
-                        break;
-                    case 2:
-                        if (isLead) DrawHelper.DrawDisplacement(accessory, posW, new Vector2(1f, 1f), 5000, "TH_W");
-                        break;
-                    case 3:
-                        if (isLead) DrawHelper.DrawDisplacement(accessory, posS, new Vector2(1f, 1f), 5000, "TH_S");
-                        break;
-                    case 4:
-                        if (isLead) DrawHelper.DrawDisplacement(accessory, posN, new Vector2(1f, 1f), 5000, "DPS_N");
-                        break;
-                    case 5:
-                        if (isLead) DrawHelper.DrawDisplacement(accessory, posE, new Vector2(1f, 1f), 5000, "DPS_E");
-                        break;
-                    case 6:
-                        if (isLead) DrawHelper.DrawDisplacement(accessory, posW, new Vector2(1f, 1f), 5000, "DPS_W");
-                        break;
-                    case 7:
-                        if (isLead) DrawHelper.DrawDisplacement(accessory, posS, new Vector2(1f, 1f), 5000, "DPS_S");
-                        break;
+                    switch (index)
+                    {
+                        case 0:
+                            if (isLead) DrawHelper.DrawDisplacement(accessory, posNE, new Vector2(1f, 1f), 5000, "TH_NE", color: new Vector4(1.0f, 1.0f, 0.0f, 1.0f));
+                            break;
+                        case 1:
+                            if (isLead) DrawHelper.DrawDisplacement(accessory, posSE, new Vector2(1f, 1f), 5000, "TH_SE", color: new Vector4(1.0f, 1.0f, 0.0f, 1.0f));
+                            break;
+                        case 2:
+                            if (isLead) DrawHelper.DrawDisplacement(accessory, posNW, new Vector2(1f, 1f), 5000, "TH_NW", color: new Vector4(1.0f, 1.0f, 0.0f, 1.0f));
+                            break;
+                        case 3:
+                            if (isLead) DrawHelper.DrawDisplacement(accessory, posSW, new Vector2(1f, 1f), 5000, "TH_SW", color: new Vector4(1.0f, 1.0f, 0.0f, 1.0f));
+                            break;
+                        case 4:
+                            if (isLead) DrawHelper.DrawDisplacement(accessory, posNE, new Vector2(1f, 1f), 5000, "DPS_NE", color: new Vector4(1.0f, 1.0f, 0.0f, 1.0f));
+                            break;
+                        case 5:
+                            if (isLead) DrawHelper.DrawDisplacement(accessory, posSE, new Vector2(1f, 1f), 5000, "DPS_SE", color: new Vector4(1.0f, 1.0f, 0.0f, 1.0f));
+                            break;
+                        case 6:
+                            if (isLead) DrawHelper.DrawDisplacement(accessory, posNW, new Vector2(1f, 1f), 5000, "DPS_NW", color: new Vector4(1.0f, 1.0f, 0.0f, 1.0f));
+                            break;
+                        case 7:
+                            if (isLead) DrawHelper.DrawDisplacement(accessory, posSW, new Vector2(1f, 1f), 5000, "DPS_SW", color: new Vector4(1.0f, 1.0f, 0.0f, 1.0f));
+                            break;
+                    }
                 }
+                else
+                {
+                    IncandescentCount++;
+                }
+
+                if (IncandescentCount > 3)
+                {
+                    switch (index)
+                    {
+                        case 0:
+                            if (isLead) DrawHelper.DrawDisplacement(accessory, posN, new Vector2(1f, 1f), 5000, "TH_N", color: new Vector4(1.0f, 1.0f, 0.0f, 1.0f));
+                            break;
+                        case 1:
+                            if (isLead) DrawHelper.DrawDisplacement(accessory, posE, new Vector2(1f, 1f), 5000, "TH_E", color: new Vector4(1.0f, 1.0f, 0.0f, 1.0f));
+                            break;
+                        case 2:
+                            if (isLead) DrawHelper.DrawDisplacement(accessory, posW, new Vector2(1f, 1f), 5000, "TH_W", color: new Vector4(1.0f, 1.0f, 0.0f, 1.0f));
+                            break;
+                        case 3:
+                            if (isLead) DrawHelper.DrawDisplacement(accessory, posS, new Vector2(1f, 1f), 5000, "TH_S", color: new Vector4(1.0f, 1.0f, 0.0f, 1.0f));
+                            break;
+                        case 4:
+                            if (isLead) DrawHelper.DrawDisplacement(accessory, posN, new Vector2(1f, 1f), 5000, "DPS_N", color: new Vector4(1.0f, 1.0f, 0.0f, 1.0f));
+                            break;
+                        case 5:
+                            if (isLead) DrawHelper.DrawDisplacement(accessory, posE, new Vector2(1f, 1f), 5000, "DPS_E", color: new Vector4(1.0f, 1.0f, 0.0f, 1.0f));
+                            break;
+                        case 6:
+                            if (isLead) DrawHelper.DrawDisplacement(accessory, posW, new Vector2(1f, 1f), 5000, "DPS_W", color: new Vector4(1.0f, 1.0f, 0.0f, 1.0f));
+                            break;
+                        case 7:
+                            if (isLead) DrawHelper.DrawDisplacement(accessory, posS, new Vector2(1f, 1f), 5000, "DPS_S", color: new Vector4(1.0f, 1.0f, 0.0f, 1.0f));
+                            break;
+                    }
+
+                    IncandescentCount = 0;
+                }
+
+            }
+            else
+            {
+                if (@event.TargetId() == accessory.Data.Me)
+                {
+                    if (isText) accessory.Method.TextInfo("分散, 不要重叠", duration: 4000, true);
+                    if (isTTS) accessory.Method.EdgeTTS($"分散, 不要重叠");
+                }
+                var dp = accessory.Data.GetDefaultDrawProperties();
+                dp.Name = "008B-分散";
+                dp.Color = new Vector4(255 / 255.0f, 0 / 255.0f, 251 / 255.0f, 1.0f);
+                dp.Owner = @event.TargetId();
+                dp.Scale = new Vector2(6);
+                dp.DestoryAt = 4800;
+                accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
             }
 
-        } 
-        else
-        {
-            if (@event.TargetId() == accessory.Data.Me)
-            {
-                if (isText) accessory.Method.TextInfo("分散, 不要重叠", duration: 4000, true);
-                if (isTTS) accessory.Method.EdgeTTS($"分散, 不要重叠");
-            }
-            var dp = accessory.Data.GetDefaultDrawProperties();
-            dp.Name = "008B-分散";
-            dp.Color = new Vector4(255 / 255.0f, 0 / 255.0f, 251 / 255.0f, 1.0f);
-            dp.Owner = @event.TargetId();
-            dp.Scale = new Vector2(6);
-            dp.DestoryAt = 4800;
-            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
         }
-
     }
 
     [ScriptMethod(name: "翼宿击", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:43005"])]
@@ -633,6 +645,7 @@ public class Hells_Kier_Unreal
         dp.Scale = new Vector2(20, 41);
         dp.DestoryAt = 3700;
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Rect, dp);
+        isIncandescent = 0;
     }
 
     [ScriptMethod(name: "00A1-素质三连分摊", eventType: EventTypeEnum.TargetIcon, eventCondition: ["Id:00A1"])]
@@ -820,12 +833,12 @@ public class Hells_Kier_Unreal
         DebugMsg("IncandescentInterlude Check", accessory);
     }
 
-    [ScriptMethod(name: "灼热旋律结束check", eventType: EventTypeEnum.ObjectChanged, eventCondition: ["DataId:2009599"])]
-    public void IncandescentInterludeFinish(Event @event, ScriptAccessory accessory)
-    {
-        isIncandescent = 0;
-        DebugMsg("IncandescentInterlude Finish", accessory);
-    }
+    //[ScriptMethod(name: "灼热旋律结束check", eventType: EventTypeEnum.ObjectChanged, eventCondition: ["DataId:2009599"])]
+    //public void IncandescentInterludeFinish(Event @event, ScriptAccessory accessory)
+    //{
+    //    isIncandescent = 0;
+    //    DebugMsg("IncandescentInterlude Finish", accessory);
+    //}
 
 
 
