@@ -26,18 +26,17 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 
 namespace Veever.DawnTrail.the_Underkeep;
 
-[ScriptType(name: "LV.100 the Underkeep", territorys: [1266], guid: "9b381347-ddbf-4f52-98a9-a63d6e0d69bd",
-    version: "0.0.0.2", author: "Veever", note: noteStr)]
+[ScriptType(name: "LV.100 王城古迹永护塔底", territorys: [1266], guid: "9b381347-ddbf-4f52-98a9-a63d6e0d69bd",
+    version: "0.0.0.3", author: "Veever & Cyf5119", note: noteStr)]
 
 public class the_Underkeep
 {
     const string noteStr =
     """
-    v0.0.0.2:
-    1. 此版本为残疾版(非全部机制绘图)，有的地方没时间精修，有空会精修及更新，在国服更新前肯定会全部完成
-    2. Boss2 分身有些思路，下个版本应该能做出来，更新前先人眼看吧.jpg
-    3. Boss3的十字炸弹画了但是没画完，先不开放使用
-    4. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
+    v0.0.0.3:
+    1. 持续更新中
+    2. Boss3的十字炸弹画了但是没画完，先不开放使用
+    3. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     鸭门。
     """;
 
@@ -74,6 +73,7 @@ public class the_Underkeep
         accessory.Method.RemoveDraw(".*");
         StaticForceCount = 0;
         ConcurrentFieldCount = 0;
+        补充初始化(accessory);
     }
 
     public void DebugMsg(string str, ScriptAccessory accessory)
@@ -636,6 +636,47 @@ public class the_Underkeep
             DebugMsg($"StaticForceCount: {ConcurrentFieldCount}", accessory);
         }
     }
+    #endregion
+
+    #region 补充
+
+    private Dictionary<uint, uint> _boss2ClonesDict = new();
+
+    private void 补充初始化(ScriptAccessory sa)
+    {
+        _boss2ClonesDict.Clear();
+    }
+
+    [ScriptMethod(name: "补充-Boss2分身半场刀连线记录", eventType: EventTypeEnum.Tether, eventCondition: ["Id:0147"], userControl: false)]
+    public void Boss2ClonesTetherRecord(Event evt, ScriptAccessory sa)
+    {
+        _boss2ClonesDict[evt.SourceId()] = evt.TargetId();
+    }
+
+    [ScriptMethod(name: "补充-Boss2分身半场刀", eventType: EventTypeEnum.ActionEffect, eventCondition: ["ActionId:regex:^(4316[34])$"], suppress: 8000)]
+    public void Boss2ClonesCleave(Event evt, ScriptAccessory sa)
+    {
+        if (!_boss2ClonesDict.ContainsKey(evt.SourceId()))
+        {
+            _boss2ClonesDict.Clear();
+            return;
+        }
+        var lastClone = _boss2ClonesDict[evt.SourceId()];
+        var clonesNum = _boss2ClonesDict.Count;
+        _boss2ClonesDict.Clear();
+
+        var dp = sa.Data.GetDefaultDrawProperties();
+        dp.Name = "Boss2ClonesCleave";
+        dp.Color = sa.Data.DefaultDangerColor;
+        dp.Scale = new Vector2(45);
+        dp.Radian = float.Pi;
+        dp.DestoryAt = (clonesNum - 1) * 900 + 500;
+        dp.Owner = lastClone;
+        dp.Rotation = evt.ActionId > 43163 ? -float.Pi / 2 : float.Pi / 2;
+
+        sa.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Fan, dp);
+    }
+
     #endregion
 
 }

@@ -372,14 +372,14 @@
     ]
   },
   {
-    "Name": "LV.100 the Underkeep",
+    "Name": "LV.100 王城古迹永护塔底",
     "Guid": "9b381347-ddbf-4f52-98a9-a63d6e0d69bd",
-    "Version": "0.0.0.2",
-    "Author": "Veever",
+    "Version": "0.0.0.3",
+    "Author": "Veever & Cyf5119",
     "Repo": "https://github.com/VeeverSW/Kodakku-Script",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/the-Underkeep.cs",
     "Note": "",
-    "UpdateInfo": "v0.0.0.2!",
+    "UpdateInfo": "v0.0.0.3!",
     "TerritoryIds": [
       1266
     ]
