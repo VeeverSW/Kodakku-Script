@@ -348,12 +348,12 @@
   {
     "Name": "LV.28 名门府邸静语庄园",
     "Guid": "964f1a0a-5b2a-4473-b41b-a170bc823f67",
-    "Version": "0.0.0.1",
+    "Version": "0.0.0.2",
     "Author": "Veever",
-    "Repo": "",
-    "DownloadUrl": "",
-    "Note": "v0.0.0.1:\r\n\r\n鸭门。",
-    "UpdateInfo": "",
+    "Repo": "https://github.com/VeeverSW/Kodakku-Script",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Haukke-Manor.cs",
+    "Note": "v0.0.0.2:\r\n1. 绿色标记为需要捡的钥匙，红色代表不捡\r\n2. 由于需要获取副本最开始的objectChange，随意脚本初始化时不会Remove绘图清空残留\r\n3. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n4. 如果想要鲶鱼精标记请确保你打开了ACT并且安装了鲶鱼精插件\r\n鸭门。",
+    "UpdateInfo": "v0.0.0.2, 重置版，如果你下载了之前的v0.0.0.1版本，请删除后重新下载",
     "TerritoryIds": [
       1040
     ]
