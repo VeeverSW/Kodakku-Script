@@ -353,7 +353,7 @@
     "Repo": "https://github.com/VeeverSW/Kodakku-Script",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Haukke-Manor.cs",
     "Note": "v0.0.0.3:\r\n1. 绿色标记为需要捡的钥匙，红色代表不捡\r\n2. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n3. 如果想要鲶鱼精标记请确保你打开了ACT并且安装了鲶鱼精插件\r\n鸭门。",
-    "UpdateInfo": "重新更新了方法，这下可以在init中removedraw了",
+    "UpdateInfo": "",
     "TerritoryIds": [
       1040
     ]
