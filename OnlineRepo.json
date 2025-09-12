@@ -348,12 +348,12 @@
   {
     "Name": "LV.28 名门府邸静语庄园",
     "Guid": "964f1a0a-5b2a-4473-b41b-a170bc823f67",
-    "Version": "0.0.0.2",
+    "Version": "0.0.0.3",
     "Author": "Veever",
     "Repo": "https://github.com/VeeverSW/Kodakku-Script",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Haukke-Manor.cs",
-    "Note": "v0.0.0.2:\r\n1. 绿色标记为需要捡的钥匙，红色代表不捡\r\n2. 由于需要获取副本最开始的objectChange，随意脚本初始化时不会Remove绘图清空残留\r\n3. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n4. 如果想要鲶鱼精标记请确保你打开了ACT并且安装了鲶鱼精插件\r\n鸭门。",
-    "UpdateInfo": "v0.0.0.2, 重置版，如果你下载了之前的v0.0.0.1版本，请删除后重新下载",
+    "Note": "v0.0.0.3:\r\n1. 绿色标记为需要捡的钥匙，红色代表不捡\r\n2. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n3. 如果想要鲶鱼精标记请确保你打开了ACT并且安装了鲶鱼精插件\r\n鸭门。",
+    "UpdateInfo": "重新更新了方法，这下可以在init中removedraw了",
     "TerritoryIds": [
       1040
     ]
@@ -410,6 +410,19 @@
     "UpdateInfo": "",
     "TerritoryIds": [
       1272
+    ]
+  },
+  {
+    "Name": "LV.75 文明古迹奇坦那神影洞",
+    "Guid": "50c922c1-1ecd-4750-8b55-24f19793408f",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "Repo": "https://github.com/VeeverSW/Kodakku-Script",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/the-Qitana-Ravel.cs",
+    "Note": "v0.0.0.1:\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n鸭门。",
+    "UpdateInfo": "",
+    "TerritoryIds": [
+      823
     ]
   }
 ]
