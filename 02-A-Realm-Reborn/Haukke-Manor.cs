@@ -31,17 +31,16 @@ using ECommons.GameHelpers;
 namespace Veever.A_Realm_Reborn.Haukke_Manor;
 
 [ScriptType(name: "LV.28 名门府邸静语庄园", territorys: [1040], guid: "964f1a0a-5b2a-4473-b41b-a170bc823f67",
-    version: "0.0.0.2", author: "Veever", note: noteStr)]
+    version: "0.0.0.3", author: "Veever", note: noteStr)]
 
 public class Haukke_Manor
 {
     const string noteStr =
     """
-    v0.0.0.2:
+    v0.0.0.3:
     1. 绿色标记为需要捡的钥匙，红色代表不捡
-    2. 由于需要获取副本最开始的objectChange，任意脚本初始化时不会Remove绘图清空残留
-    3. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
-    4. 如果想要鲶鱼精标记请确保你打开了ACT并且安装了鲶鱼精插件
+    2. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
+    3. 如果想要鲶鱼精标记请确保你打开了ACT并且安装了鲶鱼精插件
     鸭门。
     """;
 
@@ -77,6 +76,7 @@ public class Haukke_Manor
     public int KeyCount = 0;
     public void Init(ScriptAccessory accessory)
     {
+        accessory.Method.RemoveDraw(".*");
         PostWaymark(accessory);
     }
 
@@ -201,6 +201,34 @@ public class Haukke_Manor
 
     }
 
+    [ScriptMethod(name: "钥匙mark初始", eventType: EventTypeEnum.ObjectChanged, eventCondition: [])]
+    public async void keymarkInit(Event @event, ScriptAccessory accessory)
+    {
+        await Task.Delay(6000);
+
+        var keyId0 = 2000302;
+        if (@event.DataId() == keyId0)
+        {
+            DebugMsg("key0", accessory);
+            DrawHelper.DrawCircleObject(accessory, @event.SourceId(), new Vector2(0.7f), 999999999, $"标记-{@event.DataId()}", accessory.Data.DefaultSafeColor, scaleByTime: false);
+        }
+        else if (@event.DataId() == keyId0 + 1)
+        {
+            DebugMsg("key1", accessory);
+            DrawHelper.DrawCircleObject(accessory, @event.SourceId(), new Vector2(0.7f), 999999999, $"标记-{@event.DataId()}", accessory.Data.DefaultSafeColor, scaleByTime: false);
+        }
+        else if (@event.DataId() == keyId0 + 2)
+        {
+            DebugMsg("key2", accessory);
+            DrawHelper.DrawCircleObject(accessory, @event.SourceId(), new Vector2(0.7f), 999999999, $"标记-{@event.DataId()}", accessory.Data.DefaultDangerColor, scaleByTime: false);
+        } 
+
+        if (@event.Operate() == "Remove")
+        {
+            accessory.Method.RemoveDraw($"标记-{@event.DataId()}");
+        }
+
+    }
 
     #endregion
 
@@ -709,7 +737,7 @@ public static class NamazuHelper
         public void PostCommand()
         {
             var url = $"{_url}/{command}";
-            //accessory.Method.SendChat($"/e 向{url}发送{param}");
+            accessory.Log.Debug($"向{url}发送{param}");
             accessory.Method.HttpPost(url, param);
         }
     }
