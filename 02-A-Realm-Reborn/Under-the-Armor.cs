@@ -6,7 +6,6 @@ using Dalamud.Utility.Numerics;
 using KodakkuAssist.Script;
 using KodakkuAssist.Module.GameEvent;
 using KodakkuAssist.Module.Draw;
-using ECommons.ExcelServices.TerritoryEnumeration;
 using System.Reflection.Metadata;
 using System.Net;
 using System.Threading.Tasks;
@@ -18,13 +17,13 @@ using System.ComponentModel;
 namespace Veever.A_Realm_Reborn.UndertheArmor;
 
 [ScriptType(name: "LV.10 讨伐彷徨死灵", territorys: [190], guid: "8b28e087-549e-4a88-96db-50e1e7cc5214",
-    version: "0.0.0.4", author: "Veever", note: noteStr)]
+    version: "0.0.0.5", author: "Veever", note: noteStr)]
 
 public class Under_the_Armor
 {
     const string noteStr =
     """
-    v0.0.0.4:
+    v0.0.0.5:
     1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
     2. 加了个开关，这本也没有TTS，不要看了.jpg
     鸭门。
