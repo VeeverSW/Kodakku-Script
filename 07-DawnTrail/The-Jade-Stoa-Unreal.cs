@@ -7,35 +7,30 @@ using KodakkuAssist.Script;
 using KodakkuAssist.Module.GameEvent;
 using KodakkuAssist.Module.Draw;
 using KodakkuAssist.Module.Draw.Manager;
-using ECommons.ExcelServices.TerritoryEnumeration;
 using System.Reflection.Metadata;
 using System.Net;
 using System.Threading.Tasks;
 using Dalamud.Game.ClientState.Objects.Types;
-using System.Runtime.Intrinsics.Arm;
 using System.Collections.Generic;
 using System.ComponentModel;
-using ECommons.Reflection;
 using System.Windows;
-using ECommons;
-using ECommons.DalamudServices;
-using ECommons.GameFunctions;
 using FFXIVClientStructs;
-using System;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
+using FFXIVClientStructs;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.UI;
 
 namespace Veever.DawnTrail.The_Jade_Stoa_Unreal;
 
 [ScriptType(name: "LV.100 白虎幻巧战", territorys: [1239], guid: "29193d9d-a2c5-4a0d-875b-943a06790b95",
-    version: "0.0.0.3", author: "Veever", note: noteStr)]
+    version: "0.0.0.4", author: "Veever", note: noteStr)]
 
 public class The_Jade_Stoa_Unreal
 {
     const string noteStr =
     """
-    v0.0.0.3:
+    v0.0.0.4:
     1. 本脚本使用攻略为子言攻略，请在打本之前调整好!可达鸭的小队排序!（很重要，影响指路和机制播报）
     2. 如果懒得调也不想看需要小队位置判定的指路，可以在用户设置里面关闭指路开关
     鸭门。
@@ -62,7 +57,7 @@ public class The_Jade_Stoa_Unreal
     [UserSetting("Debug开关, 非开发用请关闭")]
     public bool isDebug { get; set; } = false;
 
-    public IBattleChara? Boss { get; set; }
+    public KodakkuAssist.Data.IGameObject? Boss { get; set; }
 
     public int HighestStakesCount;
     public int OminousWindMarkerTTSCount;
@@ -122,7 +117,7 @@ public class The_Jade_Stoa_Unreal
     public void HighestStakesPosRecord(Event @event, ScriptAccessory accessory)
     {
         uint id = @event.TargetId();
-        var boss = IbcHelper.GetById(id);
+        var boss = IbcHelper.GetById(accessory, id);
         if (boss == null)
         {
             DebugMsg("未找到对应的对象", accessory);
@@ -872,38 +867,38 @@ public static class Extensions
 
 public static class IbcHelper
 {
-    public static IBattleChara? GetById(uint id)
+    public static KodakkuAssist.Data.IGameObject? GetById(ScriptAccessory accessory, uint id)
     {
-        return (IBattleChara?)Svc.Objects.SearchByEntityId(id);
+        return accessory.Data.Objects.SearchByEntityId(id);
     }
 
-    public static IBattleChara? GetMe()
+    public static KodakkuAssist.Data.IGameObject? GetMe(ScriptAccessory accessory)
     {
-        return Svc.ClientState.LocalPlayer;
+        return accessory.Data.Objects.SearchByEntityId(accessory.Data.Me);
     }
 
-    public static IGameObject? GetFirstByDataId(uint dataId)
+    public static KodakkuAssist.Data.IGameObject? GetFirstByDataId(ScriptAccessory accessory, uint dataId)
     {
-        return Svc.Objects.Where(x => x.DataId == dataId).FirstOrDefault();
+        return accessory.Data.Objects.Where(x => x.DataId == dataId).FirstOrDefault();
     }
 
-    public static IEnumerable<IGameObject?> GetByDataId(uint dataId)
+    public static IEnumerable<KodakkuAssist.Data.IGameObject> GetByDataId(ScriptAccessory accessory, uint dataId)
     {
-        return Svc.Objects.Where(x => x.DataId == dataId);
+        return accessory.Data.Objects.Where(x => x.DataId == dataId);
+    }
+
+    public static bool HasStatus(this IBattleChara ibc, uint statusId)
+    {
+        return ibc.StatusList.Any(x => x.StatusId == statusId);
+    }
+
+    public static bool HasStatusAny(this IBattleChara ibc, uint[] statusIds)
+    {
+        return ibc.StatusList.Any(x => statusIds.Contains(x.StatusId));
+    }
+
+    public static unsafe uint Tethering(this IBattleChara ibc, int index = 0)
+    {
+        return ((BattleChara*)ibc.Address)->Vfx.Tethers[index].TargetId.ObjectId;
     }
 }
-
-public static unsafe class IBattleCharaExtensions
-{
-    public static bool HasStatus(this IBattleChara ibc, uint statusId, float remaining = -1)
-    {
-        return ibc.StatusList.Any(s => s.StatusId == statusId && s.RemainingTime > remaining);
-    }
-
-    public static uint Tethering(this IBattleChara ibc, int index = 0)
-    {
-        return ibc.Struct()->Vfx.Tethers[index].TargetId.ObjectId;
-    }
-
-}
-
