@@ -7,33 +7,30 @@ using KodakkuAssist.Script;
 using KodakkuAssist.Module.GameEvent;
 using KodakkuAssist.Module.Draw;
 using KodakkuAssist.Module.Draw.Manager;
-using ECommons.ExcelServices.TerritoryEnumeration;
 using System.Reflection.Metadata;
 using System.Net;
 using System.Threading.Tasks;
 using Dalamud.Game.ClientState.Objects.Types;
 using System.Collections.Generic;
 using System.ComponentModel;
-using ECommons.Reflection;
 using System.Windows;
-using ECommons;
-using ECommons.DalamudServices;
-using ECommons.GameFunctions;
 using FFXIVClientStructs;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
+using FFXIVClientStructs;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.UI;
 
 namespace Veever.DawnTrail.the_Underkeep;
 
 [ScriptType(name: "LV.100 王城古迹永护塔底", territorys: [1266], guid: "9b381347-ddbf-4f52-98a9-a63d6e0d69bd",
-    version: "0.0.0.3", author: "Veever & Cyf5119", note: noteStr)]
+    version: "0.0.0.4", author: "Veever & Cyf5119", note: noteStr)]
 
 public class the_Underkeep
 {
     const string noteStr =
     """
-    v0.0.0.3:
+    v0.0.0.4:
     1. 持续更新中
     2. Boss3的十字炸弹画了但是没画完，先不开放使用
     3. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
@@ -859,6 +856,6 @@ public static class IbcHelper
 
     public static unsafe uint Tethering(this IBattleChara ibc, int index = 0)
     {
-        return ibc.Struct()->Vfx.Tethers[index].TargetId.ObjectId;
+        return ((BattleChara*)ibc.Address)->Vfx.Tethers[index].TargetId.ObjectId;
     }
 }
