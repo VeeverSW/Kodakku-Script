@@ -7,7 +7,6 @@ using KodakkuAssist.Script;
 using KodakkuAssist.Module.GameEvent;
 using KodakkuAssist.Module.Draw;
 using KodakkuAssist.Module.Draw.Manager;
-using ECommons.ExcelServices.TerritoryEnumeration;
 using System.Reflection.Metadata;
 using System.Net;
 using System.Threading.Tasks;
@@ -15,23 +14,21 @@ using Dalamud.Game.ClientState.Objects.Types;
 using System.Runtime.Intrinsics.Arm;
 using System.Collections.Generic;
 using System.ComponentModel;
-using ECommons.Reflection;
 using System.Windows;
-using ECommons;
-using ECommons.DalamudServices;
-using ECommons.GameFunctions;
 using FFXIVClientStructs;
 using System;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
+using FFXIVClientStructs;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using System.Reflection;
 
-namespace Veever.Other.PVPMarker_API11;
+namespace Veever.Other.PVPMarker;
 // 431: 尘封，554: 碎冰, 888：草原
-[ScriptType(name: "PVPMarker(API11)", territorys: [431, 554, 888, 791], guid: "98f639f8-095b-4d68-8d46-0bc38c4cd552",
+[ScriptType(name: "PVPMarker", territorys: [431, 554, 888, 791], guid: "98f639f8-095b-4d68-8d46-0bc38c4cd552",
     version: "0.0.0.2", author: "Veever", note: noteStr)]
 
-public class PVPMarker_API11
+public class PVPMarker
 {
     const string noteStr =
     """
@@ -125,19 +122,19 @@ public class PVPMarker_API11
                 accessory.Method.Mark(@event.SourceId(), KodakkuAssist.Module.GameOperate.MarkType.None, LocalMark);
             }
         }
-        if (isText) accessory.Method.TextInfo($"击杀者: {@event.SourceName()}, 职业: {IbcHelper.GetById(@event.SourceId()).ClassJob.Value.Name}", duration: 6000, true);
-        accessory.Method.SendChat($"/e 击杀者: {@event.SourceName()}, 职业: {IbcHelper.GetById(@event.SourceId()).ClassJob.Value.Name}");
-        accessory.TTS($"/e 击杀者: {@event.SourceName()}, 职业: {IbcHelper.GetById(@event.SourceId()).ClassJob.Value.Name}", isTTS, isDRTTS);
+        if (isText) accessory.Method.TextInfo($"击杀者: {@event.SourceName()}, 职业: {IbcHelper.GetById(accessory, @event.SourceId()).ClassJob.Value.Name}", duration: 6000, true);
+        accessory.Method.SendChat($"/e 击杀者: {@event.SourceName()}, 职业: {IbcHelper.GetById(accessory, @event.SourceId()).ClassJob.Value.Name}");
+        accessory.TTS($"/e 击杀者: {@event.SourceName()}, 职业: {IbcHelper.GetById(accessory, @event.SourceId()).ClassJob.Value.Name}", isTTS, isDRTTS);
         await Task.Delay(50);
         DebugMsg("End Marking", accessory);
 
     }
 
     [ScriptMethod(name: "debug", eventType: EventTypeEnum.Chat, eventCondition: ["Message:debug"])]
-    public async void debugge(Event @event, ScriptAccessory accessory)
+    public void debugge(Event @event, ScriptAccessory accessory)
     {
-        DebugMsg($"Me:{IbcHelper.GetMe().Name}", accessory);
-        DebugMsg($"job:{IbcHelper.GetMe().ClassJob.Value.Name}", accessory);
+        DebugMsg($"Me:{IbcHelper.GetMe(accessory).Name}", accessory);
+        DebugMsg($"job:{IbcHelper.GetMe(accessory).ClassJob.Value.Name}", accessory);
     }
 
 }
@@ -285,24 +282,24 @@ public static class Extensions
 
 public static class IbcHelper
 {
-    public static IBattleChara? GetById(uint id)
+    public static IBattleChara? GetById(ScriptAccessory accessory, uint id)
     {
-        return (IBattleChara?)Svc.Objects.SearchByEntityId(id);
+        return (IBattleChara?)accessory.Data.Objects.SearchByEntityId(id);
     }
 
-    public static IBattleChara? GetMe()
+    public static IBattleChara? GetMe(ScriptAccessory accessory)
     {
-        return Svc.ClientState.LocalPlayer;
+        return accessory.Data.Objects.SearchByEntityId(accessory.Data.Me) as IBattleChara;
     }
 
-    public static IGameObject? GetFirstByDataId(uint dataId)
+    public static KodakkuAssist.Data.IGameObject? GetFirstByDataId(ScriptAccessory accessory, uint dataId)
     {
-        return Svc.Objects.Where(x => x.DataId == dataId).FirstOrDefault();
+        return accessory.Data.Objects.Where(x => x.DataId == dataId).FirstOrDefault();
     }
 
-    public static IEnumerable<IGameObject?> GetByDataId(uint dataId)
+    public static IEnumerable<KodakkuAssist.Data.IGameObject> GetByDataId(ScriptAccessory accessory, uint dataId)
     {
-        return Svc.Objects.Where(x => x.DataId == dataId);
+        return accessory.Data.Objects.Where(x => x.DataId == dataId);
     }
 }
 
@@ -313,9 +310,9 @@ public static unsafe class IBattleCharaExtensions
         return ibc.StatusList.Any(s => s.StatusId == statusId && s.RemainingTime > remaining);
     }
 
-    public static uint Tethering(this IBattleChara ibc, int index = 0)
+    public static unsafe uint Tethering(this IBattleChara ibc, int index = 0)
     {
-        return ibc.Struct()->Vfx.Tethers[index].TargetId.ObjectId;
+        return ((BattleChara*)ibc.Address)->Vfx.Tethers[index].TargetId.ObjectId;
     }
 
 }
