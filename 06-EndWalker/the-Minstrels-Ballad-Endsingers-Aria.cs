@@ -6,25 +6,23 @@ using Dalamud.Utility.Numerics;
 using KodakkuAssist.Script;
 using KodakkuAssist.Module.GameEvent;
 using KodakkuAssist.Module.Draw;
-using ECommons.ExcelServices.TerritoryEnumeration;
 using System.Reflection.Metadata;
 using System.Net;
 using System.Threading.Tasks;
 using Dalamud.Game.ClientState.Objects.Types;
 using System.Runtime.Intrinsics.Arm;
 using System.Collections.Generic;
-using ECommons;
 
 namespace Veever.EndWalker.theMinstrelsBalladEndsingersAria;
 
 [ScriptType(name: "LV.90 终极之战(解限版)", territorys: [998], guid: "100df6f8-d8ce-44f7-9fb0-431eca0f2825",
-    version: "0.0.0.5", author: "Veever", note: noteStr)]
+    version: "0.0.0.6", author: "Veever", note: noteStr)]
 
 public class the_Minstrels_Ballad_Endsingers_Aria
 {
     const string noteStr =
     """
-    v0.0.0.5:
+    v0.0.0.6:
     1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
     2. 以前的这几个脚本的底层扩展目前懒得重构（就能加啥随便加了）
     鸭门。 
