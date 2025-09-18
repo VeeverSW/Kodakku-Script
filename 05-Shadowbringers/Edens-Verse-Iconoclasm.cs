@@ -1,5 +1,4 @@
 ﻿using Dalamud.Game.ClientState.Objects.Types;
-using ECommons.DalamudServices;
 using System;
 using System.Linq;
 using System.Numerics;
@@ -9,17 +8,13 @@ using KodakkuAssist.Script;
 using KodakkuAssist.Module.GameEvent;
 using KodakkuAssist.Module.Draw;
 using KodakkuAssist.Module.Draw.Manager;
-using ECommons.ExcelServices.TerritoryEnumeration;
 using System.Reflection.Metadata;
 using System.Net;
 using System.Threading.Tasks;
 using System.Runtime.Intrinsics.Arm;
 using System.Collections.Generic;
 using System.ComponentModel;
-using ECommons.Reflection;
 using System.Windows;
-using ECommons;
-using ECommons.GameFunctions;
 using FFXIVClientStructs;
 using System;
 using System.Runtime.InteropServices;
@@ -111,9 +106,9 @@ public class Edens_Verse_Iconoclasm
     }
 
     [ScriptMethod(name: "debug", eventType: EventTypeEnum.Chat, eventCondition: ["Message:debug"])]
-    public async void debug(Event @event, ScriptAccessory accessory)
+    public void debug(Event @event, ScriptAccessory accessory)
     {
-        var myself = IbcHelper.GetByEntityId(accessory.Data.Me);
+        var myself = IbcHelper.GetByEntityId(accessory, accessory.Data.Me);
         if (myself == null) return;
         var buffId = myself.HasStatus(2238) ? 2238 : 2239;
         DebugMsg($"buffId: {buffId}", accessory);
@@ -296,7 +291,7 @@ public class Edens_Verse_Iconoclasm
                 // 2238 Light     //19516 & 19490     // 0x8BE
                 // 2239 Darkness  //19517 & 19491     // 0x8BF
                 DebugMsg($"{LightsCourseCount}: {@event.ActionId()}", accessory);
-                var myself = IbcHelper.GetByEntityId(accessory.Data.Me);
+                var myself = IbcHelper.GetByEntityId(accessory, accessory.Data.Me);
                 if (myself == null) return;
                 var buffId = myself.HasStatus(2238) ? 2238 : 2239;
                 DebugMsg($"buffId: {buffId}", accessory);
@@ -332,7 +327,7 @@ public class Edens_Verse_Iconoclasm
                 // 2238 Light     //19516 & 19490     // 0x8BE
                 // 2239 Darkness  //19517 & 19491 & 19521     // 0x8BF
                 DebugMsg($"{LightsCourseCount}: {@event.ActionId()}", accessory);
-                var myself = IbcHelper.GetByEntityId(accessory.Data.Me);
+                var myself = IbcHelper.GetByEntityId(accessory, accessory.Data.Me);
                 if (myself == null) return;
                 var buffId = myself.HasStatus(2238) ? 2238 : 2239;
                 DebugMsg($"buffId: {buffId}", accessory);
@@ -744,28 +739,29 @@ public static class Extensions
 
 public static class IbcHelper
 {
-    public static IBattleChara? GetById(uint id)
+    public static IBattleChara? GetById(ScriptAccessory accessory, uint id)
     {
-        return (IBattleChara?)Svc.Objects.SearchByEntityId(id);
+        return (IBattleChara?)accessory.Data.Objects.SearchByEntityId(id);
     }
 
-    public static IBattleChara? GetMe()
+    public static IBattleChara? GetMe(ScriptAccessory accessory)
     {
-        return Svc.ClientState.LocalPlayer;
+        return accessory.Data.Objects.SearchByEntityId(accessory.Data.Me) as IBattleChara;
     }
 
-    public static IGameObject? GetFirstByDataId(uint dataId)
+    public static KodakkuAssist.Data.IGameObject? GetFirstByDataId(ScriptAccessory accessory, uint dataId)
     {
-        return Svc.Objects.Where(x => x.DataId == dataId).FirstOrDefault();
+        return accessory.Data.Objects.Where(x => x.DataId == dataId).FirstOrDefault();
     }
 
-    public static IEnumerable<IGameObject?> GetByDataId(uint dataId)
+    public static IEnumerable<KodakkuAssist.Data.IGameObject> GetByDataId(ScriptAccessory accessory, uint dataId)
     {
-        return Svc.Objects.Where(x => x.DataId == dataId);
+        return accessory.Data.Objects.Where(x => x.DataId == dataId);
     }
-    public static IBattleChara? GetByEntityId(uint id)
+
+    public static IBattleChara? GetByEntityId(ScriptAccessory accessory, uint id)
     {
-        return (IBattleChara?)Svc.Objects.SearchByEntityId(id);
+        return (IBattleChara?)accessory.Data.Objects.SearchByEntityId(id);
     }
     public static bool HasStatus(this IBattleChara chara, uint statusId)
     {
