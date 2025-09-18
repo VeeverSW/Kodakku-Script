@@ -7,31 +7,24 @@ using KodakkuAssist.Script;
 using KodakkuAssist.Module.GameEvent;
 using KodakkuAssist.Module.Draw;
 using KodakkuAssist.Module.Draw.Manager;
-using ECommons.ExcelServices.TerritoryEnumeration;
 using System.Reflection.Metadata;
 using System.Net;
 using System.Threading.Tasks;
 using Dalamud.Game.ClientState.Objects.Types;
 using System.Collections.Generic;
 using System.ComponentModel;
-using ECommons.Reflection;
 using System.Windows;
-using ECommons;
-using ECommons.DalamudServices;
-using ECommons.GameFunctions;
 using FFXIVClientStructs;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using System.Runtime.Intrinsics.Arm;
-using ECommons.ExcelServices;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using ECommons.GameHelpers;
 
 namespace Veever.DawnTrail.Hells_Kier_Unreal;
 
 [ScriptType(name: "LV.100 朱雀幻巧战", territorys: [1272], guid: "60468283-702c-4ddb-95db-fd81409d5630",
-    version: "0.0.0.6", author: "Veever", note: noteStr)]
+    version: "0.0.0.7", author: "Veever", note: noteStr)]
 
 public class Hells_Kier_Unreal
 {
@@ -88,6 +81,11 @@ public class Hells_Kier_Unreal
 
     private readonly object IncandescentCountLock = new object();
 
+    // 新增：Hotspot AOE管理
+    private List<(float activationTime, ulong birdId, float rotation, Vector3 position)> predictedAOEs = new();
+    private int hotspotCastCount = 0;
+    private bool isHotspotActive = false;
+
 
     public void Init(ScriptAccessory accessory)
     {
@@ -97,6 +95,11 @@ public class Hells_Kier_Unreal
         isMesmerizingMelody = 0;
         isRuthlessRefrain = 0;
         IncandescentCount = 0;
+        
+        // 重置Hotspot状态
+        predictedAOEs.Clear();
+        hotspotCastCount = 0;
+        isHotspotActive = false;
     }
 
     public void PostWaymark(ScriptAccessory accessory)
@@ -809,6 +812,148 @@ public class Hells_Kier_Unreal
         dp.DestoryAt = 1000;
         dp.FixRotation = true;
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Fan, dp);
+        
+        // 更新Hotspot状态
+        isHotspotActive = true;
+        hotspotCastCount++;
+        
+        // 生成预测AOE
+        PredictAndDrawHotspotAttacks(accessory, @event.SourceRotation(), dp.Owner);
+        
+        DebugMsg($"Hotspot激活 - 第{hotspotCastCount}次施法", accessory);
+    }
+
+    // 新增：Hotspot预测系统
+    private void PredictAndDrawHotspotAttacks(ScriptAccessory accessory, float startRotation, ulong owner)
+    {
+        // 获取所有小鸟
+        var birds = IbcHelper.GetByDataId(accessory, 18390); 
+        if (!birds.Any()) return;
+
+        var arenaCenter = new Vector3(100f, 0f, 100f); // 场地中心
+        var baseDelay = 6.7; // 基础延迟6.7秒
+        var interval = 1.25; // 间隔1.25秒
+
+        // 清空之前的预测
+        predictedAOEs.Clear();
+
+        foreach (var bird in birds)
+        {
+            // 计算小鸟相对角度（使用BossMod的Angle.FromDirection逻辑）
+            var relativeAngle = CalculateRelativeAngle(bird.Position, arenaCenter);
+            
+            // 计算攻击索引（完全按照BossMod算法）
+            var angleDiff = (startRotation - relativeAngle) * 180f / float.Pi;
+            var index = ((int)MathF.Round(angleDiff / 12f) + 30) % 30;
+            
+            // 计算攻击时间
+            var attackTime = (float)(baseDelay + (index * interval));
+            
+            // 根据小鸟DataId确定攻击方向（对应BossMod的switch逻辑）
+            var attackDirection = CalculateBirdAttackDirection(bird.Position, arenaCenter, bird.DataId);
+            
+            // 添加到预测列表
+            predictedAOEs.Add((attackTime, (ulong)bird.EntityId, attackDirection, bird.Position));
+            
+            DebugMsg($"Bird {bird.EntityId} (DataId:{bird.DataId}): Time={attackTime:F2}s, Index={index}, " +
+                    $"Pos=({bird.Position.X:F1}, {bird.Position.Z:F1}), " +
+                    $"AngleDiff={angleDiff:F1}°, Direction={attackDirection * 180f / float.Pi:F1}°", accessory);
+        }
+
+        // 按激活时间排序（对应BossMod的AOEs.Sort）
+        predictedAOEs.Sort((x, y) => x.activationTime.CompareTo(y.activationTime));
+
+        // 检查AOE状态（对应BossMod的AddAIHints逻辑）
+        var aoeCount = predictedAOEs.Count;
+        if (aoeCount == 0 || 
+            (aoeCount == 16 && hotspotCastCount >= 15) || 
+            (aoeCount == 8 && hotspotCastCount >= 7))
+        {
+            DebugMsg($"Hotspot AOE检查: 跳过绘制 (Count={aoeCount}, Casts={hotspotCastCount})", accessory);
+            return;
+        }
+
+        // 绘制所有预测的AOE
+        foreach (var (activationTime, birdId, rotation, position) in predictedAOEs)
+        {
+            var delay = (int)(activationTime * 1000);
+            
+            // 绘制预测攻击（从小鸟位置绘制）
+            DrawHelper.DrawFan(accessory, position, rotation, 
+                new Vector2(21f), float.Pi / 4, 2000, // 持续2秒
+                $"Hotspot_Prediction_{birdId}", 
+                color: new Vector4(1.0f, 0.5f, 0.0f, 0.7f), // 橙色半透明
+                delay: delay, fix: true);
+        }
+
+        // 输出排序后的时间线
+        DebugMsg($"Hotspot预测时间线: {string.Join(" -> ", predictedAOEs.Select(a => $"{a.activationTime:F1}s"))}", accessory);
+    }
+
+    // 计算相对角度（对应BossMod的Angle.FromDirection）
+    private float CalculateRelativeAngle(Vector3 birdPos, Vector3 centerPos)
+    {
+        var direction = birdPos - centerPos;
+        return MathF.Atan2(direction.Z, direction.X);
+    }
+
+    // 根据小鸟DataId确定攻击方向（对应BossMod的switch逻辑）
+    private float GetBirdAttackDirection(uint dataId)
+    {
+        return dataId switch
+        {
+            18391 => float.Pi * 3f / 2f, // 北 (270度) - SongOfDurance
+            18392 => 0f,                   // 东 (0度) - SongOfOblivion  
+            18393 => float.Pi / 2f,        // 南 (90度) - SongOfSorrow
+            18394 => float.Pi,             // 西 (180度) - SongOfFire
+            _ => 0f
+        };
+    }
+
+    // 计算小鸟攻击方向（从小鸟位置指向场地中心）
+    private float CalculateBirdAttackDirection(Vector3 birdPos, Vector3 centerPos, uint dataId)
+    {
+        // 计算从小鸟到中心的向量
+        var direction = centerPos - birdPos;
+        var angle = MathF.Atan2(direction.Z, direction.X);
+        
+        // 小鸟的攻击方向就是从小鸟位置指向场地中心
+        return angle;
+    }
+
+    // 新增：Hotspot重置检测
+    [ScriptMethod(name: "红莲炎-重置检测", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(43010|43011)$"])]
+    public void HotspotReset(Event @event, ScriptAccessory accessory)
+    {
+        // 清除所有预测AOE
+        accessory.Method.RemoveDraw("Hotspot_Prediction_.*");
+        
+        // 重置Hotspot状态
+        predictedAOEs.Clear();
+        isHotspotActive = false;
+        
+        if (@event.ActionId() == 43010) // MesmerizingMelody
+        {
+            DebugMsg("Hotspot重置 - 远离中心吸引", accessory);
+        }
+        else if (@event.ActionId() == 43011) // RuthlessRefrain
+        {
+            DebugMsg("Hotspot重置 - 靠近中心击退", accessory);
+        }
+    }
+
+    // 新增：小鸟位置检测（用于调试）
+    [ScriptMethod(name: "小鸟位置检测", eventType: EventTypeEnum.AddCombatant, eventCondition: ["DataId:18390"])]
+    public void BirdPositionCheck(Event @event, ScriptAccessory accessory)
+    {
+        if (!isDebug) return;
+        
+        var birdPos = @event.SourcePosition();
+        var arenaCenter = new Vector3(100f, 0f, 100f);
+        var relativeAngle = CalculateRelativeAngle(birdPos, arenaCenter);
+        
+        DebugMsg($"小鸟出现: DataId={@event.DataId()}, Pos=({birdPos.X:F1}, {birdPos.Z:F1}), " +
+                $"相对角度={relativeAngle * 180f / float.Pi:F1}度", accessory);
     }
 
     // [ScriptMethod(name: "红莲炎-小鸟面向", eventType: EventTypeEnum.SetObjPos, eventCondition: ["SourceDataId:18390"])]
@@ -852,7 +997,7 @@ public class Hells_Kier_Unreal
         if (battleChara == null || !battleChara.IsValid()) return 0;
         unsafe
         {
-            BattleChara* charaStruct = (BattleChara*)battleChara.Address;
+            FFXIVClientStructs.FFXIV.Client.Game.Character.BattleChara* charaStruct = (FFXIVClientStructs.FFXIV.Client.Game.Character.BattleChara*)battleChara.Address;
             var statusIdx = charaStruct->GetStatusManager()->GetStatusIndex(statusId);
             return charaStruct->GetStatusManager()->GetRemainingTime(statusIdx);
         }
@@ -867,7 +1012,7 @@ public class Hells_Kier_Unreal
         foreach (var fire in sa.Data.Objects.Where(x => dataId.Contains(x.DataId)))
         {
             if (fire?.Address == null) continue;
-            var targetId = ((BattleChara*)fire.Address)->Vfx.Tethers[0].TargetId.ObjectId;
+            var targetId = ((FFXIVClientStructs.FFXIV.Client.Game.Character.BattleChara*)fire.Address)->Vfx.Tethers[0].TargetId.ObjectId;
             players.Add(targetId);
         }
         DebugMsg($"players: {string.Join(", ", players)}", sa);
@@ -929,7 +1074,7 @@ public class Hells_Kier_Unreal
             accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Rect, dp);
         }
 
-        public static void DrawFan(ScriptAccessory accessory, Vector3 position, float rotation, Vector2 scale, float angle, int duration, string name, Vector4? color = null, int delay = 0)
+        public static void DrawFan(ScriptAccessory accessory, Vector3 position, float rotation, Vector2 scale, float angle, int duration, string name, Vector4? color = null, int delay = 0, bool fix = false)
         {
             var dp = accessory.Data.GetDefaultDrawProperties();
             dp.Name = name;
@@ -940,6 +1085,22 @@ public class Hells_Kier_Unreal
             dp.Radian = angle;
             dp.Delay = delay;
             dp.DestoryAt = duration;
+            dp.FixRotation = fix;
+            accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Fan, dp);
+        }
+
+        public static void DrawFanOwner(ScriptAccessory accessory, ulong owner, float rotation, Vector2 scale, float angle, int duration, string name, Vector4? color = null, int delay = 0, bool fix = false)
+        {
+            var dp = accessory.Data.GetDefaultDrawProperties();
+            dp.Name = name;
+            dp.Color = color ?? accessory.Data.DefaultDangerColor;
+            dp.Owner = owner; 
+            dp.Rotation = rotation;
+            dp.Scale = scale;
+            dp.Radian = angle;
+            dp.Delay = delay;
+            dp.DestoryAt = duration;
+            dp.FixRotation = fix;
             accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Fan, dp);
         }
 
@@ -1164,7 +1325,7 @@ public static class IbcHelper
 
     public static unsafe uint Tethering(this IBattleChara ibc, int index = 0)
     {
-        return ibc.Struct()->Vfx.Tethers[index].TargetId.ObjectId;
+        return ((BattleChara*)ibc.Address)->Vfx.Tethers[index].TargetId.ObjectId;
     }
 }
 
