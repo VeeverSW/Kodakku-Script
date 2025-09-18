@@ -6,7 +6,6 @@ using Dalamud.Utility.Numerics;
 using KodakkuAssist.Script;
 using KodakkuAssist.Module.GameEvent;
 using KodakkuAssist.Module.Draw;
-using ECommons.ExcelServices.TerritoryEnumeration;
 using System.Reflection.Metadata;
 using System.Net;
 using System.Threading.Tasks;
@@ -16,7 +15,7 @@ using System.Runtime.Intrinsics.Arm;
 namespace Veever.Heavensward.AetherochemicalResearchFacility;
 
 [ScriptType(name: "LV.60 血战苍穹魔科学研究所", territorys: [1110], guid: "dd08165c-b709-4100-a96e-65f2c7ae4f3b",
-    version: "0.0.0.6", author: "Veever", note: noteStr)]
+    version: "0.0.0.7", author: "Veever", note: noteStr)]
 
 public class AetherochemicalResearchFacility
 {
@@ -30,7 +29,7 @@ public class AetherochemicalResearchFacility
     private readonly object tetherLock = new object();
     const string noteStr =
     """
-    v0.0.0.6:
+    v0.0.0.7:
     1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
     2. 以前的这几个脚本的底层扩展目前懒得重构（就能加啥随便加了）
     鸭门。
