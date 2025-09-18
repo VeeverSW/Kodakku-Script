@@ -1,12 +1,5 @@
 ﻿using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Utility.Numerics;
-using ECommons;
-using ECommons.DalamudServices;
-using ECommons.ExcelServices;
-using ECommons.ExcelServices.TerritoryEnumeration;
-using ECommons.GameFunctions;
-using ECommons.GameHelpers;
-using ECommons.Reflection;
 using FFXIVClientStructs;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.UI;
@@ -33,13 +26,13 @@ using static Lumina.Data.Parsing.Layer.LayerCommon;
 namespace Veever.Shadowbringers.the_Qitana_Ravel;
 
 [ScriptType(name: "LV.75 文明古迹奇坦那神影洞", territorys: [823], guid: "50c922c1-1ecd-4750-8b55-24f19793408f",
-    version: "0.0.0.1", author: "Veever", note: noteStr)]
+    version: "0.0.0.2", author: "Veever", note: noteStr)]
 
 public class the_Qitana_Ravel
 {
     const string noteStr =
     """
-    v0.0.0.1:
+    v0.0.0.2:
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     2. 只用了单回放进行测试，不能保证绘图完全准确
     鸭门。
@@ -880,7 +873,7 @@ public static class IbcHelper
 
     public static unsafe uint Tethering(this IBattleChara ibc, int index = 0)
     {
-        return ibc.Struct()->Vfx.Tethers[index].TargetId.ObjectId;
+        return ((BattleChara*)ibc.Address)->Vfx.Tethers[index].TargetId.ObjectId;
     }
 }
 
