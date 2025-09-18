@@ -6,22 +6,20 @@ using Dalamud.Utility.Numerics;
 using KodakkuAssist.Script;
 using KodakkuAssist.Module.GameEvent;
 using KodakkuAssist.Module.Draw;
-using ECommons.ExcelServices.TerritoryEnumeration;
 using System.Reflection.Metadata;
 using System.Net;
 using System.Threading.Tasks;
 using Dalamud.Game.ClientState.Objects.Types;
 using System.Runtime.Intrinsics.Arm;
 using System.Collections.Generic;
-using ECommons.DalamudServices;
-using ECommons.GameFunctions;
-using ECommons.MathHelpers;
 using System.Xml.Linq;
+using FFXIVClientStructs;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 
 namespace Veever.DawnTrail.YuweyawataFieldStation;
 
 [ScriptType(name: "LV.100 废弃据点玉韦亚瓦塔实验站", territorys: [1242], guid: "992e47a8-17d0-4379-891b-0762c0509257",
-    version: "0.0.2.0", author: "Veever", note: noteStr)]
+    version: "0.0.2.1", author: "Veever", note: noteStr)]
 
 public class YuweyawataFieldStation
 {
@@ -33,7 +31,7 @@ public class YuweyawataFieldStation
 
     const string noteStr =
     """
-    v0.0.2.0:
+    v0.0.2.1:
     1. 如果有漏画（Boss出现在南侧核爆）错画的情况，请在dc@我，并附上arr文件
     鸭门。
     """;
@@ -1019,24 +1017,24 @@ public static class Extensions
 
 public static class IbcHelper
 {
-    public static IBattleChara? GetById(uint id)
+    public static IBattleChara? GetById(ScriptAccessory accessory, uint id)
     {
-        return (IBattleChara?)Svc.Objects.SearchByEntityId(id);
+        return (IBattleChara?)accessory.Data.Objects.SearchByEntityId(id);
     }
 
-    public static IBattleChara? GetMe()
+    public static IBattleChara? GetMe(ScriptAccessory accessory)
     {
-        return Svc.ClientState.LocalPlayer;
+        return accessory.Data.Objects.SearchByEntityId(accessory.Data.Me) as IBattleChara;
     }
 
-    public static IGameObject? GetFirstByDataId(uint dataId)
+    public static KodakkuAssist.Data.IGameObject? GetFirstByDataId(ScriptAccessory accessory, uint dataId)
     {
-        return Svc.Objects.Where(x => x.DataId == dataId).FirstOrDefault();
+        return accessory.Data.Objects.Where(x => x.DataId == dataId).FirstOrDefault();
     }
 
-    public static IEnumerable<IGameObject?> GetByDataId(uint dataId)
+    public static IEnumerable<KodakkuAssist.Data.IGameObject> GetByDataId(ScriptAccessory accessory, uint dataId)
     {
-        return Svc.Objects.Where(x => x.DataId == dataId);
+        return accessory.Data.Objects.Where(x => x.DataId == dataId);
     }
 }
 
@@ -1047,9 +1045,9 @@ public static unsafe class IBattleCharaExtensions
         return ibc.StatusList.Any(s => s.StatusId == statusId && s.RemainingTime > remaining);
     }
 
-    public static uint Tethering(this IBattleChara ibc, int index = 0)
+    public static unsafe uint Tethering(this IBattleChara ibc, int index = 0)
     {
-        return ibc.Struct()->Vfx.Tethers[index].TargetId.ObjectId;
+        return ((BattleChara*)ibc.Address)->Vfx.Tethers[index].TargetId.ObjectId;
     }
 
 }
