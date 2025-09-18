@@ -6,7 +6,6 @@ using Dalamud.Utility.Numerics;
 using KodakkuAssist.Script;
 using KodakkuAssist.Module.GameEvent;
 using KodakkuAssist.Module.Draw;
-using ECommons.ExcelServices.TerritoryEnumeration;
 using System.Reflection.Metadata;
 using System.Net;
 using System.Threading.Tasks;
@@ -14,19 +13,18 @@ using Dalamud.Game.ClientState.Objects.Types;
 using System.Runtime.Intrinsics.Arm;
 using System.Collections.Generic;
 using System.ComponentModel;
-using ECommons.Reflection;
 using System.Windows;
 
 namespace Veever.Other.Cliffhanger;
 
 [ScriptType(name: "金碟-小雏鸟的营救者", territorys: [144], guid: "4359482a-b7a8-4eb1-9a42-ffa3c79d6b7b",
-    version: "0.0.0.2", author: "Veever", note: noteStr)]
+    version: "0.0.0.3", author: "Veever", note: noteStr)]
 
 public class Cliffhanger
 {
     const string noteStr =
     """
-    v0.0.0.2:
+    v0.0.0.3:
     1. 支持经典版小雏鸟的营救者
     2. 炸弹爆炸范围和时间是精准的，请参考画图
     3. TODO: 另一版本小雏鸟的营救者（抽到就做）
