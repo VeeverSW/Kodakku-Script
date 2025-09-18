@@ -7,37 +7,30 @@ using KodakkuAssist.Script;
 using KodakkuAssist.Module.GameEvent;
 using KodakkuAssist.Module.Draw;
 using KodakkuAssist.Module.Draw.Manager;
-using ECommons.ExcelServices.TerritoryEnumeration;
 using System.Reflection.Metadata;
 using System.Net;
 using System.Threading.Tasks;
 using Dalamud.Game.ClientState.Objects.Types;
 using System.Collections.Generic;
 using System.ComponentModel;
-using ECommons.Reflection;
 using System.Windows;
-using ECommons;
-using ECommons.DalamudServices;
-using ECommons.GameFunctions;
 using FFXIVClientStructs;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using System.Runtime.Intrinsics.Arm;
-using ECommons.ExcelServices;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using ECommons.GameHelpers;
 
 namespace Veever.A_Realm_Reborn.Haukke_Manor;
 
 [ScriptType(name: "LV.28 名门府邸静语庄园", territorys: [1040], guid: "964f1a0a-5b2a-4473-b41b-a170bc823f67",
-    version: "0.0.0.3", author: "Veever", note: noteStr)]
+    version: "0.0.0.4", author: "Veever", note: noteStr)]
 
 public class Haukke_Manor
 {
     const string noteStr =
     """
-    v0.0.0.3:
+    v0.0.0.4:
     1. 绿色标记为需要捡的钥匙，红色代表不捡
     2. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     3. 如果想要鲶鱼精标记请确保你打开了ACT并且安装了鲶鱼精插件
@@ -73,7 +66,6 @@ public class Haukke_Manor
 
 
     //private readonly object OminousWindMarkerTTSLock = new object();
-    public int KeyCount = 0;
     public void Init(ScriptAccessory accessory)
     {
         accessory.Method.RemoveDraw(".*");
@@ -331,7 +323,7 @@ public class Haukke_Manor
 
     #region Boss3
     [ScriptMethod(name: "石化眼", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:28648"])]
-    public async void PetrifyingEye(Event @event, ScriptAccessory accessory)
+    public void PetrifyingEye(Event @event, ScriptAccessory accessory)
     {
         accessory.Method.RemoveDraw(".*");
         if (isText) accessory.Method.TextInfo("背对眼睛", duration: 4700, true);
@@ -723,7 +715,7 @@ public static class IbcHelper
 
     public static unsafe uint Tethering(this IBattleChara ibc, int index = 0)
     {
-        return ibc.Struct()->Vfx.Tethers[index].TargetId.ObjectId;
+        return ((BattleChara*)ibc.Address)->Vfx.Tethers[index].TargetId.ObjectId;
     }
 }
 
