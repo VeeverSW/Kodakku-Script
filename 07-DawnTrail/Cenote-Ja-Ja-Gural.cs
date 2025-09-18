@@ -7,7 +7,6 @@ using KodakkuAssist.Script;
 using KodakkuAssist.Module.GameEvent;
 using KodakkuAssist.Module.Draw;
 using KodakkuAssist.Module.Draw.Manager;
-using ECommons.ExcelServices.TerritoryEnumeration;
 using System.Reflection.Metadata;
 using System.Net;
 using System.Threading.Tasks;
@@ -15,27 +14,24 @@ using Dalamud.Game.ClientState.Objects.Types;
 using System.Runtime.Intrinsics.Arm;
 using System.Collections.Generic;
 using System.ComponentModel;
-using ECommons.Reflection;
 using System.Windows;
-using ECommons;
-using ECommons.DalamudServices;
-using ECommons.GameFunctions;
 using FFXIVClientStructs;
 using System;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
 using FFXIVClientStructs.FFXIV.Client.UI;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 
 namespace Veever.DawnTrail.Cenote_Ja_Ja_Gural;
 
 [ScriptType(name: "加加财富天坑", territorys: [1209], guid: "64620549-e269-49c0-b0ae-76edec024864",
-    version: "0.0.0.3", author: "Veever", note: noteStr)]
+    version: "0.0.0.4", author: "Veever", note: noteStr)]
 
 public class Cenote_Ja_Ja_Gural
 {
     const string noteStr =
     """
-    v0.0.0.3:
+    v0.0.0.4:
     1. 加加财富天坑只根据自己下底的arr进行绘制，没有后面天箭绘画的情况
     2. 如果你有此方面的素材可以dc私信提供给我，我会加入到绘制里
     鸭门。
@@ -280,24 +276,24 @@ public static class Extensions
 
 public static class IbcHelper
 {
-    public static IBattleChara? GetById(uint id)
+    public static IBattleChara? GetById(ScriptAccessory accessory, uint id)
     {
-        return (IBattleChara?)Svc.Objects.SearchByEntityId(id);
+        return (IBattleChara?)accessory.Data.Objects.SearchByEntityId(id);
     }
 
-    public static IBattleChara? GetMe()
+    public static IBattleChara? GetMe(ScriptAccessory accessory)
     {
-        return Svc.ClientState.LocalPlayer;
+        return accessory.Data.Objects.SearchByEntityId(accessory.Data.Me) as IBattleChara;
     }
 
-    public static IGameObject? GetFirstByDataId(uint dataId)
+    public static KodakkuAssist.Data.IGameObject? GetFirstByDataId(ScriptAccessory accessory, uint dataId)
     {
-        return Svc.Objects.Where(x => x.DataId == dataId).FirstOrDefault();
+        return accessory.Data.Objects.Where(x => x.DataId == dataId).FirstOrDefault();
     }
 
-    public static IEnumerable<IGameObject?> GetByDataId(uint dataId)
+    public static IEnumerable<KodakkuAssist.Data.IGameObject> GetByDataId(ScriptAccessory accessory, uint dataId)
     {
-        return Svc.Objects.Where(x => x.DataId == dataId);
+        return accessory.Data.Objects.Where(x => x.DataId == dataId);
     }
 }
 
@@ -308,9 +304,9 @@ public static unsafe class IBattleCharaExtensions
         return ibc.StatusList.Any(s => s.StatusId == statusId && s.RemainingTime > remaining);
     }
 
-    public static uint Tethering(this IBattleChara ibc, int index = 0)
+    public static unsafe uint Tethering(this IBattleChara ibc, int index = 0)
     {
-        return ibc.Struct()->Vfx.Tethers[index].TargetId.ObjectId;
+        return ((BattleChara*)ibc.Address)->Vfx.Tethers[index].TargetId.ObjectId;
     }
 
 }
