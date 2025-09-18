@@ -7,7 +7,6 @@ using KodakkuAssist.Script;
 using KodakkuAssist.Module.GameEvent;
 using KodakkuAssist.Module.Draw;
 using KodakkuAssist.Module.Draw.Manager;
-using ECommons.ExcelServices.TerritoryEnumeration;
 using System.Reflection.Metadata;
 using System.Net;
 using System.Threading.Tasks;
@@ -15,26 +14,23 @@ using Dalamud.Game.ClientState.Objects.Types;
 using System.Runtime.Intrinsics.Arm;
 using System.Collections.Generic;
 using System.ComponentModel;
-using ECommons.Reflection;
 using System.Windows;
-using ECommons;
-using ECommons.DalamudServices;
-using ECommons.GameFunctions;
 using FFXIVClientStructs;
 using System;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 
 namespace Veever.Shadowbringers.theGrandCosmos;
 
 [ScriptType(name: "LV.80 魔法宫殿宇宙宫", territorys: [884], guid: "b3a2febd-73ff-44a9-a897-22fa50c74ff3",
-    version: "0.0.0.2", author: "Veever", note: noteStr)]
+    version: "0.0.0.3", author: "Veever", note: noteStr)]
 
 public class the_Grand_Cosmos
 {
     const string noteStr =
     """
-    v0.0.0.2:
+    v0.0.0.3:
     1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
     2. 标点开关以及本地开关都在用户设置里面，可自行选择关闭或者开启（默认本地开启）
     3. 有生之年!可能会!添加新的扫帚紫圈的判定方式
@@ -643,7 +639,7 @@ public class the_Grand_Cosmos
         {
             await Task.Delay(500);
             var offset = Boss2WindisWest ? -1f : 1f;
-            foreach (var item in IbcHelper.GetByDataId(11269))
+            foreach (var item in IbcHelper.GetByDataId(accessory, 11269))
             {
                 DebugMsg($"itemid: {item}", accessory);
                 //DebugMsg($"itemGameObjectId: {item.GameObjectId}", accessory);
@@ -786,7 +782,7 @@ public class the_Grand_Cosmos
         List<uint> dataIds = new List<uint> { 11278, 11279, 11281, 11280 };
         foreach (var dataId in dataIds)
         {
-            foreach (var item in IbcHelper.GetByDataId(dataId))
+            foreach (var item in IbcHelper.GetByDataId(accessory, dataId))
             {
                 var dp = accessory.Data.GetDefaultDrawProperties();
                 dp.Name = "蓝火传火";
@@ -1065,24 +1061,24 @@ public static class Extensions
 
 public static class IbcHelper
 {
-    public static IBattleChara? GetById(uint id)
+    public static IBattleChara? GetById(ScriptAccessory accessory, uint id)
     {
-        return (IBattleChara?)Svc.Objects.SearchByEntityId(id);
+        return (IBattleChara?)accessory.Data.Objects.SearchByEntityId(id);
     }
 
-    public static IBattleChara? GetMe()
+    public static IBattleChara? GetMe(ScriptAccessory accessory)
     {
-        return Svc.ClientState.LocalPlayer;
+        return accessory.Data.Objects.SearchByEntityId(accessory.Data.Me) as IBattleChara;
     }
 
-    public static IGameObject? GetFirstByDataId(uint dataId)
+    public static KodakkuAssist.Data.IGameObject? GetFirstByDataId(ScriptAccessory accessory, uint dataId)
     {
-        return Svc.Objects.Where(x => x.DataId == dataId).FirstOrDefault();
+        return accessory.Data.Objects.Where(x => x.DataId == dataId).FirstOrDefault();
     }
 
-    public static IEnumerable<IGameObject?> GetByDataId(uint dataId)
+    public static IEnumerable<KodakkuAssist.Data.IGameObject> GetByDataId(ScriptAccessory accessory, uint dataId)
     {
-        return Svc.Objects.Where(x => x.DataId == dataId);
+        return accessory.Data.Objects.Where(x => x.DataId == dataId);
     }
 }
 
@@ -1093,10 +1089,9 @@ public static unsafe class IBattleCharaExtensions
         return ibc.StatusList.Any(s => s.StatusId == statusId && s.RemainingTime > remaining);
     }
 
-    public static uint Tethering(this IBattleChara ibc, int index = 0)
+    public static unsafe uint Tethering(this IBattleChara ibc, int index = 0)
     {
-        return ibc.Struct()->Vfx.Tethers[index].TargetId.ObjectId;
+        return ((BattleChara*)ibc.Address)->Vfx.Tethers[index].TargetId.ObjectId;
     }
-
 }
 
