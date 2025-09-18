@@ -6,7 +6,6 @@ using Dalamud.Utility.Numerics;
 using KodakkuAssist.Script;
 using KodakkuAssist.Module.GameEvent;
 using KodakkuAssist.Module.Draw;
-using ECommons.ExcelServices.TerritoryEnumeration;
 using System.Reflection.Metadata;
 using System.Net;
 using System.Threading.Tasks;
@@ -14,18 +13,17 @@ using Dalamud.Game.ClientState.Objects.Types;
 using System.Runtime.Intrinsics.Arm;
 using System.Collections.Generic;
 using System.ComponentModel;
-using ECommons.Reflection;
 
 namespace Veever.A_Realm_Reborn.PullingPoisonPosies;
 
 [ScriptType(name: "LV.20 驱除剧毒妖花！", territorys: [191], guid: "ffdb31c2-0517-430e-924e-159766aea93d",
-    version: "0.0.0.2", author: "Veever", note: noteStr)]
+    version: "0.0.0.3", author: "Veever", note: noteStr)]
 
 public class Pulling_Poison_Posies
 {
     const string noteStr =
     """
-    v0.0.0.2:
+    v0.0.0.3:
     1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
     鸭门。
     """;
