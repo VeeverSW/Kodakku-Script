@@ -58,7 +58,7 @@ public class UnrealSeiryu
     Duckmen.
     """;
 
-    private const string Name = "LV.100 青龙诗魂/幻巧战 [the Wreath of Snakes Ex/Unreal]";
+    private const string Name = "LV.100 青龙诗魂-幻巧战 [the Wreath of Snakes Ex-Unreal]";
     private const string Version = "0.0.0.1";
     private const string DebugVersion = "a";
     private const string UpdateInfo = "";
