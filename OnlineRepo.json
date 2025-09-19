@@ -458,16 +458,17 @@
     ]
   },
   {
-    "Name": "LV.70 火龙狩猎战",
-    "Guid": "29faa996-8dea-4d09-b551-4be5c7cb6542",
-    "Version": "0.0.0.2",
-    "Author": "Veever",
-    "Repo": "",
-    "DownloadUrl": "",
-    "Note": "v0.0.0.2:\r\n1. 初始版本\r\n鸭门。",
+    "Name": "LV.100 青龙诗魂/幻巧战 [the Wreath of Snakes Ex/Unreal]",
+    "Guid": "3a915832-971d-4c27-b802-407a1e30ae53",
+    "Version": "0.0.0.1",
+    "Author": "Veever & Usami",
+    "Repo": "https://github.com/VeeverSW/Kodakku-Script",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/the-Wreath-of-Snakes-Unreal.cs",
+    "Note": "v0.0.0.1\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n2. 刀禁咒分摊强制绑定画双奶（双奶死了的话就听天由命了）\r\n3. 塔站位绘图按照如下方式\r\n      MT / D1    ST / D2\r\n      H1 / D3    H2 / D4\r\n4. 极神机制还未彻底完成（缺少技能id（其实是懒得去，有朝一日会加的））\r\n5. 鲶鱼精标点为基础北东南西ABCD标点\r\n鸭门\r\n----------------------------------\r\n1. If you need a draw or notice any issues, @ me on DC or DM me.\r\n2. For the Forbidden Arts Stack, both healers are hard-locked draw\r\n   (if both healers die, it’s GG / pray to Hydaelyn xd).\r\n3. Tower positions are as follows:\r\n      MT / D1    ST / D2\r\n      H1 / D3    H2 / D4\r\n4. EX trial draw are not fully implemented yet (missing skill IDs — honestly just lazy, \r\n   will add them one day).\r\n5. PostNamazu markers default to standard N/E/S/W (ABCD).\r\nDuck Gate",
     "UpdateInfo": "",
     "TerritoryIds": [
-      761
+      825,
+      1302
     ]
   }
 ]
