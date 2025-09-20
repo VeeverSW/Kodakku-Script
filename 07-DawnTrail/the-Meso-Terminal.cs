@@ -107,7 +107,6 @@ public class TheMesoTerminal
 
     private Dictionary<ulong, ulong> _tethersDict = new();
     private static bool _initHint = false;
-    public int KanaboTTSCount;
 
     private List<ulong> _terrorList = new();
 
@@ -117,14 +116,12 @@ public class TheMesoTerminal
         accessory.Method.SendChat($"/e [DEBUG] {str}");
     }
 
-    bool BombardmentLock;
     public void Init(ScriptAccessory sa)
     {
         sa.Log.Debug($"脚本 {Name} v{Version}{DebugVersion} 完成初始化.");
         sa.Method.RemoveDraw(".*");
 
         _terrorList.Clear();
-        BombardmentLock = false;
     }
 
 
@@ -466,14 +463,10 @@ public class TheMesoTerminal
     }
 
     [ScriptMethod(name: "雷转质射线 - Electray", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:43810"])]
-    public async void Boss3Electray(Event ev, ScriptAccessory sa)
+    public void Boss3Electray(Event ev, ScriptAccessory sa)
     {
-        BombardmentLock = true;
         DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(8, 45), 4700, $"Electray-{ev.SourceId}", scalemode: ScaleMode.ByTime);
         sa.Method.RemoveDraw($"Bombardment");
-
-        await Task.Delay(6000);
-        BombardmentLock = false;
     }
 
 
@@ -538,7 +531,7 @@ public class TheMesoTerminal
             dp.Position = ExtensionMethods.Quantized(position);
             dp.Rotation = float.Pi;
             dp.Scale = size;
-            dp.DestoryAt = 10000;
+            dp.DestoryAt = 9700;
             sa.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Circle, dp);
         }
     }
