@@ -40,13 +40,11 @@ public class TheMesoTerminal
     """
     v0.0.0.1
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
-    2. Boss3 NPC聚集在一起的圆圈绘画如果掉线可能会导致不画，以及在无人机阶段会误判（但是会及时消除），预计有新思路后会更新
+    2. Boss3 NPC聚集在一起的圆圈绘画如果掉线可能会导致不画
     鸭门
     ------------------------------
     1. If you need a draw for a mechanic or notice any issues, @ me on DC or DM me.
-    2. Boss 3: The circle draw for Bombardment may fail to draw if you disconnect, 
-       and during the drone phase it may false trigger (but it clears itself quickly). 
-       Will update once I have a better approach.
+    2. Boss 3: The circle draw for Bombardment may fail to draw if you disconnect
     Duckmen
     """;
 
