@@ -474,12 +474,12 @@
   {
     "Name": "LV.100 永久幽界中央终端 [the Meso Terminal]",
     "Guid": "c74e8153-46e1-4a18-97bd-250463781ed2",
-    "Version": "0.0.0.2",
+    "Version": "0.0.0.3",
     "Author": "Veever",
     "Repo": "https://github.com/VeeverSW/Kodakku-Script",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/the-Meso-Terminal.cs",
-    "Note": "v0.0.0.2\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n2. Boss3 NPC聚集在一起的圆圈绘画如果掉线可能会导致不画\r\n鸭门\r\n------------------------------\r\n1. If you need a draw for a mechanic or notice any issues, @ me on DC or DM me.\r\n2. Boss 3: The circle draw for Bombardment may fail to draw if you disconnect\r\nDuckmen",
-    "UpdateInfo": "修复了boss3左右刀绘图方向问题",
+    "Note": "v0.0.0.3\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n2. Boss3 NPC聚集在一起的圆圈绘画如果掉线可能会导致不画\r\n鸭门\r\n------------------------------\r\n1. If you need a draw for a mechanic or notice any issues, @ me on DC or DM me.\r\n2. Boss 3: The circle draw for Bombardment may fail to draw if you disconnect\r\nDuckmen",
+    "UpdateInfo": "    v0.0.0.3\r\n    增加了Boss3的分摊播报和绘图\r\n    Added stack notify & draw for Boss 3",
     "TerritoryIds": [
       1292
     ]

@@ -24,7 +24,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-
 namespace Veever.DawnTrail.TheMesoTerminal;
 
 [ScriptType(name: Name, territorys: [1292], guid: "c74e8153-46e1-4a18-97bd-250463781ed2",
@@ -38,7 +37,7 @@ public class TheMesoTerminal
 {
     const string NoteStr =
     """
-    v0.0.0.2
+    v0.0.0.3
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     2. Boss3 NPC聚集在一起的圆圈绘画如果掉线可能会导致不画
     鸭门
@@ -48,10 +47,16 @@ public class TheMesoTerminal
     Duckmen
     """;
 
+    const string UpdateInfo =
+    """
+        v0.0.0.3
+        增加了Boss3的分摊播报和绘图
+        Added stack notify & draw for Boss 3
+    """;
+
     private const string Name = "LV.100 永久幽界中央终端 [the Meso Terminal]";
-    private const string Version = "0.0.0.2";
+    private const string Version = "0.0.0.3";
     private const string DebugVersion = "a";
-    private const string UpdateInfo = "";
 
     private const bool Debugging = true;
 
@@ -606,9 +611,24 @@ public class TheMesoTerminal
 
     }
 
-    [ScriptMethod(name: "分摊", eventType: EventTypeEnum.TargetIcon, eventCondition: ["Id:regex:^(525)$"])]
+    [ScriptMethod(name: "分摊", eventType: EventTypeEnum.TargetIcon, eventCondition: ["Id:regex:^(020D)$"])]
     public void MemoryoftheStorm(Event ev, ScriptAccessory sa)
     {
+        string tname = ev["TargetName"]?.ToString() ?? "未知目标";
+        if (ev.TargetId == sa.Data.Me)
+        {
+            string msg = language == Language.Chinese ? "分摊点名" : "Stack";
+            if (isText) sa.Method.TextInfo($"{msg}", duration: 4000, true);
+            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        } else
+        {
+            string msg = language == Language.Chinese ? $"与{tname}分摊" : $"Stack with {tname}";
+            if (isText) sa.Method.TextInfo($"{msg}", duration: 4000, true);
+            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        }
+
+        DrawHelper.DrawRectObjectTarget(sa, ev.SourceId, ev.TargetId, new Vector2(8, 40), 5000, "MemoryoftheStorm", color: sa.Data.DefaultSafeColor);
+
     }
 
 
@@ -1705,6 +1725,20 @@ public static class DrawHelper
         dp.Name = name;
         dp.Color = color ?? accessory.Data.DefaultDangerColor;
         dp.Owner = owner;
+        dp.Scale = scale;
+        dp.Delay = delay;
+        dp.DestoryAt = duration;
+        dp.ScaleMode = scalemode;
+        accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Rect, dp);
+    }
+
+    public static void DrawRectObjectTarget(ScriptAccessory accessory, ulong owner, ulong target, Vector2 scale, int duration, string name, Vector4? color = null, int delay = 0, ScaleMode scalemode = ScaleMode.None)
+    {
+        var dp = accessory.Data.GetDefaultDrawProperties();
+        dp.Name = name;
+        dp.Color = color ?? accessory.Data.DefaultDangerColor;
+        dp.Owner = owner;
+        dp.TargetObject = target;
         dp.Scale = scale;
         dp.Delay = delay;
         dp.DestoryAt = duration;
