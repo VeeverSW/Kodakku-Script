@@ -474,12 +474,12 @@
   {
     "Name": "LV.100 永久幽界中央终端 [the Meso Terminal]",
     "Guid": "c74e8153-46e1-4a18-97bd-250463781ed2",
-    "Version": "0.0.0.1",
+    "Version": "0.0.0.2",
     "Author": "Veever",
     "Repo": "https://github.com/VeeverSW/Kodakku-Script",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/the-Meso-Terminal.cs",
-    "Note": "v0.0.0.1\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n2. Boss3 NPC聚集在一起的圆圈绘画如果掉线可能会导致不画，以及在无人机阶段会误判（但是会及时消除），预计有新思路后会更新\r\n鸭门\r\n------------------------------\r\n1. If you need a draw for a mechanic or notice any issues, @ me on DC or DM me.\r\n2. Boss 3: The circle draw for Bombardment may fail to draw if you disconnect, \r\n   and during the drone phase it may false trigger (but it clears itself quickly). \r\n   Will update once I have a better approach.\r\nDuckmen",
-    "UpdateInfo": "",
+    "Note": "v0.0.0.2\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n2. Boss3 NPC聚集在一起的圆圈绘画如果掉线可能会导致不画\r\n鸭门\r\n------------------------------\r\n1. If you need a draw for a mechanic or notice any issues, @ me on DC or DM me.\r\n2. Boss 3: The circle draw for Bombardment may fail to draw if you disconnect\r\nDuckmen",
+    "UpdateInfo": "修复了boss3左右刀绘图方向问题",
     "TerritoryIds": [
       1292
     ]

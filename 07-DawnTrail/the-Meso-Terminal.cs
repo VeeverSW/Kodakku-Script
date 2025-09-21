@@ -38,7 +38,7 @@ public class TheMesoTerminal
 {
     const string NoteStr =
     """
-    v0.0.0.1
+    v0.0.0.2
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     2. Boss3 NPC聚集在一起的圆圈绘画如果掉线可能会导致不画
     鸭门
@@ -49,7 +49,7 @@ public class TheMesoTerminal
     """;
 
     private const string Name = "LV.100 永久幽界中央终端 [the Meso Terminal]";
-    private const string Version = "0.0.0.1";
+    private const string Version = "0.0.0.2";
     private const string DebugVersion = "a";
     private const string UpdateInfo = "";
 
@@ -587,7 +587,7 @@ public class TheMesoTerminal
             // 左
             case 43814:
                 {
-                    DrawHelper.DrawFanOwner(sa, ev.SourceId, -float.Pi, new Vector2(50f), 180, 4700, $"Turmoil-{ev.SourceId}", scaleByTime: false);
+                    DrawHelper.DrawFanOwner(sa, ev.SourceId, (-float.Pi / 2), new Vector2(50f), 180, 4700, $"Turmoil-{ev.SourceId}", scaleByTime: false);
                     string msg = language == Language.Chinese ? "去右侧" : "Go Right";
                     if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
                     if (isTTS) sa.Method.EdgeTTS($"{msg}");
@@ -596,7 +596,7 @@ public class TheMesoTerminal
             // 右
             case 43815:
                 {
-                    DrawHelper.DrawFanOwner(sa, ev.SourceId, float.Pi / 2, new Vector2(50f), 180, 4700, $"Turmoil-{ev.SourceId}", scaleByTime: false);
+                    DrawHelper.DrawFanOwner(sa, ev.SourceId, (float.Pi / 2), new Vector2(50f), 180, 4700, $"Turmoil-{ev.SourceId}", scaleByTime: false);
                     string msg = language == Language.Chinese ? "去左侧" : "Go Left";
                     if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
                     if (isTTS) sa.Method.EdgeTTS($"{msg}");
