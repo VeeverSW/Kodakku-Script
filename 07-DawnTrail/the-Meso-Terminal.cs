@@ -37,7 +37,7 @@ public class TheMesoTerminal
 {
     const string NoteStr =
     """
-    v0.0.0.3
+    v0.0.0.4
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     2. Boss3 NPC聚集在一起的圆圈绘画如果掉线可能会导致不画
     鸭门
@@ -49,13 +49,13 @@ public class TheMesoTerminal
 
     const string UpdateInfo =
     """
-        v0.0.0.3
-        增加了Boss3的分摊播报和绘图
-        Added stack notify & draw for Boss 3
+        v0.0.0.4
+        修复Boss3的NPC机制绘图的一些逻辑问题
+        Fixed some logic issues with Boss 3 NPC mechanic
     """;
 
     private const string Name = "LV.100 永久幽界中央终端 [the Meso Terminal]";
-    private const string Version = "0.0.0.3";
+    private const string Version = "0.0.0.4";
     private const string DebugVersion = "a";
 
     private const bool Debugging = true;
@@ -112,6 +112,7 @@ public class TheMesoTerminal
     private static bool _initHint = false;
 
     private List<ulong> _terrorList = new();
+    private readonly object CountLock = new object();
 
     public void DebugMsg(string str, ScriptAccessory accessory)
     {
@@ -476,10 +477,13 @@ public class TheMesoTerminal
     [ScriptMethod(name: "小怪出现 - Terror Spawn", eventType: EventTypeEnum.AddCombatant, eventCondition: ["DataId:18624"])]
     public void TerrorSpawn(Event ev, ScriptAccessory sa)
     {
-        if (!_terrorList.Contains(ev.SourceId))
+        lock (CountLock)
         {
-            _terrorList.Add(ev.SourceId);
-            DebugMsg($"Terror spawned: {ev.SourceId}, total: {_terrorList.Count}", sa);
+            if (!_terrorList.Contains(ev.SourceId))
+            {
+                _terrorList.Add(ev.SourceId);
+                DebugMsg($"Terror spawned: {ev.SourceId}, total: {_terrorList.Count}", sa);
+            }
         }
     }
 
@@ -508,16 +512,19 @@ public class TheMesoTerminal
             var pos = ev.SourcePosition;
             var big = false;
 
-            for (int i = 0; i < count; ++i)
+            for (int i = 0; i < count; i++)
             {
                 var t = IbcHelper.GetById(sa, _terrorList[i]);
                 if (t?.EntityId == ev.SourceId)
                 {
                     continue;
                 }
-                if (t != null && AlmostEqual(t.Position, pos, 5f))
+                if (t != null && AlmostEqual(t.Position, pos, 6f))
                 {
+                    sa.Log.Debug($"tid: {t.GameObjectId}, tpos: {t.Position}, pos: {pos}, visible : {ExtensionVisibleMethod.IsCharacterVisible((ICharacter)t)}");
+                    if (!ExtensionVisibleMethod.IsCharacterVisible((ICharacter)t)) continue;
                     big = true;
+                    sa.Log.Debug($"isbig: tid: {t.GameObjectId}, tpos: {t.Position}, pos: {pos}, visible : {ExtensionVisibleMethod.IsCharacterVisible((ICharacter)t)}");
                     break;
                 }
             }
