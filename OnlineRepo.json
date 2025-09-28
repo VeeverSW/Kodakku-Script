@@ -351,22 +351,6 @@
     ]
   },
   {
-    "Name": "PVPMarker",
-    "Guid": "98f639f8-095b-4d68-8d46-0bc38c4cd552",
-    "Version": "0.0.0.2",
-    "Author": "Veever",
-    "Repo": "",
-    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/00-Other/PVPMarker.cs",
-    "Note": "v0.0.0.2:\r\n--------快进罩子听我展开复仇计划--------\r\n！初次使用请调整好方法设置里面的选项！\r\n1. 标点开关以及本地开关都在用户设置里面，可自行选择关闭或者开启（默认本地开启）;\r\n2. 有空加个记录功能;\r\n3. 已知问题(找不到它主人(绝对不是懒得弄)): 被召唤兽 (召唤LB) 杀死不会标点，击杀者也为召唤兽的名字;\r\n4. 如果有想加的功能请在dc频道@我说一下 或者 私信我;\r\n鸭门。",
-    "UpdateInfo": "",
-    "TerritoryIds": [
-      431,
-      554,
-      888,
-      791
-    ]
-  },
-  {
     "Name": "LV.100 白虎幻巧战",
     "Guid": "29193d9d-a2c5-4a0d-875b-943a06790b95",
     "Version": "0.0.0.4",
