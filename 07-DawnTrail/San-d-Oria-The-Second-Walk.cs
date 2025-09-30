@@ -1,4 +1,4 @@
-﻿using Dalamud.Utility.Numerics;
+using Dalamud.Utility.Numerics;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Vfx;
@@ -37,7 +37,7 @@ public class San_d_Oria_The_Second_Walk
 {
     const string NoteStr =
     """
-    v0.0.0.1
+    v0.0.0.2
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     2. Boss1可能会遇到双手直线时间偏长的问题（懒得改了影响不是很大）
     3. Boss3并没有对坦克职业的击退死刑执行自动防击退
@@ -60,12 +60,13 @@ public class San_d_Oria_The_Second_Walk
 
     const string UpdateInfo =
     """
-        v0.0.0.1
-
+        v0.0.0.2
+        修复了Boss4二阶段"地板复制"技能画错的问题
+        Fixed an issue where Boss 4's phase 2 "Duplicate" mechanic was drawn incorrectly.
     """;
 
     private const string Name = "LV.100 桑多利亚：第二巡行 [San d Oria The Second Walk]";
-    private const string Version = "0.0.0.1";
+    private const string Version = "0.0.0.2";
     private const string DebugVersion = "a";
 
     private const bool Debugging = true;
@@ -115,7 +116,6 @@ public class San_d_Oria_The_Second_Walk
         English
     }
 
-    private Dictionary<ulong, ulong> _tethersDict = new();
     private static bool _initHint = false;
 
     private int MoontideFontCount = 0;
@@ -140,11 +140,23 @@ public class San_d_Oria_The_Second_Walk
     {
         sa.Log.Debug($"脚本 {Name} v{Version}{DebugVersion} 完成初始化.");
         sa.Method.RemoveDraw(".*");
+
         MoontideFontCount = 0;
         SynchronizedStrikeCount = 0;
+
+        isSecondTankBuster = false;
+        duplicatePhase2 = false;
+        hasKnockback = false;
+        frameworkRegistered = false;
+
         sa.Method.ClearFrameworkUpdateAction(this);
+        Boss1QuadraRecordGuid = "";
+
+        tetherData.Clear();
+        Boss1QuadraRecordData.Clear();
         surfaceMissiles.Clear();
         boss3TankBusterList.Clear();
+        boss4TankBusterList.Clear();
     }
 
 
@@ -1454,14 +1466,17 @@ public class San_d_Oria_The_Second_Walk
         var state = uint.Parse(ev["State"]?.ToString() ?? "0", System.Globalization.NumberStyles.HexNumber);
 
         DebugMsg($"EnvControl - Index: 0x{index:X} ({index}), State: 0x{state:X} ({state})", sa);
+        sa.Log.Debug($"EnvControl - Index: 0x{index:X} ({index}), State: 0x{state:X} ({state})");
 
         DebugMsg($"con: {state == 0x00020001u}", sa);
+        sa.Log.Debug("$con: {state == 0x00020001u}");
 
         switch (index)
         {
             case >= 0x2Cu and <= 0x34u when !duplicatePhase2 && state == 0x00020001u || duplicatePhase2 && state == 0x00080010u:
 
                 DebugMsg($"1. Duplicate AOE at tile index: 0x{index:X}, duplicatePhase2: {duplicatePhase2}", sa);
+                sa.Log.Debug($"1. Duplicate AOE at tile index: 0x{index:X}, duplicatePhase2: {duplicatePhase2}");
 
                 var tile = index - 0x2Cu;
 
@@ -1470,18 +1485,22 @@ public class San_d_Oria_The_Second_Walk
 
             case >= 0x35u and <= 0x3Du:
                 DebugMsg($"2. Duplicate AOE at tile index: 0x{index:X}", sa);
+                sa.Log.Debug($"2. Duplicate AOE at tile index: 0x{index:X}");
                 switch (state)
                 {
                     case 0x00080010u:
                         DebugMsg($"case 0x00080010u activated", sa);
+                        sa.Log.Debug($"case 0x00080010u activated");
                         var tile2 = index - 0x35u;
                         AddDuplicateAOEs((int)(tile2 / 3), (int)(tile2 % 3), sa);
                         break;
                     case 0x00020001u:
                         DebugMsg($"case 0x00020001u activated", sa);
+                        sa.Log.Debug($"case 0x00020001u activated");
                         var tile3 = index - 0x35u;
                         var tilePos = new Vector3(784f + tile3 % 3 * 16f, -900, -816f + tile3 / 3 * 16f) + new Vector3(0, 0, -8f);
                         DebugMsg($"Draw Duplicate at tile index: 0x{index:X}, pos: {tilePos}", sa);
+                        sa.Log.Debug($"Draw Duplicate at tile index: 0x{index:X}, pos: {tilePos}");
                         DrawHelper.DrawRectPosNoTarget(sa, tilePos, new Vector2(16f, 16f), 7800, $"Duplicate-{index}", new Vector4(1, 0, 0, 1), drawMode: DrawModeEnum.Default);
 
                         break;
@@ -1490,6 +1509,7 @@ public class San_d_Oria_The_Second_Walk
             case 0x24u when state == 0x00200040u:
                 duplicatePhase2 = true;
                 DebugMsg("Duplicate Phase 2 activated", sa);
+                sa.Log.Debug("Duplicate Phase 2 activated");
                 break;
         }
     }
@@ -1536,7 +1556,6 @@ public class San_d_Oria_The_Second_Walk
     {
         sa.Method.RemoveDraw("Duplicate.*");
         sa.Method.RemoveDraw("DuplicateAOE.*");
-        duplicatePhase2 = false;
         DebugMsg("Duplicate AOEs cleared", sa);
     }
 
