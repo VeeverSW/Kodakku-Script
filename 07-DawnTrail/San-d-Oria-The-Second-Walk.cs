@@ -64,7 +64,7 @@ public class San_d_Oria_The_Second_Walk
 
     """;
 
-    private const string Name = "LV.100 桑多利亚：第二巡行 [San d'Oria: The Second Walk]";
+    private const string Name = "LV.100 桑多利亚：第二巡行 [San d Oria The Second Walk]";
     private const string Version = "0.0.0.1";
     private const string DebugVersion = "a";
 
