@@ -18,6 +18,7 @@ using KodakkuAssist.Module.GameEvent.Types;
 using KodakkuAssist.Module.GameOperate;
 using KodakkuAssist.Script;
 using Lumina.Excel.Sheets;
+using Lumina.Excel.Sheets.Experimental;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -41,7 +42,7 @@ public class FindTarget
 {
     const string NoteStr =
     """
-    v0.0.0.5
+    v0.0.1.0
     1. 自动帮你找到范围内你想要找的人
     2. 输入/e vvfind + 名字; 即可搜索
     3. 如果想要关掉指路标记或者别的额外功能，输入/e vvstop
@@ -53,11 +54,11 @@ public class FindTarget
 
     const string UpdateInfo =
     """
-        v0.0.0.5
+        v0.0.1.0
     """;
 
     private const string Name = "寻人 NPC 物品小工具";
-    private const string Version = "0.0.0.5";
+    private const string Version = "0.0.1.0";
     private const string DebugVersion = "a";
 
     private const bool Debugging = true;
@@ -196,11 +197,32 @@ public class FindTarget
     [ScriptMethod(name: "key needed TP(不要野外用！！)", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvtp$"])]
     public void teleportOb(Event ev, ScriptAccessory sa)
     {
-        if (ob == null) return;
         if (key != mainKey) return;
+        if (ob == null) return;
         SpecialFunction.SetPosition(sa, sa.Data.MyObject, ob.Position);
     }
 
+
+    [ScriptMethod(name: "key needed vvrot", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvrot$"])]
+    public void setRot(Event ev, ScriptAccessory sa)
+    {
+        if (key != mainKey) return;
+        var myobj = sa.Data.MyObject;
+        if (myobj == null) return;
+
+        if (ob == null || !ob.IsValid() || myobj == null || !myobj.IsValid())
+        {
+            sa.Log.Error($"Invalid Object");
+            return;
+        }
+
+        unsafe
+        {
+            GameObject* charaStruct = (GameObject*)myobj.Address;
+            charaStruct->SetRotation(ob.Rotation);
+        }
+        sa.Log.Debug($"改变面向 {myobj.Name.TextValue} | {myobj.Rotation.RadToDeg()} => obj: {ob.Name.TextValue} {ob.Rotation.RadToDeg()}");
+    }
 
     public async void FindTargetDetail(Event ev, ScriptAccessory sa, IGameObject? findingObj)
     {
@@ -295,11 +317,17 @@ public class FindTarget
 
 }
 
-    
+
+public static class MathTools
+{
+    public static float DegToRad(this float deg) => (deg + 360f) % 360f / 180f * float.Pi;
+    public static float RadToDeg(this float rad) => (rad + 2 * float.Pi) % (2 * float.Pi) / float.Pi * 180f;
+
+}
 
 
-#region 函数集
-public static class EventExtensions
+    #region 函数集
+    public static class EventExtensions
 {
     private static bool ParseHexId(string? idStr, out uint id)
     {
