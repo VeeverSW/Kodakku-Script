@@ -493,5 +493,16 @@
     "TerritoryIds": [
       1304
     ]
+  },
+  {
+    "Name": "寻人/NPC/物品小工具",
+    "Guid": "5365f3f5-bef5-4ac6-a546-cb2f9d347ed8",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "Repo": "https://github.com/VeeverSW/Kodakku-Script",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/00-Other/FindTarget.cs",
+    "Note": "v0.0.0.1\r\n1. 自动帮你找到范围内你想要找的人\r\n2. 输入/e vvfind + 名字; 即可搜索\r\n3. 如果想要关掉指路标记或者别的额外功能，输入/e vvstop\r\n5. 输入/e vvmove 或 /e vvfly 即可调用vnav去到指定位置（也可以在方法设置中触发）\r\n4. 额外功能请自行探索，dddd\r\n鸭门",
+    "UpdateInfo": "    v0.0.0.1",
+    "TerritoryIds": []
   }
 ]
