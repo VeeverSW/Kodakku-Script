@@ -40,7 +40,7 @@ public class FindTarget
 {
     const string NoteStr =
     """
-    v0.0.0.3
+    v0.0.0.4
     1. 自动帮你找到范围内你想要找的人
     2. 输入/e vvfind + 名字; 即可搜索
     3. 如果想要关掉指路标记或者别的额外功能，输入/e vvstop
@@ -51,11 +51,11 @@ public class FindTarget
 
     const string UpdateInfo =
     """
-        v0.0.0.3
+        v0.0.0.4
     """;
 
     private const string Name = "寻人 NPC 物品小工具";
-    private const string Version = "0.0.0.3";
+    private const string Version = "0.0.0.4";
     private const string DebugVersion = "a";
 
     private const bool Debugging = true;
@@ -97,7 +97,7 @@ public class FindTarget
     }
 
 
-    [ScriptMethod(name: "验证秘钥", eventType: EventTypeEnum.Chat, eventCondition: ["Type:123", "Message:regex:^stopfind$"])]
+    [ScriptMethod(name: "验证秘钥", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvvvv$"])]
     public void verifyKey(Event ev, ScriptAccessory sa)
     {
         if (key == mainKey)
