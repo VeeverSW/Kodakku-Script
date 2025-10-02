@@ -30,6 +30,7 @@ using System.Runtime.Intrinsics.Arm;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using static FFXIVClientStructs.FFXIV.Client.UI.Misc.DataCenterHelper;
 
 namespace Veever.Other.FindTarget;
 
@@ -40,22 +41,23 @@ public class FindTarget
 {
     const string NoteStr =
     """
-    v0.0.0.4
+    v0.0.0.5
     1. 自动帮你找到范围内你想要找的人
     2. 输入/e vvfind + 名字; 即可搜索
     3. 如果想要关掉指路标记或者别的额外功能，输入/e vvstop
     4. 输入/e vvmove 或 /e vvfly 即可调用vnav去到指定位置（也可以在方法设置中触发）
     5. 额外功能请自行探索，dddd
+    6. /e vvvvv认证秘钥，认证后才可以使用额外功能
     鸭门
     """;
 
     const string UpdateInfo =
     """
-        v0.0.0.4
+        v0.0.0.5
     """;
 
     private const string Name = "寻人 NPC 物品小工具";
-    private const string Version = "0.0.0.4";
+    private const string Version = "0.0.0.5";
     private const string DebugVersion = "a";
 
     private const bool Debugging = true;
@@ -71,6 +73,12 @@ public class FindTarget
 
     [UserSetting("是否将结果输出至聊天栏")]
     public bool isChat { get; set; } = false;
+
+    [UserSetting("FFLog")]
+    public bool isFFLog { get; set; } = true;
+
+    [UserSetting("石之家")]
+    public bool isStone { get; set; } = true;
 
     public bool isOpenBox { get; set; } = false;
 
@@ -105,6 +113,9 @@ public class FindTarget
             isOpenBox = true;
             sa.Log.Debug("Key verified, OpenBox!");
             sa.Method.TextInfo("认证秘钥成功", 4700);
+        } else
+        {
+            sa.Method.TextInfo("认证秘钥失败", 4700, true);
         }
     }
 
@@ -253,7 +264,12 @@ public class FindTarget
                         $"\nsex: {sexStr},\nHomeWorld: {homeworldString}\n" +
                         $"StatusFlags: {StatusFlags}");
 
-                    _ = RisingStonHelper.SearchRisingStone(sa, (IPlayerCharacter)findingObj);
+                    if (isStone)
+                    {
+                        _ = RisingStonHelper.SearchRisingStone(sa, (IPlayerCharacter)findingObj);
+                    }
+
+                    if (isFFLog) FFLogsHelper.OpenFFLogs(sa, (IPlayerCharacter)findingObj);
                 }
 
 
@@ -878,5 +894,53 @@ public static class RisingStonHelper
         public string group_name { get; set; } = "";
         public int level { get; set; }
     }
+}
+#endregion
+
+#region FFLogs
+public static class FFLogsHelper
+{
+    private const string FFLogsUrl = "https://cn.fflogs.com/character/{0}/{1}/{2}";
+
+    public static void OpenFFLogs(ScriptAccessory sa, IPlayerCharacter player)
+    {
+        if (player == null) return;
+
+        try
+        {
+            var playerName = player.Name.ToString();
+            var worldName = player.HomeWorld.Value.Name.ToString();
+
+            var dataCenterRow = player.HomeWorld.Value.DataCenter.RowId;
+            var region = player.HomeWorld.Value.DataCenter.Value.Region;
+            var regionAbbr = RegionToFFLogsAbbr(region);
+
+            var url = string.Format(FFLogsUrl, regionAbbr, worldName, playerName);
+
+            sa.Log.Debug($"打开 FFLogs: {url} (Region: {region}, DC: {dataCenterRow})");
+
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = url,
+                UseShellExecute = true
+            });
+        }
+        catch (Exception ex)
+        {
+            sa.Log.Error($"打开 FFLogs 失败: {ex.Message}");
+        }
+    }
+
+    private static string RegionToFFLogsAbbr(uint region) =>
+        region switch
+        {
+            1 => "JP",
+            2 => "NA",
+            3 => "EU",
+            4 => "OC",
+            5 => "CN",
+            6 => "KR",
+            _ => "CN"
+        };
 }
 #endregion
