@@ -42,7 +42,7 @@ public class FindTarget
 {
     const string NoteStr =
     """
-    v0.0.1.0
+    v0.0.1.1
     1. 自动帮你找到范围内你想要找的人
     2. 输入/e vvfind + 名字; 即可搜索
     3. 如果想要关掉指路标记或者别的额外功能，输入/e vvstop
@@ -54,7 +54,9 @@ public class FindTarget
 
     const string UpdateInfo =
     """
-        v0.0.1.0
+        v0.0.1.1
+        vvrot 移除密钥验证
+        新增显示追踪连线开关，如果想要找到目标不显示连线可以关闭
     """;
 
     private const string Name = "寻人 NPC 物品小工具";
@@ -68,6 +70,9 @@ public class FindTarget
 
     [UserSetting("文字横幅提示开关(Banner text toggle)")]
     public bool isText { get; set; } = true;
+
+    [UserSetting("显示追踪连线")]
+    public bool isDraw { get; set; } = true;
 
     [UserSetting("TTS开关(TTS toggle)")]
     public bool isTTS { get; set; } = false;
@@ -203,10 +208,9 @@ public class FindTarget
     }
 
 
-    [ScriptMethod(name: "key needed vvrot", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvrot$"])]
+    [ScriptMethod(name: "vvrot", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvrot$"])]
     public void setRot(Event ev, ScriptAccessory sa)
     {
-        if (key != mainKey) return;
         var myobj = sa.Data.MyObject;
         if (myobj == null) return;
 
@@ -308,7 +312,7 @@ public class FindTarget
             dp1.Scale = new(2);
             dp1.DestoryAt = int.MaxValue;
             dp1.FixRotation = true;
-            sa.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Displacement, dp1);
+            if (isDraw) sa.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Displacement, dp1);
 
             sa.Method.ClearFrameworkUpdateAction(this);
         }
