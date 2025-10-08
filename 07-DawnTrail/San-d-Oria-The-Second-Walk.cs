@@ -2,6 +2,7 @@ using Dalamud.Utility.Numerics;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Vfx;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using KodakkuAssist.Data;
 using KodakkuAssist.Extensions;
 using KodakkuAssist.Module.Draw;
@@ -37,7 +38,7 @@ public class San_d_Oria_The_Second_Walk
 {
     const string NoteStr =
     """
-    v0.0.0.2
+    v0.0.0.3
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     2. Boss1可能会遇到双手直线时间偏长的问题（懒得改了影响不是很大）
     3. Boss3并没有对坦克职业的击退死刑执行自动防击退
@@ -60,13 +61,17 @@ public class San_d_Oria_The_Second_Walk
 
     const string UpdateInfo =
     """
-        v0.0.0.2
-        修复了Boss4二阶段"地板复制"技能画错的问题
-        Fixed an issue where Boss 4's phase 2 "Duplicate" mechanic was drawn incorrectly.
+        v0.0.0.3
+        暂时删除了Boss2前面小怪的绘制(CancelAction没有捕获到这个技能)
+        新增了几个机制的开关控制
+        特殊颜色适配了透明度调节
+        Temporarily removed drawing for the mobs before Boss 2 (CancelAction didn’t catch that)
+        Added controls for several mechanics
+        Special colors now support opacity adjustment
     """;
 
     private const string Name = "LV.100 桑多利亚：第二巡行 [San d Oria The Second Walk]";
-    private const string Version = "0.0.0.2";
+    private const string Version = "0.0.0.3";
     private const string DebugVersion = "a";
 
     private const bool Debugging = true;
@@ -182,17 +187,17 @@ public class San_d_Oria_The_Second_Walk
     #endregion
 
     #region boss2前
-    [ScriptMethod(name: "雷质横扫 - Electroswipe", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:43559"])]
-    public void Electroswipe(Event ev, ScriptAccessory sa)
-    {
-        DrawHelper.DrawFanObject(sa, ev.SourceId, 0, new Vector2(50f), 120, 5700, $"Electroswipe-{ev.SourceId}", sa.Data.DefaultDangerColor);
-    }
+    //[ScriptMethod(name: "雷质横扫 - Electroswipe", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:43559"])]
+    //public void Electroswipe(Event ev, ScriptAccessory sa)
+    //{
+    //    DrawHelper.DrawFanObject(sa, ev.SourceId, 0, new Vector2(50f), 120, 5700, $"Electroswipe-{ev.SourceId}", sa.Data.DefaultDangerColor);
+    //}
 
-    [ScriptMethod(name: "Pressure Wave Clear", eventType: EventTypeEnum.CancelAction, eventCondition: ["ActionId:43559"], userControl: false)]
-    public void ElectroswipeClear(Event ev, ScriptAccessory sa)
-    {
-        sa.Method.RemoveDraw($"Electroswipe-{ev.SourceId}");
-    }
+    //[ScriptMethod(name: "Pressure Wave Clear", eventType: EventTypeEnum.CancelAction, eventCondition: ["ActionId:43559"], userControl: false)]
+    //public void ElectroswipeClear(Event ev, ScriptAccessory sa)
+    //{
+    //    sa.Method.RemoveDraw($"Electroswipe-{ev.SourceId}");
+    //}
     #endregion
 
     #region boss3前
@@ -211,7 +216,7 @@ public class San_d_Oria_The_Second_Walk
     [ScriptMethod(name: "吸蚀 - Sucker", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:43791"])]
     public void Sucker(Event ev, ScriptAccessory sa)
     {
-        DrawHelper.DrawCircleObject(sa, ev.SourceId, new Vector2(8f), 6000, $"Sucker-{ev.SourceId}", scaleByTime: false, color: new Vector4(1, 0, 0, 1));
+        DrawHelper.DrawCircleObject(sa, ev.SourceId, new Vector2(8f), 6000, $"Sucker-{ev.SourceId}", scaleByTime: false, color: new Vector4(1, 0, 0, ColorAlpha));
         if (useAntiKnockback)
         {
             sa.Method.UseAction(sa.Data.Me, 7559);
@@ -333,14 +338,14 @@ public class San_d_Oria_The_Second_Walk
     [ScriptMethod(name: "青龙旋息-Eastwind Wheel", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(44416|44417)$"])]
     public void EastwindWheel(Event ev, ScriptAccessory sa)
     {
-        DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(18, 60), 7700, $"EastwindWheelRect-{ev.SourceId}", new Vector4(0, 1, 1, 1));
+        DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(18, 60), 7700, $"EastwindWheelRect-{ev.SourceId}", new Vector4(0, 1, 1, ColorAlpha));
 
         if (ev.ActionId == 44417)
         {
-            DrawHelper.DrawFanObject(sa, ev.SourceId, float.Pi / 4, new Vector2(65f), 90, 7700, $"EastwindWheelFan-{ev.SourceId}", new Vector4(0, 1, 1, 1), offset: new Vector3(9, 0, 0));
+            DrawHelper.DrawFanObject(sa, ev.SourceId, float.Pi / 4, new Vector2(65f), 90, 7700, $"EastwindWheelFan-{ev.SourceId}", new Vector4(0, 1, 1, ColorAlpha), offset: new Vector3(9, 0, 0));
         } else if (ev.ActionId == 44416)
         {
-            DrawHelper.DrawFanObject(sa, ev.SourceId, -float.Pi / 4, new Vector2(65f), 90, 7700, $"EastwindWheelFan-{ev.SourceId}", new Vector4(0, 1, 1, 1), offset: new Vector3(-9, 0, 0));
+            DrawHelper.DrawFanObject(sa, ev.SourceId, -float.Pi / 4, new Vector2(65f), 90, 7700, $"EastwindWheelFan-{ev.SourceId}", new Vector4(0, 1, 1, ColorAlpha), offset: new Vector3(-9, 0, 0));
         }
     }
 
@@ -352,13 +357,13 @@ public class San_d_Oria_The_Second_Walk
     [ScriptMethod(name: "白虎腾跃-Gloaming Gleam", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(44431)$"])]
     public void GloamingGleam(Event ev, ScriptAccessory sa)
     {
-        DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(12, 50), 3000, $"GloamingGleam-{ev.SourceId}", new Vector4(1, 1, 0, 1));
+        DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(12, 50), 3000, $"GloamingGleam-{ev.SourceId}", new Vector4(1, 1, 0, ColorAlpha));
     }
 
     [ScriptMethod(name: "剔骨獠牙-Razor Fang", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(44432)$"])]
     public void RazorFang(Event ev, ScriptAccessory sa)
     {
-        DrawHelper.DrawCircle(sa, ev.EffectPosition, new Vector2(20f), 4500, $"RazorFang-{ev.SourceId}", new Vector4(1, 1, 0, 1), scaleByTime: false);
+        DrawHelper.DrawCircle(sa, ev.EffectPosition, new Vector2(20f), 4500, $"RazorFang-{ev.SourceId}", new Vector4(1, 1, 0, ColorAlpha), scaleByTime: false);
     }
     #endregion
 
@@ -423,11 +428,11 @@ public class San_d_Oria_The_Second_Walk
     {
         if (ev.ActionId == 44796)
         {
-            DrawHelper.DrawCircle(sa, ev.EffectPosition, new Vector2(15f), 5200, $"ArmofPurgatory-{ev.SourceId}", new Vector4(1, 0, 0, 1), scaleByTime: false);
+            DrawHelper.DrawCircle(sa, ev.EffectPosition, new Vector2(15f), 5200, $"ArmofPurgatory-{ev.SourceId}", new Vector4(1, 0, 0, ColorAlpha), scaleByTime: false);
         }
         else
         {
-            DrawHelper.DrawCircle(sa, ev.EffectPosition, new Vector2(15f), 10700, $"ArmofPurgatory-{ev.SourceId}", new Vector4(1, 0, 0, 1), scaleByTime: false);
+            DrawHelper.DrawCircle(sa, ev.EffectPosition, new Vector2(15f), 10700, $"ArmofPurgatory-{ev.SourceId}", new Vector4(1, 0, 0, ColorAlpha), scaleByTime: false);
         }
 
     }
@@ -537,7 +542,7 @@ public class San_d_Oria_The_Second_Walk
     [ScriptMethod(name: "双手猛击-Synchronized Strike", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(44464)$"])]
     public async void SynchronizedStrike(Event ev, ScriptAccessory sa)
     {
-        DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(10, 60), 8200, $"SynchronizedStrike-{ev.SourceId}", new Vector4(1, 0, 0, 1), offset: new Vector3(0, 0, 30));
+        DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(10, 60), 8200, $"SynchronizedStrike-{ev.SourceId}", new Vector4(1, 0, 0, ColorAlpha), offset: new Vector3(0, 0, 30));
         lock (SynchronizedStrikeLock)
         {
             SynchronizedStrikeCount++;
@@ -546,6 +551,11 @@ public class San_d_Oria_The_Second_Walk
 
         if (SynchronizedStrikeCount == 2)
         {
+            unsafe
+            {
+                var x = AgentMap.Instance()->CurrentTerritoryId;
+            }
+            
             DebugMsg($"SynchronizedStrikeCount == 2", sa);
             var westHand = GetBossObject(sa, westHandDataId);
             var eastHand = GetBossObject(sa, eastHandDataId);
@@ -563,7 +573,7 @@ public class San_d_Oria_The_Second_Walk
     public bool frameworkRegistered = false;
     // actionId, (sid, efpos, count)
 
-    [ScriptMethod(name: "Boss1四连记录", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(44433)$"], userControl: false)]
+    [ScriptMethod(name: "Boss1四连记录", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(44433)$"])]
     public void Boss1QuRecord(Event ev, ScriptAccessory sa)
     {
         lock (Boss1QuadraRecordDataLock)
@@ -929,7 +939,7 @@ public class San_d_Oria_The_Second_Walk
         }
         var dp = sa.Data.GetDefaultDrawProperties();
         dp.Name = $"OmegaBlaster-{ev.SourceId}";
-        dp.Color = new Vector4(0, 1, 1, 1);
+        dp.Color = new Vector4(0, 1, 1, ColorAlpha);
         dp.Owner = ev.SourceId;
         dp.Scale = new Vector2(50f);
         dp.Radian = 180 * (float.Pi / 180);
@@ -949,7 +959,7 @@ public class San_d_Oria_The_Second_Walk
             isWest = true;
         }
 
-        DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(24, 40), 10200, $"Crash-{ev.SourceId}", new Vector4(1, 0, 0, 1));
+        DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(24, 40), 10200, $"Crash-{ev.SourceId}", new Vector4(1, 0, 0, ColorAlpha));
 
         if (isWest)
         {
@@ -985,7 +995,7 @@ public class San_d_Oria_The_Second_Walk
     private readonly object SurfaceMissileLock = new object();
 
     //Todo： 地板有问题
-    [ScriptMethod(name: "Surface Missile Record", eventType: EventTypeEnum.TargetIcon, eventCondition: ["Id:0268"], userControl: false)]
+    [ScriptMethod(name: "地板记录 - Surface Missile Record", eventType: EventTypeEnum.TargetIcon, eventCondition: ["Id:0268"])]
     public void surfaceMissileRecord(Event ev, ScriptAccessory sa)
     {
         var targetObj = IbcHelper.GetById(sa, ev.TargetId);
@@ -1049,7 +1059,7 @@ public class San_d_Oria_The_Second_Walk
     [ScriptMethod(name: "制导导弹 - Guided Missile", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:44324"])]
     public void GuidedMissile(Event ev, ScriptAccessory sa)
     {
-        DrawHelper.DrawCircle(sa, ev.EffectPosition, new Vector2(6f), 1000, $"GuidedMissile-{ev.EffectPosition}", scaleByTime: false, color: new Vector4(1, 0, 0, 1));
+        DrawHelper.DrawCircle(sa, ev.EffectPosition, new Vector2(6f), 1000, $"GuidedMissile-{ev.EffectPosition}", scaleByTime: false, color: new Vector4(1, 0, 0, ColorAlpha));
     }
 
     [ScriptMethod(name: "多重导弹 - Multi-missile", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(45037|45036)$"])]
@@ -1070,13 +1080,13 @@ public class San_d_Oria_The_Second_Walk
     [ScriptMethod(name: "堡垒围攻 - Citadel Siege", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:44312"])]
     public void CitadelSiege(Event ev, ScriptAccessory sa)
     {
-        DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(10f, 48f), 4700, $"Citadel Siege-{ev.EffectPosition}", color: new Vector4(1, 0, 0, 1), scalemode: ScaleMode.ByTime);
+        DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(10f, 48f), 4700, $"Citadel Siege-{ev.EffectPosition}", color: new Vector4(1, 0, 0, ColorAlpha), scalemode: ScaleMode.ByTime);
     }
 
     [ScriptMethod(name: "化学炸弹 - Chemical Bomb", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:44303"])]
     public void ChemicalBomb(Event ev, ScriptAccessory sa)
     {
-        DrawHelper.DrawCircle(sa, ev.EffectPosition, new Vector2(20f), 4700, $"Chemical Bomb-{ev.EffectPosition}", color: new Vector4(1, 0, 0, 1), delay: 2700, scaleByTime: false);
+        DrawHelper.DrawCircle(sa, ev.EffectPosition, new Vector2(20f), 4700, $"Chemical Bomb-{ev.EffectPosition}", color: new Vector4(1, 0, 0, ColorAlpha), delay: 2700, scaleByTime: false);
     }
 
 
@@ -1117,7 +1127,7 @@ public class San_d_Oria_The_Second_Walk
         string msg = language == Language.Chinese ? "远离Boss脚下" : "Don't stand under boss";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 2700, true);
         if (isTTS) sa.Method.EdgeTTS($"{msg}");
-        DrawHelper.DrawCircle(sa, ev.SourcePosition, new Vector2(5f), 2700, $"ProvingGround-{ev.SourceId}", color: new Vector4(1, 0, 0, 1), scaleByTime: false);
+        DrawHelper.DrawCircle(sa, ev.SourcePosition, new Vector2(5f), 2700, $"ProvingGround-{ev.SourceId}", color: new Vector4(1, 0, 0, ColorAlpha), scaleByTime: false);
     }
 
     [ScriptMethod(name: "魔法剑 - Elemental Blade", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(44(19[1-9]|20[0-2]|179|18[0-9]|190))$"])]
@@ -1147,7 +1157,7 @@ public class San_d_Oria_The_Second_Walk
 
         if (ev.ActionId >= 44191 && ev.ActionId <= 44202)
         {
-            DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(width, 80f), 8700, $"ElementalBlade-{ev.SourceId}", color: new Vector4(1, 0, 0, 1));
+            DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(width, 80f), 8700, $"ElementalBlade-{ev.SourceId}", color: new Vector4(1, 0, 0, ColorAlpha));
         }
 
         // Fan          Angle
@@ -1175,7 +1185,7 @@ public class San_d_Oria_The_Second_Walk
         {
             var dp = sa.Data.GetDefaultDrawProperties();
             dp.Name = $"ElementalBladeFan-{ev.SourceId}";
-            dp.Color = new Vector4(1, 0, 0, 1);
+            dp.Color = new Vector4(1, 0, 0, ColorAlpha);
             dp.Owner = ev.SourceId;
             dp.Scale = new Vector2(45f);
             dp.Radian = angle * (float.Pi / 180);
@@ -1215,7 +1225,7 @@ public class San_d_Oria_The_Second_Walk
         }
 
 
-        DrawHelper.DrawRectObjectTarget(sa, ev.SourceId, ev.TargetId, new Vector2(10f, 40f), 6900, $"TankBusterKnockback-{ev.TargetId}", color: new Vector4(1, 0, 0, 1));
+        DrawHelper.DrawRectObjectTarget(sa, ev.SourceId, ev.TargetId, new Vector2(10f, 40f), 6900, $"TankBusterKnockback-{ev.TargetId}", color: new Vector4(1, 0, 0, ColorAlpha));
 
         if (ev.TargetId == sa.Data.Me && isLead)
         {
@@ -1236,7 +1246,7 @@ public class San_d_Oria_The_Second_Walk
     [ScriptMethod(name: "崇高之剑 - Sublime Estoc", eventType: EventTypeEnum.PlayActionTimeline, eventCondition: ["Id:9352"])]
     public void SublimeEstoc(Event ev, ScriptAccessory sa)
     {
-        DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(5f, 40f), 4500, $"SublimeEstoc-{ev.SourceId}", color: new Vector4(1, 1, 0, 1));
+        DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(5f, 40f), 4500, $"SublimeEstoc-{ev.SourceId}", color: new Vector4(1, 1, 0, ColorAlpha));
     }
 
     [ScriptMethod(name: "回环连斩 - Great Wheel", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(44207|44205|44206)$"])]
@@ -1246,25 +1256,25 @@ public class San_d_Oria_The_Second_Walk
         if (isText) sa.Method.TextInfo($"{msg}", duration: 1000, true);
         if (isTTS) sa.Method.EdgeTTS($"{msg}");
 
-        DrawHelper.DrawCircleObject(sa, ev.SourceId, new Vector2(10f), 2700, $"GreatWheel-{ev.SourceId}", color: new Vector4(1, 0, 0, 1));
+        DrawHelper.DrawCircleObject(sa, ev.SourceId, new Vector2(10f), 2700, $"GreatWheel-{ev.SourceId}", color: new Vector4(1, 0, 0, ColorAlpha));
     }
 
     [ScriptMethod(name: "回环连斩正面 - Great Wheel Front", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:44209"])]
     public void GreatWheelFan(Event ev, ScriptAccessory sa)
     {
-        DrawHelper.DrawFanObject(sa, ev.SourceId, 0, new Vector2(40f), 180, 5500, $"GreatWheelFan-{ev.SourceId}", color: new Vector4(1, 0, 0, 1), scaleByTime: false);
+        DrawHelper.DrawFanObject(sa, ev.SourceId, 0, new Vector2(40f), 180, 5500, $"GreatWheelFan-{ev.SourceId}", color: new Vector4(1, 0, 0, ColorAlpha), scaleByTime: false);
     }
 
     [ScriptMethod(name: "属性反应 - Elemental Resonance", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:44216"])]
     public void ElementalResonance(Event ev, ScriptAccessory sa)
     {
-        DrawHelper.DrawCircleObject(sa, ev.SourceId, new Vector2(18f), 6700, $"ElementalResonance-{ev.SourceId}", color: new Vector4(1, 0, 0, 1), scaleByTime: false);
+        DrawHelper.DrawCircleObject(sa, ev.SourceId, new Vector2(18f), 6700, $"ElementalResonance-{ev.SourceId}", color: new Vector4(1, 0, 0, ColorAlpha), scaleByTime: false);
     }
 
     [ScriptMethod(name: "幻光剑 - Illumed Estoc", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:44218"])]
     public void IllumedEstoc(Event ev, ScriptAccessory sa)
     {
-        DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(13f, 120f), 7700, $"IllumedEstoc-{ev.SourceId}", color: new Vector4(1, 0, 0, 1), offset: new Vector3(0, 0, 30));
+        DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(13f, 120f), 7700, $"IllumedEstoc-{ev.SourceId}", color: new Vector4(1, 0, 0, ColorAlpha), offset: new Vector3(0, 0, 30));
     }
 
     [ScriptMethod(name: "盾牌猛击 - Shield Bash", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:44222"])]
@@ -1355,7 +1365,7 @@ public class San_d_Oria_The_Second_Walk
             }
         }
 
-        DrawHelper.DrawCircleObject(sa, ev.TargetId, new Vector2(6f), 4700, $"TankBusterKnockback-{ev.TargetId}", color: new Vector4(1, 0, 0, 1));
+        DrawHelper.DrawCircleObject(sa, ev.TargetId, new Vector2(6f), 4700, $"TankBusterKnockback-{ev.TargetId}", color: new Vector4(1, 0, 0, ColorAlpha));
     }
 
 
@@ -1393,7 +1403,7 @@ public class San_d_Oria_The_Second_Walk
             rot = -float.Pi / 2;
         } 
 
-        DrawHelper.DrawFanObject(sa, ev.SourceId, rot, new Vector2(70f), 180, 13000, $"CronosSlingHaircutRight-{ev.SourceId}", color: new Vector4(1, 0, 0, 1), scaleByTime: false);
+        DrawHelper.DrawFanObject(sa, ev.SourceId, rot, new Vector2(70f), 180, 13000, $"CronosSlingHaircutRight-{ev.SourceId}", color: new Vector4(1, 0, 0, ColorAlpha), scaleByTime: false);
     }
 
     [ScriptMethod(name: "高天气旋 - Empyreal Vortex", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:44400"])]
@@ -1439,7 +1449,7 @@ public class San_d_Oria_The_Second_Walk
     {
         var dp = sa.Data.GetDefaultDrawProperties();
         dp.Name = $"GaeaStream-{ev.SourceId}";
-        dp.Color = new Vector4(1, 1, 0, 1);
+        dp.Color = new Vector4(1, 1, 0, ColorAlpha);
         dp.Owner = ev.SourceId;
         dp.Scale = new Vector2(4, 24);
         dp.DestoryAt = 1700;
@@ -1501,7 +1511,7 @@ public class San_d_Oria_The_Second_Walk
                         var tilePos = new Vector3(784f + tile3 % 3 * 16f, -900, -816f + tile3 / 3 * 16f) + new Vector3(0, 0, -8f);
                         DebugMsg($"Draw Duplicate at tile index: 0x{index:X}, pos: {tilePos}", sa);
                         sa.Log.Debug($"Draw Duplicate at tile index: 0x{index:X}, pos: {tilePos}");
-                        DrawHelper.DrawRectPosNoTarget(sa, tilePos, new Vector2(16f, 16f), 7800, $"Duplicate-{index}", new Vector4(1, 0, 0, 1), drawMode: DrawModeEnum.Default);
+                        DrawHelper.DrawRectPosNoTarget(sa, tilePos, new Vector2(16f, 16f), 7800, $"Duplicate-{index}", new Vector4(1, 0, 0, ColorAlpha), drawMode: DrawModeEnum.Default);
 
                         break;
                 }
@@ -1540,7 +1550,7 @@ public class San_d_Oria_The_Second_Walk
                 //DrawHelper.DrawRectPosNoTarget(sa, aoePos, , duration, $"DuplicateAOE-{nRow}-{nCol}", sa.Data.DefaultDangerColor);
                 var dp = sa.Data.GetDefaultDrawProperties();
                 dp.Name = $"offset {i} - DuplicateAOE-{nRow}-{nCol}-pos: {aoePos}";
-                dp.Color = new Vector4(1, 0, 0, 1);
+                dp.Color = new Vector4(1, 0, 0, ColorAlpha);
                 dp.Position = aoePos;
                 //dp.Rotation = -float.Pi / 2; 
                 dp.Scale = new Vector2(16f, 16f);
@@ -1603,7 +1613,7 @@ public class San_d_Oria_The_Second_Walk
         {
             if (useAntiKnockback) sa.Method.UseAction(sa.Data.Me, 7559);
             if (useAntiKnockback) sa.Method.UseAction(sa.Data.Me, 7548);
-            DrawHelper.DrawCircleObject(sa, ev.SourceId, new Vector2(21f), 6000, $"Tornado-Danger:{ev.SourceId}", scaleByTime: false, color: new Vector4(1, 0, 0, 1));
+            DrawHelper.DrawCircleObject(sa, ev.SourceId, new Vector2(21f), 6000, $"Tornado-Danger:{ev.SourceId}", scaleByTime: false, color: new Vector4(1, 0, 0, ColorAlpha));
         }
 
         await Task.Delay(5700);
@@ -1622,12 +1632,12 @@ public class San_d_Oria_The_Second_Walk
         // 18746 thunder
         // 18747 fire
         var scale = 3f;
-        var color = new Vector4(1, 1, 0, 1);
+        var color = new Vector4(1, 1, 0, ColorAlpha);
         var arrowScale = new Vector2(1, 3);
         if (uint.Parse(ev["DataId"]?.ToString() ?? "0") == 18746)
         {
             scale = 1.5f;
-            color = new Vector4(0, 1, 1, 1);
+            color = new Vector4(0, 1, 1, ColorAlpha);
             arrowScale = new Vector2(1, 2); 
         }
 
@@ -1659,7 +1669,7 @@ public class San_d_Oria_The_Second_Walk
     [ScriptMethod(name: "洪水 - Flood", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(44390)$"])]
     public void Flood(Event ev, ScriptAccessory sa)
     {
-        DrawHelper.DrawCircleObject(sa, ev.SourceId, new Vector2(20f), 6000, $"Tornado-Danger:{ev.SourceId}", scaleByTime: false, color: new Vector4(1, 0, 0, 1));
+        DrawHelper.DrawCircleObject(sa, ev.SourceId, new Vector2(20f), 6000, $"Tornado-Danger:{ev.SourceId}", scaleByTime: false, color: new Vector4(1, 0, 0, ColorAlpha));
     }
 
     #endregion
