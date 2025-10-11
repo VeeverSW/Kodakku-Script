@@ -495,17 +495,6 @@
     ]
   },
   {
-    "Name": "寻人 NPC 物品小工具",
-    "Guid": "5365f3f5-bef5-4ac6-a546-cb2f9d347ed8",
-    "Version": "0.0.1.2",
-    "Author": "Veever",
-    "Repo": "https://github.com/VeeverSW/Kodakku-Script",
-    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/00-Other/FindTarget.cs",
-    "Note": "v0.0.1.2\r\n1. 自动帮你找到范围内你想要找的人\r\n2. 输入/e vvfind + 名字; 即可搜索\r\n3. 如果想要关掉指路标记或者别的额外功能，输入/e vvstop\r\n4. 输入/e vvmove 或 /e vvfly 即可调用vnav去到指定位置（也可以在方法设置中触发）\r\n5. 额外功能请自行探索，dddd\r\n6. /e vvvvv认证秘钥，认证后才可以使用额外功能\r\n鸭门",
-    "UpdateInfo": "    v0.0.1.2\r\n    追踪新目标前删除之前的绘制\r\n    新增目标种类筛选功能",
-    "TerritoryIds": []
-  },
-  {
     "Name": "LV.60 秘本宝库迦巴勒幻想图书馆 [The Great Gubal Library (Hard)]",
     "Guid": "d376d381-8bd0-4a3b-9a87-d3e06e5afab8",
     "Version": "0.0.0.1",
@@ -530,5 +519,16 @@
     "TerritoryIds": [
       997
     ]
+  },
+  {
+    "Name": "vv多功能小工具",
+    "Guid": "260323f1-9d7d-4fd6-9222-282eb1aa9bf5",
+    "Version": "0.0.2.0",
+    "Author": "Veever",
+    "Repo": "https://github.com/VeeverSW/Kodakku-Script",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/00-Other/VVToolKit.cs",
+    "Note": "v0.0.2.0\r\n1. 自动帮你找到范围内你想要找的人\r\n2. 输入/e vvfind + 名字; 即可搜索\r\n3. 如果想要关掉指路标记或者别的额外功能，输入/e vvstop\r\n4. 输入/e vvmove 或 /e vvfly 即可调用vnav去到指定位置（也可以在方法设置中触发）\r\n5. 额外功能请自行探索，dddd\r\n6. /e vvvvv认证秘钥，认证后才可以使用额外功能\r\n7. /e vvguid 自动生成新的guid并复制到剪切板\r\n鸭门",
+    "UpdateInfo": "    v0.0.2.0\r\n    整合功能，改名为vv多功能小工具\r\n    替换原有guid，改为新插件",
+    "TerritoryIds": []
   }
 ]

@@ -7,6 +7,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Vfx;
+using FFXIVClientStructs.FFXIV.Client.System.Input;
 using InteropGenerator.Runtime.Attributes;
 using KodakkuAssist.Data;
 using KodakkuAssist.Extensions;
@@ -33,34 +34,36 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using static FFXIVClientStructs.FFXIV.Client.UI.Misc.DataCenterHelper;
 
-namespace Veever.Other.FindTarget;
+namespace Veever.Other.VVToolKit;
 
-[ScriptType(name: Name, territorys: [], guid: "5365f3f5-bef5-4ac6-a546-cb2f9d347ed8",
+[ScriptType(name: Name, territorys: [], guid: "260323f1-9d7d-4fd6-9222-282eb1aa9bf5",
     version: Version, author: "Veever", note: NoteStr, updateInfo: UpdateInfo)]
 
-public class FindTarget
+public class VVToolKit
 {
     const string NoteStr =
     """
-    v0.0.1.2
+    v0.0.2.0
     1. 自动帮你找到范围内你想要找的人
     2. 输入/e vvfind + 名字; 即可搜索
     3. 如果想要关掉指路标记或者别的额外功能，输入/e vvstop
     4. 输入/e vvmove 或 /e vvfly 即可调用vnav去到指定位置（也可以在方法设置中触发）
     5. 额外功能请自行探索，dddd
     6. /e vvvvv认证秘钥，认证后才可以使用额外功能
+    7. /e vvguid 自动生成新的guid并复制到剪切板
     鸭门
     """;
 
     const string UpdateInfo =
     """
-        v0.0.1.2
-        追踪新目标前删除之前的绘制
-        新增目标种类筛选功能
+        v0.0.2.0
+        整合功能，改名为vv工具箱
+        替换原有guid，改为新插件
+        新增/e vvguid 自动生成新的guid并复制到剪切板
     """;
 
-    private const string Name = "寻人 NPC 物品小工具";
-    private const string Version = "0.0.1.2";
+    private const string Name = "vv工具箱";
+    private const string Version = "0.0.2.0";
     private const string DebugVersion = "a";
 
     private const bool Debugging = true;
@@ -174,6 +177,47 @@ public class FindTarget
         sa.Method.SendChat($"/vnav stop");
     }
 
+    [ScriptMethod(name: "StopFindTarget", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvguid"])]
+    public void vvGuid(Event ev, ScriptAccessory sa)
+    {
+        Guid guid = Guid.NewGuid();
+        string guidString = guid.ToString();
+        
+        bool success = false;
+        try
+        {
+            var thread = new Thread(() =>
+            {
+                try
+                {
+                    System.Windows.Forms.Clipboard.SetText(guidString);
+                    success = true;
+                }
+                catch (Exception ex)
+                {
+                    sa.Log.Error($"剪切板线程内部错误: {ex.Message}");
+                }
+            });
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+            thread.Join();
+
+            if (success)
+            {
+                sa.Method.SendChat($"/e {guidString} (已复制到剪切板)");
+                sa.Log.Debug($"GUID 已复制到剪切板: {guidString}");
+            }
+            else
+            {
+                sa.Method.SendChat($"/e {guidString} (复制失败)");
+            }
+        }
+        catch (Exception ex)
+        {
+            sa.Method.SendChat($"/e {guidString} (复制失败)");
+            sa.Log.Error($"复制到剪切板失败: {ex.Message}");
+        }
+    }
 
     [ScriptMethod(name: "VnavMove", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvmove$"])]
     public void vnavMove(Event ev, ScriptAccessory sa)
