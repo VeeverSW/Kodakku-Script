@@ -43,27 +43,28 @@ public class VVToolKit
 {
     const string NoteStr =
     """
-    v0.0.2.0
+    v0.0.2.1
     1. 自动帮你找到范围内你想要找的人
     2. 输入/e vvfind + 名字; 即可搜索
     3. 如果想要关掉指路标记或者别的额外功能，输入/e vvstop
     4. 输入/e vvmove 或 /e vvfly 即可调用vnav去到指定位置（也可以在方法设置中触发）
     5. 额外功能请自行探索，dddd
     6. /e vvvvv认证秘钥，认证后才可以使用额外功能
-    7. /e vvguid 自动生成新的guid并复制到剪切板
+    7. /e vvguid 自动生成新的guid并复制到剪切板(出现两次正常现象，懒得修了，如果不想出现两次可以在vvguid随便加什么字母就可以避免了)
     鸭门
     """;
 
     const string UpdateInfo =
     """
-        v0.0.2.0
+        v0.0.2.1
         整合功能，改名为vv工具箱
         替换原有guid，改为新插件
         新增/e vvguid 自动生成新的guid并复制到剪切板
+        增加了guid的正则
     """;
 
     private const string Name = "vv工具箱";
-    private const string Version = "0.0.2.0";
+    private const string Version = "0.0.2.1";
     private const string DebugVersion = "a";
 
     private const bool Debugging = true;
@@ -177,7 +178,7 @@ public class VVToolKit
         sa.Method.SendChat($"/vnav stop");
     }
 
-    [ScriptMethod(name: "StopFindTarget", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvguid"])]
+    [ScriptMethod(name: "StopFindTarget", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvguid$"])]
     public void vvGuid(Event ev, ScriptAccessory sa)
     {
         Guid guid = Guid.NewGuid();
