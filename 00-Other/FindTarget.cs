@@ -42,7 +42,7 @@ public class FindTarget
 {
     const string NoteStr =
     """
-    v0.0.1.1
+    v0.0.1.2
     1. 自动帮你找到范围内你想要找的人
     2. 输入/e vvfind + 名字; 即可搜索
     3. 如果想要关掉指路标记或者别的额外功能，输入/e vvstop
@@ -54,13 +54,13 @@ public class FindTarget
 
     const string UpdateInfo =
     """
-        v0.0.1.1
-        vvrot 移除密钥验证
-        新增显示追踪连线开关，如果想要找到目标不显示连线可以关闭
+        v0.0.1.2
+        追踪新目标前删除之前的绘制
+        新增目标种类筛选功能
     """;
 
     private const string Name = "寻人 NPC 物品小工具";
-    private const string Version = "0.0.1.0";
+    private const string Version = "0.0.1.2";
     private const string DebugVersion = "a";
 
     private const bool Debugging = true;
@@ -73,6 +73,12 @@ public class FindTarget
 
     [UserSetting("显示追踪连线")]
     public bool isDraw { get; set; } = true;
+
+    [UserSetting("开启目标分类筛选")]
+    public bool OnlyFindTypeTrigger { get; set; } = true;
+
+    [UserSetting("只寻找目标的分类")]
+    public Dalamud.Game.ClientState.Objects.Enums.ObjectKind OnlyFindType { get; set; } = Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Player;
 
     [UserSetting("TTS开关(TTS toggle)")]
     public bool isTTS { get; set; } = false;
@@ -147,6 +153,7 @@ public class FindTarget
 
 
                 if (findingObj == null) return;
+                if (OnlyFindTypeTrigger && findingObj.ObjectKind != OnlyFindType) return;
 
                 ob = findingObj;
 
@@ -230,6 +237,8 @@ public class FindTarget
 
     public async void FindTargetDetail(Event ev, ScriptAccessory sa, IGameObject? findingObj)
     {
+        sa.Method.RemoveDraw("寻找目标");
+
         await Task.Delay(600);
 
         lock (findLock)
@@ -243,7 +252,6 @@ public class FindTarget
             FindTargetObjectFramework = false;
 
             if (findingObj == null) return;
-
             var finding = findingObj.Name;
 
 
