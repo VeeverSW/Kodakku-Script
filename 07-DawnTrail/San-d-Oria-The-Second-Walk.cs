@@ -38,7 +38,7 @@ public class San_d_Oria_The_Second_Walk
 {
     const string NoteStr =
     """
-    v0.0.0.3
+    v0.0.0.4
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     2. Boss1可能会遇到双手直线时间偏长的问题（懒得改了影响不是很大）
     3. Boss3并没有对坦克职业的击退死刑执行自动防击退
@@ -61,17 +61,13 @@ public class San_d_Oria_The_Second_Walk
 
     const string UpdateInfo =
     """
-        v0.0.0.3
-        暂时删除了Boss2前面小怪的绘制(CancelAction没有捕获到这个技能)
-        新增了几个机制的开关控制
-        特殊颜色适配了透明度调节
-        Temporarily removed drawing for the mobs before Boss 2 (CancelAction didn’t catch that)
-        Added controls for several mechanics
-        Special colors now support opacity adjustment
+        v0.0.0.4
+        添加了Boss2前面小怪的绘制
+        Add drawing for the mobs before Boss 2
     """;
 
     private const string Name = "LV.100 桑多利亚：第二巡行 [San d Oria The Second Walk]";
-    private const string Version = "0.0.0.3";
+    private const string Version = "0.0.0.4";
     private const string DebugVersion = "a";
 
     private const bool Debugging = true;
@@ -187,17 +183,23 @@ public class San_d_Oria_The_Second_Walk
     #endregion
 
     #region boss2前
-    //[ScriptMethod(name: "雷质横扫 - Electroswipe", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:43559"])]
-    //public void Electroswipe(Event ev, ScriptAccessory sa)
-    //{
-    //    DrawHelper.DrawFanObject(sa, ev.SourceId, 0, new Vector2(50f), 120, 5700, $"Electroswipe-{ev.SourceId}", sa.Data.DefaultDangerColor);
-    //}
+    [ScriptMethod(name: "雷质横扫 - Electroswipe", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:43559"])]
+    public void Electroswipe(Event ev, ScriptAccessory sa)
+    {
+        DrawHelper.DrawFanObject(sa, ev.SourceId, 0, new Vector2(50f), 120, 5700, $"Electroswipe-{ev.SourceId}", sa.Data.DefaultDangerColor);
+    }
 
-    //[ScriptMethod(name: "Pressure Wave Clear", eventType: EventTypeEnum.CancelAction, eventCondition: ["ActionId:43559"], userControl: false)]
-    //public void ElectroswipeClear(Event ev, ScriptAccessory sa)
-    //{
-    //    sa.Method.RemoveDraw($"Electroswipe-{ev.SourceId}");
-    //}
+    [ScriptMethod(name: "Pressure Wave Clear", eventType: EventTypeEnum.CancelAction, eventCondition: ["ActionId:43559"], userControl: false)]
+    public void ElectroswipeClear(Event ev, ScriptAccessory sa)
+    {
+        sa.Method.RemoveDraw($"Electroswipe-{ev.SourceId}");
+    }
+
+    [ScriptMethod(name: "伤头&插言 打断销毁", eventType: EventTypeEnum.ActionEffect, eventCondition: ["ActionId:regex:^75(38|51)$"], userControl: false)]
+    public void destoryCancelAction(Event ev, ScriptAccessory sa)
+    {
+        sa.Method.RemoveDraw($".*{ev.TargetId}");
+    }
     #endregion
 
     #region boss3前
@@ -1326,7 +1328,7 @@ public class San_d_Oria_The_Second_Walk
         DrawHelper.DrawCircleObject(sa, ev.TargetId, new Vector2(5f), 4700, $"EmpyrealBanishIV-{ev.SourceId}", color: sa.Data.DefaultSafeColor, scaleByTime: false);
     }
 
-
+    #endregion
     #region Boss4
     [ScriptMethod(name: "---- Boss4 ----", eventType: EventTypeEnum.NpcYell, eventCondition: ["HelloayaWorld:asdf"],
     userControl: true)]
@@ -1671,10 +1673,6 @@ public class San_d_Oria_The_Second_Walk
     {
         DrawHelper.DrawCircleObject(sa, ev.SourceId, new Vector2(20f), 6000, $"Tornado-Danger:{ev.SourceId}", scaleByTime: false, color: new Vector4(1, 0, 0, ColorAlpha));
     }
-
-    #endregion
-
-
 
     #endregion
 

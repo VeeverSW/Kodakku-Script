@@ -484,12 +484,12 @@
   {
     "Name": "LV.100 桑多利亚：第二巡行 [San d Oria The Second Walk]",
     "Guid": "26a812eb-b8e2-4f31-8568-affe775bd4c6",
-    "Version": "0.0.0.3",
+    "Version": "0.0.0.4",
     "Author": "Veever",
     "Repo": "https://github.com/VeeverSW/Kodakku-Script",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/San-d-Oria-The-Second-Walk.cs",
-    "Note": "v0.0.0.3\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n2. Boss1可能会遇到双手直线时间偏长的问题（懒得改了影响不是很大）\r\n3. Boss3并没有对坦克职业的击退死刑执行自动防击退\r\n4. 初版Boss2的反射激光和Boss4的复制可能会出现绘制问题（画错，不画）, 请发现后携带arr在dc反馈\r\n5. Boss2的地板绘制会有一点点小问题，请无视\r\n6. 游戏崩溃了请务必在频道说，如果没有arr请跟我说一下大概机制和时间并提供[dalamud.log]\r\n鸭门\r\n------------------------------\r\n1. If you need a draw for a mechanic or notice any issues, @ me on DC or DM me.\r\n2. Boss 1 may have an issue where the double-arm Rect AOE lasts a bit too long.  \r\n   (Not a big deal so I’m too lazy to fix it.)\r\n3. Boss 3 does not auto-use anti-knockback for tankbuster knockbacks. \r\n4. In the initial version, Boss 2’s Energy Ray (reflect laser) and Boss 4’s Duplicate may have drawing issues (wrong/missing).  \r\n   If you encounter this, please provide an ARR for feedback on DC.\r\n5. Boss 2’s floor drawing has a small issue — just ignore it.\r\n6. If the game crashes, please report it in the dc channel.  \r\n   If no ARR is available, let me know roughly which mechanic and the time it happened, and provide your [dalamud.log].\r\nDuckmen",
-    "UpdateInfo": "    v0.0.0.3\r\n    暂时删除了Boss2前面小怪的绘制(CancelAction没有捕获到这个技能)\r\n    新增了几个机制的开关控制\r\n    特殊颜色适配了透明度调节\r\n    Temporarily removed drawing for the mobs before Boss 2 (CancelAction didn’t catch that)\r\n    Added controls for several mechanics\r\n    Special colors now support opacity adjustment",
+    "Note": "v0.0.0.4\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n2. Boss1可能会遇到双手直线时间偏长的问题（懒得改了影响不是很大）\r\n3. Boss3并没有对坦克职业的击退死刑执行自动防击退\r\n4. 初版Boss2的反射激光和Boss4的复制可能会出现绘制问题（画错，不画）, 请发现后携带arr在dc反馈\r\n5. Boss2的地板绘制会有一点点小问题，请无视\r\n6. 游戏崩溃了请务必在频道说，如果没有arr请跟我说一下大概机制和时间并提供[dalamud.log]\r\n鸭门\r\n------------------------------\r\n1. If you need a draw for a mechanic or notice any issues, @ me on DC or DM me.\r\n2. Boss 1 may have an issue where the double-arm Rect AOE lasts a bit too long.  \r\n   (Not a big deal so I’m too lazy to fix it.)\r\n3. Boss 3 does not auto-use anti-knockback for tankbuster knockbacks. \r\n4. In the initial version, Boss 2’s Energy Ray (reflect laser) and Boss 4’s Duplicate may have drawing issues (wrong/missing).  \r\n   If you encounter this, please provide an ARR for feedback on DC.\r\n5. Boss 2’s floor drawing has a small issue — just ignore it.\r\n6. If the game crashes, please report it in the dc channel.  \r\n   If no ARR is available, let me know roughly which mechanic and the time it happened, and provide your [dalamud.log].\r\nDuckmen",
+    "UpdateInfo": "    v0.0.0.4\r\n    添加了Boss2前面小怪的绘制\r\n    Add drawing for the mobs before Boss 2",
     "TerritoryIds": [
       1304
     ]
