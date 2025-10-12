@@ -43,7 +43,7 @@ public class VVToolKit
 {
     const string NoteStr =
     """
-    v0.0.2.1
+    v0.0.2.3
     1. 自动帮你找到范围内你想要找的人
     2. 输入/e vvfind + 名字; 即可搜索
     3. 如果想要关掉指路标记或者别的额外功能，输入/e vvstop
@@ -51,20 +51,20 @@ public class VVToolKit
     5. 额外功能请自行探索，dddd
     6. /e vvvvv认证秘钥，认证后才可以使用额外功能
     7. /e vvguid 自动生成新的guid并复制到剪切板(出现两次正常现象，懒得修了，如果不想出现两次可以在vvguid随便加什么字母就可以避免了)
+    8. /e vvrottarget 设置目标对象（玩家/宠物/NPC）的朝向为你当前的朝向（需要先使用vvfind找到目标，仅本地可见）
     鸭门
     """;
 
     const string UpdateInfo =
     """
-        v0.0.2.1
-        整合功能，改名为vv工具箱
-        替换原有guid，改为新插件
-        新增/e vvguid 自动生成新的guid并复制到剪切板
-        增加了guid的正则
+        v0.0.2.3
+        新增vvrottarget
+        可以修改任何对象的旋转角度
+        注：修改效果仅本地可见
     """;
 
     private const string Name = "vv工具箱";
-    private const string Version = "0.0.2.1";
+    private const string Version = "0.0.2.3";
     private const string DebugVersion = "a";
 
     private const bool Debugging = true;
@@ -280,11 +280,44 @@ public class VVToolKit
         sa.Log.Debug($"改变面向 {myobj.Name.TextValue} | {myobj.Rotation.RadToDeg()} => obj: {ob.Name.TextValue} {ob.Rotation.RadToDeg()}");
     }
 
-    public async void FindTargetDetail(Event ev, ScriptAccessory sa, IGameObject? findingObj)
+    [ScriptMethod(name: "vvrottarget", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvrottarget$"])]
+    public void setTargetRot(Event ev, ScriptAccessory sa)
     {
-        sa.Method.RemoveDraw("寻找目标");
+        var myobj = sa.Data.MyObject;
+        if (myobj == null)
+        {
+            sa.Method.SendChat("/e 无法获取玩家对象");
+            sa.Log.Error("MyObject is null");
+            return;
+        }
+        
+        if (ob == null || !ob.IsValid())
+        {
+            sa.Method.SendChat("/e 目标对象无效，请先使用 /e vvfind 查找目标");
+            sa.Log.Error("ob is null or invalid");
+            return;
+        }
 
-        await Task.Delay(600);
+        sa.Log.Debug($"目标对象: {ob.Name.TextValue}, ObjectKind: {ob.ObjectKind}, EntityId: {ob.EntityId}");
+
+        unsafe
+        {
+            GameObject* targetStruct = (GameObject*)ob.Address;
+            float oldRotation = targetStruct->Rotation;
+            float myRotation = myobj.Rotation;
+
+            targetStruct->SetRotation(myRotation);
+
+            sa.Log.Debug($"改变目标面向 {ob.Name.TextValue} ({ob.ObjectKind}) | {oldRotation.RadToDeg()}° => 玩家朝向: {myRotation.RadToDeg()}°");
+            sa.Method.SendChat($"/e 目标 {ob.Name.TextValue} 已设置为与你相同的朝向 ({myRotation.RadToDeg():F1}°)");
+        }
+    }
+
+    public void FindTargetDetail(Event ev, ScriptAccessory sa, IGameObject? findingObj)
+    {
+        // sa.Method.RemoveDraw("寻找目标");
+        //
+        // await Task.Delay(1100);
 
         lock (findLock)
         {
