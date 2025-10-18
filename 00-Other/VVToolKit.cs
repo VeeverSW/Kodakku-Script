@@ -8,6 +8,8 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Vfx;
 using FFXIVClientStructs.FFXIV.Client.System.Input;
+using FFXIVClientStructs.FFXIV.Client.UI;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 using InteropGenerator.Runtime.Attributes;
 using KodakkuAssist.Data;
 using KodakkuAssist.Extensions;
@@ -33,8 +35,25 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using static FFXIVClientStructs.FFXIV.Client.UI.Misc.DataCenterHelper;
+using FFXIVClientStructs.FFXIV.Client.Game.Control;
+using System.Runtime.CompilerServices;
+using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 
 namespace Veever.Other.VVToolKit;
+
+/// <summary>
+/// 团队筛选模式
+/// </summary>
+public enum PartyFilterMode
+{
+    [Description("关闭筛选")]
+    Disabled = 0,
+    [Description("只画自己团队")]
+    OnlyMyParty = 1,
+    [Description("排除自己团队")]
+    ExcludeMyParty = 2
+}
 
 [ScriptType(name: Name, territorys: [], guid: "260323f1-9d7d-4fd6-9222-282eb1aa9bf5",
     version: Version, author: "Veever", note: NoteStr, updateInfo: UpdateInfo)]
@@ -42,29 +61,39 @@ namespace Veever.Other.VVToolKit;
 public class VVToolKit
 {
     const string NoteStr =
-    """
-    v0.0.2.3
-    1. 自动帮你找到范围内你想要找的人
-    2. 输入/e vvfind + 名字; 即可搜索
-    3. 如果想要关掉指路标记或者别的额外功能，输入/e vvstop
-    4. 输入/e vvmove 或 /e vvfly 即可调用vnav去到指定位置（也可以在方法设置中触发）
-    5. 额外功能请自行探索，dddd
-    6. /e vvvvv认证秘钥，认证后才可以使用额外功能
-    7. /e vvguid 自动生成新的guid并复制到剪切板(出现两次正常现象，懒得修了，如果不想出现两次可以在vvguid随便加什么字母就可以避免了)
-    8. /e vvrottarget 设置目标对象（玩家/宠物/NPC）的朝向为你当前的朝向（需要先使用vvfind找到目标，仅本地可见）
+    """ 
+    v0.0.2.4
+    ---------------------------------------------------------
+    1. 输入/e vvfind + 名字; 即可自动帮你找到范围内你想要找的人
+    2. 如果想要关掉指路标记或者别的额外功能，输入/e vvstop
+    3. 输入/e vvmove 或 /e vvfly 即可调用vnav去到指定位置（也可以在方法设置中触发）
+    4. /e vvguid 自动生成新的guid并复制到剪切板
+    5. /e vvrot 将自己的朝向改为目标的当前朝向（需要先使用vvfind或者vvselect找到目标，仅本地可见）
+    6. /e vvrotme [数字] 将自己的朝向改为指定的弧度
+    7. /e vvrottarget 设置目标对象（玩家/宠物/NPC）的朝向为你当前的朝向（需要先使用vvfind或者vvselect找到目标，仅本地可见）
+    8. /e vvrottarget [数字] 设置目标对象（玩家/宠物/NPC）的朝向为指定弧度（需要先使用vvfind或者vvselect找到目标，仅本地可见）
+    9. /e vvlist 列出附近最多10个玩家
+    10. /e vvselect [编号] 选择/vvlist列出的玩家作为目标
+    11. /e vvvvv认证秘钥，认证后才可以使用额外功能
+    ---------------------------------------------------------
+    以下是需密钥功能:
+    1. /e vvtp
+
     鸭门
     """;
 
     const string UpdateInfo =
     """
-        v0.0.2.3
-        新增vvrottarget
-        可以修改任何对象的旋转角度
-        注：修改效果仅本地可见
+        v0.0.2.4
+        vvrottarget 支持后面加参数来设置指定朝向
+        新增 vvlist 显示附近玩家
+        新增 vvselect 选择vvlist列出的指定玩家作为目标
+        新增 vvrot 将自己的朝向改为目标的当前朝向
+        新增 vvrotme 将自己的朝向改为指定的弧度
     """;
 
     private const string Name = "vv工具箱";
-    private const string Version = "0.0.2.3";
+    private const string Version = "0.0.2.4";
     private const string DebugVersion = "a";
 
     private const bool Debugging = true;
@@ -105,13 +134,14 @@ public class VVToolKit
     public string mainKey = "A-qdPv6??Hgr9sKyAYjXa.W~WigeEEVt2LF7pnr15QteK1ynF2e-Urh:MxCt@t,]:DmG-CMqmBCzLg^7+~#8sRP*pnX?wofsXHN4";
 
     private readonly object findLock = new object();
+    private List<IGameObject> cachedPlayers = new();
 
     public void DebugMsg(string str, ScriptAccessory accessory)
     {
         if (!isChat) return;
         accessory.Method.SendChat($"/e [DEBUG] {str}");
     }
-
+    
     public void Init(ScriptAccessory sa)
     {
         sa.Log.Debug($"脚本 {Name} v{Version}{DebugVersion} 完成初始化.");
@@ -134,7 +164,6 @@ public class VVToolKit
             sa.Method.TextInfo("认证秘钥失败", 4700, true);
         }
     }
-
 
     public IGameObject? ob;
 
@@ -280,7 +309,7 @@ public class VVToolKit
         sa.Log.Debug($"改变面向 {myobj.Name.TextValue} | {myobj.Rotation.RadToDeg()} => obj: {ob.Name.TextValue} {ob.Rotation.RadToDeg()}");
     }
 
-    [ScriptMethod(name: "vvrottarget", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvrottarget$"])]
+    [ScriptMethod(name: "vvrottarget", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvrottarget( (.+))?$"])]
     public void setTargetRot(Event ev, ScriptAccessory sa)
     {
         var myobj = sa.Data.MyObject;
@@ -290,7 +319,7 @@ public class VVToolKit
             sa.Log.Error("MyObject is null");
             return;
         }
-        
+
         if (ob == null || !ob.IsValid())
         {
             sa.Method.SendChat("/e 目标对象无效，请先使用 /e vvfind 查找目标");
@@ -300,16 +329,143 @@ public class VVToolKit
 
         sa.Log.Debug($"目标对象: {ob.Name.TextValue}, ObjectKind: {ob.ObjectKind}, EntityId: {ob.EntityId}");
 
+        string message = ev["Message"];
+        float newRotation;
+        bool useCustomRotation = false;
+
+        if (message.Length > 11 && message.Substring(11).Trim().Length > 0)
+        {
+            string input = message.Substring(11).Trim();
+            if (float.TryParse(input, out float rotation))
+            {
+                newRotation = rotation;
+                useCustomRotation = true;
+            }
+            else
+            {
+                sa.Method.SendChat("/e 参数无效，请输入有效的数字");
+                sa.Log.Error($"Invalid rotation value: {input}");
+                return;
+            }
+        }
+        else
+        {
+            newRotation = myobj.Rotation;
+        }
+
         unsafe
         {
             GameObject* targetStruct = (GameObject*)ob.Address;
             float oldRotation = targetStruct->Rotation;
-            float myRotation = myobj.Rotation;
 
-            targetStruct->SetRotation(myRotation);
+            targetStruct->SetRotation(newRotation);
 
-            sa.Log.Debug($"改变目标面向 {ob.Name.TextValue} ({ob.ObjectKind}) | {oldRotation.RadToDeg()}° => 玩家朝向: {myRotation.RadToDeg()}°");
-            sa.Method.SendChat($"/e 目标 {ob.Name.TextValue} 已设置为与你相同的朝向 ({myRotation.RadToDeg():F1}°)");
+            if (useCustomRotation)
+            {
+                sa.Log.Debug($"改变目标面向 {ob.Name.TextValue} ({ob.ObjectKind}) | {oldRotation.RadToDeg()}° => 指定朝向: {newRotation.RadToDeg()}°");
+                sa.Method.SendChat($"/e 目标 {ob.Name.TextValue} 已设置朝向为 {newRotation} 弧度 ({newRotation.RadToDeg():F1}°)");
+            }
+            else
+            {
+                sa.Log.Debug($"改变目标面向 {ob.Name.TextValue} ({ob.ObjectKind}) | {oldRotation.RadToDeg()}° => 玩家朝向: {newRotation.RadToDeg()}°");
+                sa.Method.SendChat($"/e 目标 {ob.Name.TextValue} 已设置为与你相同的朝向 ({newRotation.RadToDeg():F1}°)");
+            }
+        }
+    }
+
+    [ScriptMethod(name: "vvrotme", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvrotme (.+)$"])]
+    public void setMyRot(Event ev, ScriptAccessory sa)
+    {
+        var myobj = sa.Data.MyObject;
+        if (myobj == null)
+        {
+            sa.Method.SendChat("/e 无法获取玩家对象");
+            sa.Log.Error("MyObject is null");
+            return;
+        }
+
+        string input = ev["Message"].Substring(8).Trim();
+        if (!float.TryParse(input, out float rotation))
+        {
+            sa.Method.SendChat("/e 参数无效，请输入有效的数字");
+            sa.Log.Error($"Invalid rotation value: {input}");
+            return;
+        }
+
+        unsafe
+        {
+            GameObject* charaStruct = (GameObject*)myobj.Address;
+            float oldRotation = charaStruct->Rotation;
+
+            charaStruct->SetRotation(rotation);
+
+            sa.Log.Debug($"改变自身面向 {myobj.Name.TextValue} | {oldRotation.RadToDeg()}° => {rotation.RadToDeg()}°");
+            sa.Method.SendChat($"/e 已设置自身朝向为 {rotation} 弧度 ({rotation.RadToDeg():F1}°)");
+        }
+    }
+
+    [ScriptMethod(name: "列出附近玩家", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvlist$"])]
+    public async void listPlayers(Event ev, ScriptAccessory sa)
+    {
+        var myobj = sa.Data.MyObject;
+        if (myobj == null)
+        {
+            sa.Method.SendChat("/e 无法获取玩家位置");
+            return;
+        }
+
+        lock (findLock)
+        {
+            cachedPlayers = sa.Data.Objects?
+                .Where(x => x.ObjectKind == Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Player)
+                .OrderBy(x => Vector3.Distance(myobj.Position, x.Position))
+                .Take(10)
+                .ToList() ?? new();
+        }
+
+        if (cachedPlayers.Count == 0)
+        {
+            sa.Method.SendChat("/e 未找到附近的玩家");
+            return;
+        }
+
+        sa.Method.SendChat("/e === 附近的玩家 (使用 /e vvselect <编号> 选择) ===");
+        await Task.Delay(50);
+
+        for (int i = 0; i < cachedPlayers.Count; i++)
+        {
+            var distance = Vector3.Distance(myobj.Position, cachedPlayers[i].Position);
+            sa.Method.SendChat($"/e [{i + 1}] {cachedPlayers[i].Name} ({distance:F1}m)");
+            await Task.Delay(50);
+        }
+
+        sa.Log.Debug($"已列出 {cachedPlayers.Count} 个附近的玩家");
+    }
+
+    [ScriptMethod(name: "选择玩家", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvselect (\\d+)$"])]
+    public void selectPlayer(Event ev, ScriptAccessory sa)
+    {
+        string input = ev["Message"].Substring(9).Trim();
+
+        lock (findLock)
+        {
+            if (!int.TryParse(input, out int index) || index < 1 || index > cachedPlayers.Count)
+            {
+                sa.Method.SendChat("/e 无效的编号，请先使用 /e vvlist 列出玩家");
+                sa.Log.Error($"Invalid index: {input}, cachedPlayers count: {cachedPlayers.Count}");
+                return;
+            }
+
+            ob = cachedPlayers[index - 1];
+            if (ob == null || !ob.IsValid())
+            {
+                sa.Method.SendChat("/e 玩家对象无效");
+                sa.Log.Error("Selected player object is null or invalid");
+                return;
+            }
+
+            sa.Method.SendChat($"/e 已选择: {ob.Name}");
+            sa.Log.Debug($"Selected player: {ob.Name} (EntityId: {ob.EntityId})");
         }
     }
 
@@ -330,6 +486,8 @@ public class VVToolKit
             FindTargetObjectFramework = false;
 
             if (findingObj == null) return;
+            
+
             var finding = findingObj.Name;
 
 
@@ -348,7 +506,6 @@ public class VVToolKit
                 unsafe
                 {
                     var address = (Character*)findingObj.Address;
-
                     var Health = address->CharacterData.Health;
                     var Mana = address->CharacterData.Mana;
                     var job = IbcHelper.GetPlayerJob(sa, (IPlayerCharacter)findingObj, true);
@@ -490,6 +647,113 @@ public static class IbcHelper
             return statusIdx != -1;
         }
     }
+
+    /// <summary>
+    /// 获取对象身上的标记（Sign/Marker）
+    /// </summary>
+    /// <param name="obj">游戏对象</param>
+    /// <returns>标记类型</returns>
+    public static MarkType GetObjectMarker(IGameObject? obj)
+    {
+        if (obj == null || !obj.IsValid()) return MarkType.None;
+
+        unsafe
+        {
+            // 直接从GameObject结构读取标记信息
+            var gameObj = (GameObject*)obj.Address;
+            if (gameObj == null) return MarkType.None;
+
+            // GameObject.NamePlateIconId 存储了头顶标记ID
+            // 标记ID范围: 0 = 无标记, 1-8 = 攻击标记, 61-63 = 止步标记, 等等
+            var iconId = gameObj->NamePlateIconId;
+
+            // 转换 iconId 到 MarkType
+            return iconId switch
+            {
+                0 => MarkType.None,
+                61 => MarkType.Attack1,
+                62 => MarkType.Attack2,
+                63 => MarkType.Attack3,
+                64 => MarkType.Attack4,
+                65 => MarkType.Attack5,
+                66 => MarkType.Bind1,
+                67 => MarkType.Bind2,
+                68 => MarkType.Bind3,
+                69 => MarkType.Ignore1,
+                70 => MarkType.Ignore2,
+                71 => MarkType.Square,
+                72 => MarkType.Circle,
+                73 => MarkType.Cross,
+                74 => MarkType.Triangle,
+                75 => MarkType.Attack6,
+                76 => MarkType.Attack7,
+                77 => MarkType.Attack8,
+                _ => MarkType.None
+            };
+        }
+    }
+
+    /// <summary>
+    /// 检查对象是否有指定的标记
+    /// </summary>
+    public static bool HasMarker(IGameObject? obj, MarkType markType)
+    {
+        return GetObjectMarker(obj) == markType;
+    }
+
+    /// <summary>
+    /// 获取标记的名称（中文）
+    /// </summary>
+    public static string GetMarkerName(MarkType markType)
+    {
+        return markType switch
+        {
+            MarkType.Attack1 => "攻击1",
+            MarkType.Attack2 => "攻击2",
+            MarkType.Attack3 => "攻击3",
+            MarkType.Attack4 => "攻击4",
+            MarkType.Attack5 => "攻击5",
+            MarkType.Bind1 => "止步1",
+            MarkType.Bind2 => "止步2",
+            MarkType.Bind3 => "止步3",
+            MarkType.Ignore1 => "禁止1",
+            MarkType.Ignore2 => "禁止2",
+            MarkType.Square => "方块",
+            MarkType.Circle => "圆圈",
+            MarkType.Cross => "十字",
+            MarkType.Triangle => "三角",
+            MarkType.Attack6 => "攻击6",
+            MarkType.Attack7 => "攻击7",
+            MarkType.Attack8 => "攻击8",
+            _ => "无标记"
+        };
+    }
+}
+
+/// <summary>
+/// 标记类型枚举
+/// </summary>
+public enum MarkType
+{
+    None = -1,
+    Attack1 = 0,
+    Attack2 = 1,
+    Attack3 = 2,
+    Attack4 = 3,
+    Attack5 = 4,
+    Bind1 = 5,
+    Bind2 = 6,
+    Bind3 = 7,
+    Ignore1 = 8,
+    Ignore2 = 9,
+    Square = 10,
+    Circle = 11,
+    Cross = 12,
+    Triangle = 13,
+    Attack6 = 14,
+    Attack7 = 15,
+    Attack8 = 16,
+    Count = 17
 }
 
 #region 特殊函数
@@ -1062,3 +1326,5 @@ public static class FFLogsHelper
         };
 }
 #endregion
+
+
