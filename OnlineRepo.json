@@ -530,5 +530,18 @@
     "Note": "v0.0.2.4\r\n---------------------------------------------------------\r\n1. 输入/e vvfind + 名字; 即可自动帮你找到范围内你想要找的人\r\n2. 如果想要关掉指路标记或者别的额外功能，输入/e vvstop\r\n3. 输入/e vvmove 或 /e vvfly 即可调用vnav去到指定位置（也可以在方法设置中触发）\r\n4. /e vvguid 自动生成新的guid并复制到剪切板\r\n5. /e vvrot 将自己的朝向改为目标的当前朝向（需要先使用vvfind或者vvselect找到目标，仅本地可见）\r\n6. /e vvrotme [数字] 将自己的朝向改为指定的弧度\r\n7. /e vvrottarget 设置目标对象（玩家/宠物/NPC）的朝向为你当前的朝向（需要先使用vvfind或者vvselect找到目标，仅本地可见）\r\n8. /e vvrottarget [数字] 设置目标对象（玩家/宠物/NPC）的朝向为指定弧度（需要先使用vvfind或者vvselect找到目标，仅本地可见）\r\n9. /e vvlist 列出附近最多10个玩家\r\n10. /e vvselect [编号] 选择/vvlist列出的玩家作为目标\r\n11. /e vvvvv认证秘钥，认证后才可以使用额外功能\r\n---------------------------------------------------------\r\n以下是需密钥功能:\r\n1. /e vvtp\r\n\r\n鸭门",
     "UpdateInfo": "    v0.0.2.4\r\n    vvrottarget 支持后面加参数来设置指定朝向\r\n    新增 vvlist 显示附近玩家\r\n    新增 vvselect 选择vvlist列出的指定玩家作为目标\r\n    新增 vvrot 将自己的朝向改为目标的当前朝向\r\n    新增 vvrotme 将自己的朝向改为指定的弧度",
     "TerritoryIds": []
+  },
+  {
+    "Name": "巡梦金库 [Vault Oneiron]",
+    "Guid": "027ed2ae-4162-4d1e-a77d-a74d9441b065",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "Repo": "https://github.com/VeeverSW/Kodakku-Script",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/Vault-Oneiron.cs",
+    "Note": "v0.0.0.1\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n鸭门\r\n------------------------------\r\n1. If you need a draw for a mechanic or notice any issues, @ me on DC or DM me.\r\nDuckmen",
+    "UpdateInfo": "    v0.0.0.1",
+    "TerritoryIds": [
+      1279
+    ]
   }
 ]
