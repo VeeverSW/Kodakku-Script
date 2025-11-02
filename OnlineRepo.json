@@ -556,5 +556,18 @@
     "TerritoryIds": [
       836
     ]
+  },
+  {
+    "Name": "LV.79 伪造天界格鲁格火山 [Mt. Gulg]",
+    "Guid": "e67816ed-08b7-4df6-857a-2b71e9426d1c",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "Repo": "https://github.com/VeeverSW/Kodakku-Script",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/MtGulg.cs",
+    "Note": "v0.0.0.1\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n鸭门\r\n------------------------------\r\n1. If you need a draw for a mechanic or notice any issues, @ me on DC or DM me.\r\nDuckmen",
+    "UpdateInfo": "    v0.0.0.1",
+    "TerritoryIds": [
+      822
+    ]
   }
 ]
