@@ -543,5 +543,18 @@
     "TerritoryIds": [
       1279
     ]
+  },
+  {
+    "Name": "LV.77 避暑离宫马利卡大井 [Malikahs Well]",
+    "Guid": "41547ef2-b54c-4296-9ca4-8e54992ea6fb",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "Repo": "https://github.com/VeeverSW/Kodakku-Script",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/Malikah-s-Well.cs",
+    "Note": "v0.0.0.1\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n鸭门\r\n------------------------------\r\n1. If you need a draw for a mechanic or notice any issues, @ me on DC or DM me.\r\nDuckmen",
+    "UpdateInfo": "    v0.0.0.1",
+    "TerritoryIds": [
+      836
+    ]
   }
 ]
