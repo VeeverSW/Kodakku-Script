@@ -35,7 +35,7 @@ using KodaMarkType = KodakkuAssist.Module.GameOperate.MarkType;
 namespace Veever.DawnTrail.TheWindwardWildsExtreme;
 
 [ScriptType(name: Name, territorys: [1306], guid: "b4a3871d-2499-4152-aaa2-a911ee1bbce2",
-    version: Version, author: "Veever", note: NoteStr, updateInfo: UpdateInfo)]
+    version: Version, author: "Veever", note: NoteStr, updateInfo: UpdateStr)]
 
 // ^(?!.*((武僧|机工士|龙骑士|武士|忍者|蝰蛇剑士|钐镰客|舞者|吟游诗人|占星术士|贤者|学者|(朝日|夕月)小仙女|炽天使|白魔法师|战士|骑士|暗黑骑士|绝枪战士|绘灵法师|黑魔法师|青魔法师|召唤师|宝石兽|亚灵神巴哈姆特|亚灵神不死鸟|迦楼罗之灵|泰坦之灵|伊弗利特之灵|后式自走人偶)\] (Used|Cast))).*35501.*$
 // ^\[\w+\|[^|]+\|E\]\s\w+
@@ -44,7 +44,7 @@ public class TheWindwardWildsExtreme
 {
     const string NoteStr =
     """
-    v0.0.0.1
+    v0.0.0.2
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     2. 播报左右侧均是以 #面对# Boss为准, 播报的并不是基于boss本体的左右，请注意辨别
     3. 本脚本使用攻略为game8(子言)
@@ -67,10 +67,25 @@ public class TheWindwardWildsExtreme
     Duckmen.
     """;
 
+    const string UpdateStr =
+    """
+    v0.0.0.2
+    1. 给一些绘图增加了lock来维持稳定
+    2. 修复了一些变量没有清除的问题
+    3. 波状龙闪-43926的地火绘图改为一次性全部绘制
+    4. 锁刃飞翔突进【龙闪】43907 和 43905的绘图时间重新规划，避免冲突
+    鸭门
+    ----------------------------------
+    1. Add locks to some drawings to improve stability. 
+    2. Fixed an issue where variables were not cleared.
+    3. Wyvern’s Vengeance (ID: 43926) drawings are now rendered all at once instead of one by one.
+    4. Edited the timing of Wyvern’s Siegeflight (IDs: 43907 and 43905) drawings to avoid conflicts.
+    Duckmen.
+    """;
+
     private const string Name = "LV.100 护锁刃龙上位狩猎战 [The Windward Wilds (Extreme)]";
-    private const string Version = "0.0.0.1";
+    private const string Version = "0.0.0.2";
     private const string DebugVersion = "a";
-    private const string UpdateInfo = "";
 
     private const bool Debugging = false;
 
@@ -132,7 +147,9 @@ public class TheWindwardWildsExtreme
 
     private readonly object CountLock = new object();
     List<ulong> StackPlayerId = new List<ulong>();
-    
+    Dictionary<int, ulong> ClamorousChaseDict = new Dictionary<int, ulong>();
+    List<Vector3> ChainbladeBlowTriplePos = new List<Vector3>();
+
 
     private enum GuardianArkveldPhase
     {
@@ -159,6 +176,8 @@ public class TheWindwardWildsExtreme
         _initHint = false;
         IsWestEastTower = true;
         StackInProgress = false;
+        ClamorousChaseDict.Clear();
+        ChainbladeBlowTriplePos.Clear();
     }
 
     #region Waymark
@@ -241,6 +260,9 @@ public class TheWindwardWildsExtreme
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
         if (isTTS) sa.Method.EdgeTTS($"{msg}");
         ChainbladeBlowTripleCount = 0;
+        ClamorousChaseDict.Clear();
+        ChainbladeBlowTriplePos.Clear();
+        ChainbladeBlowTripleCount = 0;
     }
 
     #region Phase 1
@@ -258,10 +280,10 @@ public class TheWindwardWildsExtreme
                     if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
                     if (isTTS) sa.Method.EdgeTTS($"{msg1}");
 
-                    DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(28f, 80f), 6700, $"Chainblade Blow right-{ev.SourceId}",
+                    DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(28f, 80f), 6700, $"Chainblade Blow rightP1-{ev.SourceId}",
                         sa.Data.DefaultDangerColor, offset: new Vector3(7f, 0, 20f));
 
-                    DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(28f, 80f), 3500, $"Chainblade Blow left-{ev.SourceId}",
+                    DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(28f, 80f), 3500, $"Chainblade Blow leftP1-{ev.SourceId}",
                         sa.Data.DefaultDangerColor, offset: new Vector3(-7f, 0, 20f), delay: 6700);
                     break;
                 }
@@ -272,17 +294,17 @@ public class TheWindwardWildsExtreme
                     if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
                     if (isTTS) sa.Method.EdgeTTS($"{msg1}");
 
-                    DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(28f, 80f), 6700, $"Chainblade Blow left-{ev.SourceId}",
+                    DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(28f, 80f), 6700, $"Chainblade Blow leftP1-{ev.SourceId}",
                         sa.Data.DefaultDangerColor, offset: new Vector3(-7f, 0, 20f));
 
-                    DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(28f, 80f), 3500, $"Chainblade Blow right-{ev.SourceId}",
+                    DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(28f, 80f), 3500, $"Chainblade Blow rightP1-{ev.SourceId}",
                         sa.Data.DefaultDangerColor, offset: new Vector3(7f, 0, 20f), delay: 6700);
                     break;
                 }
         }
     }
 
-    [ScriptMethod(name: "锁刃飞翔突进【龙闪】 - Wyvern's Siegeflight", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(45111|43905|45104|43907)$"])]
+    [ScriptMethod(name: "锁刃飞翔突进【龙闪】 - Wyvern's Siegeflight", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(45111|43905|45104|43907)$"], suppress: 1000)]
     public void WyvernsSiegeflight(Event ev, ScriptAccessory sa)
     {
         switch (ev.ActionId)
@@ -296,10 +318,10 @@ public class TheWindwardWildsExtreme
                 }
             case 43905 or 43907:
                 {
-                    DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(20f, 40f), 3400, $"Wyvern's Siegeflight Left-{ev.SourceId}",
-                        sa.Data.DefaultDangerColor, offset: new Vector3(12f, 0, 0f), delay: 6600);
-                    DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(20f, 40f), 3400, $"Wyvern's Siegeflight Right-{ev.SourceId}",
-                        sa.Data.DefaultDangerColor, offset: new Vector3(-12f, 0, 0f), delay: 6600);
+                    DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(20f, 40f), 3000, $"Wyvern's Siegeflight Left-{ev.SourceId}",
+                        sa.Data.DefaultDangerColor, offset: new Vector3(12f, 0, 0f), delay: 6000);
+                    DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(20f, 40f), 3000, $"Wyvern's Siegeflight Right-{ev.SourceId}",
+                        sa.Data.DefaultDangerColor, offset: new Vector3(-12f, 0, 0f), delay: 6000);
                     break;
                 }
         }
@@ -350,72 +372,72 @@ public class TheWindwardWildsExtreme
         }
     }
 
-    List<Vector3> ChainbladeBlowTriplePos= new List<Vector3>();
+
     [ScriptMethod(name: "锁刃敲打三连 - Chainblade Blow 3-hit", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(43911|43912|43913|43914)$"])]
-    public async void ChainbladeBlowTriple(Event ev, ScriptAccessory sa)
+    public void ChainbladeBlowTriple(Event ev, ScriptAccessory sa)
     {
-        switch (ev.ActionId)
+        lock (CountLock)
         {
-            case 43911:
-                {
-                    ChainbladeBlowTriplePos.Add(ev.EffectPosition);
-                    if (ChainbladeBlowTripleCount == 0)
+            switch (ev.ActionId)
+            {
+                case 43911:
                     {
-                        string msg = language == Language.Chinese ? "前往第三个钢铁边缘，随后进入躲避" : "To Third Chariot edge, then in";
-                        if (isText) sa.Method.TextInfo($"{msg}", duration: 5700, true);
-                        if (isTTS) sa.Method.EdgeTTS($"{msg}");
-                    }
+                        ChainbladeBlowTriplePos.Add(ev.EffectPosition);
+                        if (ChainbladeBlowTripleCount == 0)
+                        {
+                            string msg = language == Language.Chinese ? "前往第三个钢铁边缘，随后进入躲避" : "To Third Chariot edge, then in";
+                            if (isText) sa.Method.TextInfo($"{msg}", duration: 5700, true);
+                            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+                        }
 
-                    if (ChainbladeBlowTripleCount == 1)
+                        if (ChainbladeBlowTripleCount == 1)
+                        {
+                            var bossObj = GetBossObject(sa);
+                            if (bossObj == null) return;
+                            DrawHelper.DrawRectPosTarget(sa, bossObj.Position, ChainbladeBlowTriplePos[0], new Vector2(12f, 33f), 5700,
+                                "Connect", color: new Vector4(1, 0, 1, ColorAlpha));
+
+                            DrawHelper.DrawRectPosTarget(sa, ChainbladeBlowTriplePos[0], ChainbladeBlowTriplePos[1], new Vector2(12f, 24f), 6500,
+                                "Connect", color: new Vector4(1, 0, 1, ColorAlpha));
+                        }
+
+                        if (ChainbladeBlowTripleCount == 2)
+                        {
+                            DrawHelper.DrawRectPosTarget(sa, ChainbladeBlowTriplePos[1], ChainbladeBlowTriplePos[2], new Vector2(12f, 24f), 7500,
+                                "Connect", color: new Vector4(1, 0, 1, ColorAlpha));
+                        }
+
+                        if (ChainbladeBlowTripleCount != 2)
+                        {
+                            DrawHelper.DrawCircle(sa, ev.EffectPosition, new Vector2(8f), 7200, $"Chainblade Blow Circle-{ev.SourceId}", sa.Data.DefaultDangerColor);
+                        }
+                        else
+                        {
+                            DrawHelper.DrawCircle(sa, ev.EffectPosition, new Vector2(8f), 7200, $"Chainblade Blow Circle-{ev.SourceId}", new Vector4(1, 1, 0, ColorAlpha));                      
+                        }
+
+                        ChainbladeBlowTripleCount++;
+                        break;
+                    }
+                case 43912:
                     {
-                        var bossObj = GetBossObject(sa);
-                        if (bossObj == null) return;
-                        DrawHelper.DrawRectPosTarget(sa, bossObj.Position, ChainbladeBlowTriplePos[0], new Vector2(12f, 33f), 5700,
-                            "Connect", color: new Vector4(1, 0, 1, ColorAlpha));
-
-                        DrawHelper.DrawRectPosTarget(sa, ChainbladeBlowTriplePos[0], ChainbladeBlowTriplePos[1], new Vector2(12f, 24f), 6500,
-                            "Connect", color: new Vector4(1, 0, 1, ColorAlpha));
+                        DrawHelper.DrawDount(sa, ev.EffectPosition, new Vector2(14f), new Vector2(8f), 2000,
+                            $"Chainblade Blow Dount-{ev.SourceId}", sa.Data.DefaultDangerColor, scaleByTime: false, delay: 7200);
+                        break;
                     }
-
-                    if (ChainbladeBlowTripleCount == 2)
+                case 43913:
                     {
-                        DrawHelper.DrawRectPosTarget(sa, ChainbladeBlowTriplePos[1], ChainbladeBlowTriplePos[2], new Vector2(12f, 24f), 7500,
-                            "Connect", color: new Vector4(1, 0, 1, ColorAlpha));
+                        DrawHelper.DrawDount(sa, ev.EffectPosition, new Vector2(20f), new Vector2(14f), 2000,
+                            $"Chainblade Blow Dount-{ev.SourceId}", sa.Data.DefaultDangerColor, scaleByTime: false, delay: 9200);
+                        break;
                     }
-
-                    if (ChainbladeBlowTripleCount != 2)
+                case 43914:
                     {
-                        DrawHelper.DrawCircle(sa, ev.EffectPosition, new Vector2(8f), 7200, $"Chainblade Blow Circle-{ev.SourceId}", sa.Data.DefaultDangerColor);
+                        DrawHelper.DrawDount(sa, ev.EffectPosition, new Vector2(26f), new Vector2(20f), 2000,
+                            $"Chainblade Blow Dount-{ev.SourceId}", sa.Data.DefaultDangerColor, scaleByTime: false, delay: 11200);
+                        break;
                     }
-                    else
-                    {
-                        DrawHelper.DrawCircle(sa, ev.EffectPosition, new Vector2(8f), 7200, $"Chainblade Blow Circle-{ev.SourceId}", new Vector4(1, 1, 0, ColorAlpha));
-
-                        await Task.Delay(10000);
-                        ChainbladeBlowTripleCount = 0;
-                    }
-
-                    ChainbladeBlowTripleCount++;
-                    break;
-                }
-            case 43912:
-                {
-                    DrawHelper.DrawDount(sa, ev.EffectPosition, new Vector2(14f), new Vector2(8f), 2000,
-                        $"Chainblade Blow Dount-{ev.SourceId}", sa.Data.DefaultDangerColor, scaleByTime: false, delay: 7200);
-                    break;
-                }
-            case 43913:
-                {
-                    DrawHelper.DrawDount(sa, ev.EffectPosition, new Vector2(20f), new Vector2(14f), 2000,
-                        $"Chainblade Blow Dount-{ev.SourceId}", sa.Data.DefaultDangerColor, scaleByTime: false, delay: 9200);
-                    break;
-                }
-            case 43914:
-                {
-                    DrawHelper.DrawDount(sa, ev.EffectPosition, new Vector2(26f), new Vector2(20f), 2000,
-                        $"Chainblade Blow Dount-{ev.SourceId}", sa.Data.DefaultDangerColor, scaleByTime: false, delay: 11200);
-                    break;
-                }
+            }
         }
     }
 
@@ -714,8 +736,8 @@ public class TheWindwardWildsExtreme
         var srot = ev.SourceRotation;
 
         float[] distances = { 0f, 8f, 16f };
-        int[] delays = { 0, 4700, 6500 };
-        int[] durations = { 4700, 1800, 1800 };
+        int[] delays = { 0, 0, 0 };
+        int[] durations = { 4700, 6500, 8300 };
 
         for (int i = 0; i < distances.Length; i++)
         {
@@ -770,10 +792,12 @@ public class TheWindwardWildsExtreme
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
         if (isTTS) sa.Method.EdgeTTS($"{msg}");
         guardianArkveldPhase = GuardianArkveldPhase.Phase2;
+        ClamorousChaseDict.Clear();
+        ChainbladeBlowTriplePos.Clear();
+        ChainbladeBlowTripleCount = 0;
     }
 
     #region Phase 2
-    Dictionary<int, ulong> ClamorousChaseDict = new Dictionary<int, ulong>();
     [ScriptMethod(name: "Clamorous Chase Check", eventType: EventTypeEnum.TargetIcon, eventCondition: ["Id:regex:^(0194|0195|0196|0197|0198|0199|019A|019B)$"],
     userControl: false)]
     public void ClamorousChaseCheck(Event ev, ScriptAccessory sa)
@@ -787,370 +811,375 @@ public class TheWindwardWildsExtreme
         // 0199 SIX     6
         // 019A SEVEN   7
         // 019B EIGHT   8
-
-        var index = 0;
-        DebugMsg($"ClamorousChaseCheck Detected, id: {ev["Id"]}", sa);
-         
-        switch (ev["Id"])
+        lock (CountLock)
         {
-            case "0194":
-                index = 1;
-                ClamorousChaseDict.Add(index, ev.TargetId);
-                DebugMsg($"ClamorousChaseDict 1 added", sa);
-                break;
-            case "0195":
-                index = 2;
-                ClamorousChaseDict.Add(index, ev.TargetId);
-                DebugMsg($"ClamorousChaseDict 2 added", sa);
-                break;
-            case "0196":
-                index = 3;
-                ClamorousChaseDict.Add(index, ev.TargetId);
-                DebugMsg($"ClamorousChaseDict 3 added", sa);
-                break;
-            case "0197":
-                index = 4;
-                ClamorousChaseDict.Add(index, ev.TargetId);
-                DebugMsg($"ClamorousChaseDict 4 added", sa);
-                break;
-            case "0198":
-                index = 5;
-                ClamorousChaseDict.Add(index, ev.TargetId);
-                DebugMsg($"ClamorousChaseDict 5 added", sa);
-                break;
-            case "0199":
-                index = 6;
-                ClamorousChaseDict.Add(index, ev.TargetId);
-                DebugMsg($"ClamorousChaseDict 6 added", sa);
-                break;
-            case "019A":
-                index = 7;
-                ClamorousChaseDict.Add(index, ev.TargetId);
-                DebugMsg($"ClamorousChaseDict 7 added", sa);
-                break;
-            case "019B":
-                index = 8;
-                ClamorousChaseDict.Add(index, ev.TargetId);
-                DebugMsg($"ClamorousChaseDict 8 added", sa);
-                break;
+            var index = 0;
+            DebugMsg($"ClamorousChaseCheck Detected, id: {ev["Id"]}", sa);
+
+            switch (ev["Id"])
+            {
+                case "0194":
+                    index = 1;
+                    ClamorousChaseDict.Add(index, ev.TargetId);
+                    DebugMsg($"ClamorousChaseDict 1 added", sa);
+                    break;
+                case "0195":
+                    index = 2;
+                    ClamorousChaseDict.Add(index, ev.TargetId);
+                    DebugMsg($"ClamorousChaseDict 2 added", sa);
+                    break;
+                case "0196":
+                    index = 3;
+                    ClamorousChaseDict.Add(index, ev.TargetId);
+                    DebugMsg($"ClamorousChaseDict 3 added", sa);
+                    break;
+                case "0197":
+                    index = 4;
+                    ClamorousChaseDict.Add(index, ev.TargetId);
+                    DebugMsg($"ClamorousChaseDict 4 added", sa);
+                    break;
+                case "0198":
+                    index = 5;
+                    ClamorousChaseDict.Add(index, ev.TargetId);
+                    DebugMsg($"ClamorousChaseDict 5 added", sa);
+                    break;
+                case "0199":
+                    index = 6;
+                    ClamorousChaseDict.Add(index, ev.TargetId);
+                    DebugMsg($"ClamorousChaseDict 6 added", sa);
+                    break;
+                case "019A":
+                    index = 7;
+                    ClamorousChaseDict.Add(index, ev.TargetId);
+                    DebugMsg($"ClamorousChaseDict 7 added", sa);
+                    break;
+                case "019B":
+                    index = 8;
+                    ClamorousChaseDict.Add(index, ev.TargetId);
+                    DebugMsg($"ClamorousChaseDict 8 added", sa);
+                    break;
+            }
         }
     }
 
     [ScriptMethod(name: "锁刃跃动 - Clamorous Chase", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(43955|43958)$"])]
     public void ClamorousChase(Event ev, ScriptAccessory sa)
     {
-        // 43955 clockwise
+        // 43955 clockwise  
         // 43958 anti-clockwise
-        Vector3 posASafe = new Vector3(100.00f, 0f, 92f);
-        if (ev.ActionId == 43955)
+        lock (CountLock)
         {
-            DebugMsg("Clamorous Chase 43955 clockwise Detected", sa);
-            if (ClamorousChaseDict.ContainsKey(1) && ClamorousChaseDict[1] == sa.Data.Me)
+            Vector3 posASafe = new Vector3(100.00f, 0f, 92f);
+            if (ev.ActionId == 43955)
             {
-                DebugMsg("Clamorous Chase 1 Detected", sa);
-                DrawHelper.DrawCircle(sa, posB, new Vector2(2f), 8900,
-                    $"Clamorous Chase 1-{ev.SourceId}",
-                    sa.Data.DefaultSafeColor);
+                DebugMsg("Clamorous Chase 43955 clockwise Detected", sa);
+                if (ClamorousChaseDict.ContainsKey(1) && ClamorousChaseDict[1] == sa.Data.Me)
+                {
+                    DebugMsg("Clamorous Chase 1 Detected", sa);
+                    DrawHelper.DrawCircle(sa, posB, new Vector2(2f), 8900,
+                        $"Clamorous Chase 1-{ev.SourceId}",
+                        sa.Data.DefaultSafeColor);
 
-                if (isLead) DrawHelper.DrawDisplacement(sa, posB, new Vector2(2f), 8900,
-                    $"Clamorous Chase Navi 1-{ev.SourceId}");
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posB, new Vector2(2f), 8900,
+                        $"Clamorous Chase Navi 1-{ev.SourceId}");
 
-                if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
-                    $"Clamorous Chase Navi 1-{ev.SourceId}", delay: 8900);
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
+                        $"Clamorous Chase Navi 1-{ev.SourceId}", delay: 8900);
+                }
+
+                if (ClamorousChaseDict.ContainsKey(2) && ClamorousChaseDict[2] == sa.Data.Me)
+                {
+                    DebugMsg("Clamorous Chase 2 Detected", sa);
+                    DrawHelper.DrawCircle(sa, posC, new Vector2(2f), 12000,
+                        $"Clamorous Chase 2-{ev.SourceId}",
+                        sa.Data.DefaultSafeColor);
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posC, new Vector2(2f), 12000,
+                        $"Clamorous Chase Navi 2-{ev.SourceId}");
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
+                        $"Clamorous Chase Navi 2-{ev.SourceId}", delay: 12000);
+                }
+
+                if (ClamorousChaseDict.ContainsKey(3) && ClamorousChaseDict[3] == sa.Data.Me)
+                {
+                    DebugMsg("Clamorous Chase 3 Detected", sa);
+                    DrawHelper.DrawCircle(sa, posD, new Vector2(2f), 15100,
+                        $"Clamorous Chase 3-{ev.SourceId}",
+                        sa.Data.DefaultSafeColor);
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posD, new Vector2(2f), 15100,
+                        $"Clamorous Chase Navi 3-{ev.SourceId}");
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
+                        $"Clamorous Chase Navi 3-{ev.SourceId}", delay: 15100);
+                }
+
+                if (ClamorousChaseDict.ContainsKey(4) && ClamorousChaseDict[4] == sa.Data.Me)
+                {
+                    DebugMsg("Clamorous Chase 4 Detected", sa);
+                    DrawHelper.DrawCircle(sa, posD, new Vector2(2f), 8900,
+                        $"Clamorous Chase 4-{ev.SourceId}",
+                        sa.Data.DefaultSafeColor);
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posASafe, new Vector2(2f), 8900,
+                        $"Clamorous Chase Navi 4-{ev.SourceId}");
+
+                    string msg = language == Language.Chinese ? "先在安全区等待Boss攻击后再引导" : "Wait in the safe zone, then bait.";
+                    if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
+                    if (isTTS) sa.Method.EdgeTTS($"{msg}");
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posA, new Vector2(2f), 9300,
+                        $"Clamorous Chase Navi 4-{ev.SourceId}", delay: 8900);
+
+                    if (isLead) DrawHelper.DrawCircle(sa, posA, new Vector2(2f), 9300,
+                        $"Clamorous Chase 4-{ev.SourceId}",
+                        sa.Data.DefaultSafeColor, delay: 8900);
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
+                        $"Clamorous Chase Navi 4-{ev.SourceId}", delay: 18200);
+                }
+
+                if (ClamorousChaseDict.ContainsKey(5) && ClamorousChaseDict[5] == sa.Data.Me)
+                {
+                    DebugMsg("Clamorous Chase 5 Detected", sa);
+                    DrawHelper.DrawCircle(sa, posOne, new Vector2(2f), 13300,
+                        $"Clamorous Chase 5-{ev.SourceId}",
+                        sa.Data.DefaultSafeColor);
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 13300,
+                        $"Clamorous Chase Navi 5-{ev.SourceId}");
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posB, new Vector2(2f), 8000,
+                        $"Clamorous Chase Navi 5-{ev.SourceId}", delay: 13300);
+
+                    if (isLead) DrawHelper.DrawCircle(sa, posB, new Vector2(2f), 8000,
+                        $"Clamorous Chase 5-{ev.SourceId}",
+                        sa.Data.DefaultSafeColor, delay: 13300);
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
+                        $"Clamorous Chase Navi 5-{ev.SourceId}", delay: 21300);
+                }
+
+                if (ClamorousChaseDict.ContainsKey(6) && ClamorousChaseDict[6] == sa.Data.Me)
+                {
+                    DebugMsg("Clamorous Chase 6 Detected", sa);
+                    DrawHelper.DrawCircle(sa, posOne, new Vector2(2f), 16400,
+                        $"Clamorous Chase 6-{ev.SourceId}",
+                        sa.Data.DefaultSafeColor);
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 16400,
+                        $"Clamorous Chase Navi 6-{ev.SourceId}");
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posC, new Vector2(2f), 8000,
+                        $"Clamorous Chase Navi 6-{ev.SourceId}", delay: 16400);
+
+                    DrawHelper.DrawCircle(sa, posC, new Vector2(2f), 8000,
+                        $"Clamorous Chase 6-{ev.SourceId}",
+                        sa.Data.DefaultSafeColor, delay: 16400);
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
+                        $"Clamorous Chase Navi 6-{ev.SourceId}", delay: 24400);
+                }
+
+
+                if (ClamorousChaseDict.ContainsKey(7) && ClamorousChaseDict[7] == sa.Data.Me)
+                {
+                    DebugMsg("Clamorous Chase 7 Detected", sa);
+                    DrawHelper.DrawCircle(sa, posOne, new Vector2(2f), 19500,
+                        $"Clamorous Chase 7-{ev.SourceId}",
+                        sa.Data.DefaultSafeColor);
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 19500,
+                        $"Clamorous Chase Navi 7-{ev.SourceId}");
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posD, new Vector2(2f), 8000,
+                        $"Clamorous Chase Navi 7-{ev.SourceId}", delay: 19500);
+
+                    DrawHelper.DrawCircle(sa, posD, new Vector2(2f), 8000,
+                        $"Clamorous Chase 7-{ev.SourceId}",
+                        sa.Data.DefaultSafeColor, delay: 19500);
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
+                        $"Clamorous Chase Navi 7-{ev.SourceId}", delay: 27500);
+                }
+
+                if (ClamorousChaseDict.ContainsKey(8) && ClamorousChaseDict[8] == sa.Data.Me)
+                {
+                    DebugMsg("Clamorous Chase 8 Detected", sa);
+                    DrawHelper.DrawCircle(sa, posOne, new Vector2(2f), 22600,
+                        $"Clamorous Chase 8-{ev.SourceId}",
+                        sa.Data.DefaultSafeColor);
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 22600,
+                        $"Clamorous Chase Navi 8-{ev.SourceId}");
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posA, new Vector2(2f), 8000,
+                        $"Clamorous Chase Navi 8-{ev.SourceId}", delay: 22600);
+
+                    DrawHelper.DrawCircle(sa, posA, new Vector2(2f), 8000,
+                        $"Clamorous Chase 8-{ev.SourceId}",
+                        sa.Data.DefaultSafeColor, delay: 22600);
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
+                        $"Clamorous Chase Navi 8-{ev.SourceId}", delay: 30600);
+                }
             }
-
-            if (ClamorousChaseDict.ContainsKey(2) && ClamorousChaseDict[2] == sa.Data.Me)
+            else
             {
-                DebugMsg("Clamorous Chase 2 Detected", sa);
-                DrawHelper.DrawCircle(sa, posC, new Vector2(2f), 12000,
-                    $"Clamorous Chase 2-{ev.SourceId}",
-                    sa.Data.DefaultSafeColor);
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posC, new Vector2(2f), 12000,
-                    $"Clamorous Chase Navi 2-{ev.SourceId}");
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
-                    $"Clamorous Chase Navi 2-{ev.SourceId}", delay: 12000);
-            }
-
-            if (ClamorousChaseDict.ContainsKey(3) && ClamorousChaseDict[3] == sa.Data.Me)
-            {
-                DebugMsg("Clamorous Chase 3 Detected", sa);
-                DrawHelper.DrawCircle(sa, posD, new Vector2(2f), 15100,
-                    $"Clamorous Chase 3-{ev.SourceId}",
-                    sa.Data.DefaultSafeColor);
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posD, new Vector2(2f), 15100,
-                    $"Clamorous Chase Navi 3-{ev.SourceId}");
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
-                    $"Clamorous Chase Navi 3-{ev.SourceId}", delay: 15100);
-            }
-
-            if (ClamorousChaseDict.ContainsKey(4) && ClamorousChaseDict[4] == sa.Data.Me)
-            {
-                DebugMsg("Clamorous Chase 4 Detected", sa);
-                DrawHelper.DrawCircle(sa, posD, new Vector2(2f), 8900,
-                    $"Clamorous Chase 4-{ev.SourceId}",
-                    sa.Data.DefaultSafeColor);
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posASafe, new Vector2(2f), 8900,
-                    $"Clamorous Chase Navi 4-{ev.SourceId}");
-
-                string msg = language == Language.Chinese ? "先在安全区等待Boss攻击后再引导" : "Wait in the safe zone, then bait.";
-                if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-                if (isTTS) sa.Method.EdgeTTS($"{msg}");
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posA, new Vector2(2f), 9300,
-                    $"Clamorous Chase Navi 4-{ev.SourceId}", delay: 8900);
-
-                if (isLead) DrawHelper.DrawCircle(sa, posA, new Vector2(2f), 9300,
-                    $"Clamorous Chase 4-{ev.SourceId}",
-                    sa.Data.DefaultSafeColor, delay: 8900);
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
-                    $"Clamorous Chase Navi 4-{ev.SourceId}", delay: 18200);
-            }
-
-            if (ClamorousChaseDict.ContainsKey(5) && ClamorousChaseDict[5] == sa.Data.Me)
-            {
-                DebugMsg("Clamorous Chase 5 Detected", sa);
-                DrawHelper.DrawCircle(sa, posOne, new Vector2(2f), 13300,
-                    $"Clamorous Chase 5-{ev.SourceId}",
-                    sa.Data.DefaultSafeColor);
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 13300,
-                    $"Clamorous Chase Navi 5-{ev.SourceId}");
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posB, new Vector2(2f), 8000,
-                    $"Clamorous Chase Navi 5-{ev.SourceId}", delay: 13300);
-
-                if (isLead) DrawHelper.DrawCircle(sa, posB, new Vector2(2f), 8000,
-                    $"Clamorous Chase 5-{ev.SourceId}",
-                    sa.Data.DefaultSafeColor, delay: 13300);
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
-                    $"Clamorous Chase Navi 5-{ev.SourceId}", delay: 21300);
-            }
-
-            if (ClamorousChaseDict.ContainsKey(6) && ClamorousChaseDict[6] == sa.Data.Me)
-            {
-                DebugMsg("Clamorous Chase 6 Detected", sa);
-                DrawHelper.DrawCircle(sa, posOne, new Vector2(2f), 16400,
-                    $"Clamorous Chase 6-{ev.SourceId}",
-                    sa.Data.DefaultSafeColor);
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 16400,
-                    $"Clamorous Chase Navi 6-{ev.SourceId}");
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posC, new Vector2(2f), 8000,
-                    $"Clamorous Chase Navi 6-{ev.SourceId}", delay: 16400);
-
-                DrawHelper.DrawCircle(sa, posC, new Vector2(2f), 8000,
-                    $"Clamorous Chase 6-{ev.SourceId}",
-                    sa.Data.DefaultSafeColor, delay: 16400);
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
-                    $"Clamorous Chase Navi 6-{ev.SourceId}", delay: 24400);
-            }
-
-
-            if (ClamorousChaseDict.ContainsKey(7) && ClamorousChaseDict[7] == sa.Data.Me)
-            {
-                DebugMsg("Clamorous Chase 7 Detected", sa);
-                DrawHelper.DrawCircle(sa, posOne, new Vector2(2f), 19500,
-                    $"Clamorous Chase 7-{ev.SourceId}",
-                    sa.Data.DefaultSafeColor);
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 19500,
-                    $"Clamorous Chase Navi 7-{ev.SourceId}");
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posD, new Vector2(2f), 8000,
-                    $"Clamorous Chase Navi 7-{ev.SourceId}", delay: 19500);
-
-                DrawHelper.DrawCircle(sa, posD, new Vector2(2f), 8000,
-                    $"Clamorous Chase 7-{ev.SourceId}",
-                    sa.Data.DefaultSafeColor, delay: 19500);
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
-                    $"Clamorous Chase Navi 7-{ev.SourceId}", delay: 27500);
-            }
-
-            if (ClamorousChaseDict.ContainsKey(8) && ClamorousChaseDict[8] == sa.Data.Me)
-            {
-                DebugMsg("Clamorous Chase 8 Detected", sa);
-                DrawHelper.DrawCircle(sa, posOne, new Vector2(2f), 22600,
-                    $"Clamorous Chase 8-{ev.SourceId}",
-                    sa.Data.DefaultSafeColor);
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 22600,
-                    $"Clamorous Chase Navi 8-{ev.SourceId}");
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posA, new Vector2(2f), 8000,
-                    $"Clamorous Chase Navi 8-{ev.SourceId}", delay: 22600);
-
-                DrawHelper.DrawCircle(sa, posA, new Vector2(2f), 8000,
-                    $"Clamorous Chase 8-{ev.SourceId}",
-                    sa.Data.DefaultSafeColor, delay: 22600);
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
-                    $"Clamorous Chase Navi 8-{ev.SourceId}", delay: 30600);
-            }
-        }
-        else
-        {
-            DebugMsg("Clamorous Chase 43958 anti-clockwise Detected", sa);
-            if (ClamorousChaseDict.ContainsKey(1) && ClamorousChaseDict[1] == sa.Data.Me)
-            {
-                DebugMsg("Clamorous Chase 1 Detected", sa);
-                DrawHelper.DrawCircle(sa, posD, new Vector2(2f), 8900,
-                    $"Clamorous Chase 1-{ev.SourceId}",
-                    sa.Data.DefaultSafeColor);
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posD, new Vector2(2f), 8900,
-                    $"Clamorous Chase Navi 1-{ev.SourceId}");
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
-                    $"Clamorous Chase Navi 1-{ev.SourceId}", delay: 8900);
-            }
-
-            if (ClamorousChaseDict.ContainsKey(2) && ClamorousChaseDict[2] == sa.Data.Me)
-            {
-                DebugMsg("Clamorous Chase 2 Detected", sa);
-                DrawHelper.DrawCircle(sa, posC, new Vector2(2f), 12000,
-                    $"Clamorous Chase 2-{ev.SourceId}",
-                    sa.Data.DefaultSafeColor);
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posC, new Vector2(2f), 12000,
-                    $"Clamorous Chase Navi 2-{ev.SourceId}");
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
-                    $"Clamorous Chase Navi 2-{ev.SourceId}", delay: 12000);
-            }
-
-            if (ClamorousChaseDict.ContainsKey(3) && ClamorousChaseDict[3] == sa.Data.Me)
-            {
-                DebugMsg("Clamorous Chase 3 Detected", sa);
-                DrawHelper.DrawCircle(sa, posB, new Vector2(2f), 15100,
-                    $"Clamorous Chase 3-{ev.SourceId}",
-                    sa.Data.DefaultSafeColor);
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posB, new Vector2(2f), 15100,
-                    $"Clamorous Chase Navi 3-{ev.SourceId}");
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
-                    $"Clamorous Chase Navi 3-{ev.SourceId}", delay: 15100);
-            }
-
-            if (ClamorousChaseDict.ContainsKey(4) && ClamorousChaseDict[4] == sa.Data.Me)
-            {
-                DebugMsg("Clamorous Chase 4 Detected", sa);
-                DrawHelper.DrawCircle(sa, posASafe, new Vector2(2f), 8900,
-                    $"Clamorous Chase 4-{ev.SourceId}",
-                    sa.Data.DefaultSafeColor);
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posASafe, new Vector2(2f), 8900,
-                    $"Clamorous Chase Navi 4-{ev.SourceId}");
-
-                string msg = language == Language.Chinese ? "先在安全区等待Boss攻击后再引导" : "Wait in the safe zone, then bait.";
-                if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-                if (isTTS) sa.Method.EdgeTTS($"{msg}");
-
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posA, new Vector2(2f), 9300,
-                    $"Clamorous Chase Navi 4-{ev.SourceId}", delay: 8900);
-                
-                DrawHelper.DrawCircle(sa, posA, new Vector2(2f), 9300,
-                    $"Clamorous Chase 4-{ev.SourceId}",
-                    sa.Data.DefaultSafeColor, delay: 8900);
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
-                    $"Clamorous Chase Navi 4-{ev.SourceId}", delay: 18200);
-            }
-
-            if (ClamorousChaseDict.ContainsKey(5) && ClamorousChaseDict[5] == sa.Data.Me)
-            {
-                DebugMsg("Clamorous Chase 5 Detected", sa);
-                DrawHelper.DrawCircle(sa, posOne, new Vector2(2f), 13300,
-                    $"Clamorous Chase 5-{ev.SourceId}",
-                    sa.Data.DefaultSafeColor);
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 13300,
-                    $"Clamorous Chase Navi 5-{ev.SourceId}");
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posD, new Vector2(2f), 8000,
-                    $"Clamorous Chase Navi 5-{ev.SourceId}", delay: 13300);
-
-                DrawHelper.DrawCircle(sa, posD, new Vector2(2f), 8000,
-                    $"Clamorous Chase 5-{ev.SourceId}",
-                    sa.Data.DefaultSafeColor, delay: 13300);
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
-                    $"Clamorous Chase Navi 5-{ev.SourceId}", delay: 21300);
-            }
-
-            if (ClamorousChaseDict.ContainsKey(6) && ClamorousChaseDict[6] == sa.Data.Me)
-            {
-                DebugMsg("Clamorous Chase 6 Detected", sa);
-                DrawHelper.DrawCircle(sa, posOne, new Vector2(2f), 16400,
-                    $"Clamorous Chase 6-{ev.SourceId}",
-                    sa.Data.DefaultSafeColor);
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 16400,
-                    $"Clamorous Chase Navi 6-{ev.SourceId}");
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posC, new Vector2(2f), 8000,
-                    $"Clamorous Chase Navi 6-{ev.SourceId}", delay: 16400);
-
-                DrawHelper.DrawCircle(sa, posC, new Vector2(2f), 8000,
-                    $"Clamorous Chase 6-{ev.SourceId}",
-                    sa.Data.DefaultSafeColor, delay: 16400);
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
-                    $"Clamorous Chase Navi 6-{ev.SourceId}", delay: 24400);
-            }
-
-
-            if (ClamorousChaseDict.ContainsKey(7) && ClamorousChaseDict[7] == sa.Data.Me)
-            {
-                DebugMsg("Clamorous Chase 7 Detected", sa);
-                DrawHelper.DrawCircle(sa, posOne, new Vector2(2f), 19500,
-                    $"Clamorous Chase 7-{ev.SourceId}",
-                    sa.Data.DefaultSafeColor);
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 19500,
-                    $"Clamorous Chase Navi 7-{ev.SourceId}");
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posB, new Vector2(2f), 8000,
-                    $"Clamorous Chase Navi 7-{ev.SourceId}", delay: 19500);
-
-                DrawHelper.DrawCircle(sa, posB, new Vector2(2f), 8000,
-                    $"Clamorous Chase 7-{ev.SourceId}",
-                    sa.Data.DefaultSafeColor, delay: 19500);
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
-                    $"Clamorous Chase Navi 7-{ev.SourceId}", delay: 27500);
-            }
-
-            if (ClamorousChaseDict.ContainsKey(8) && ClamorousChaseDict[8] == sa.Data.Me)
-            {
-                DebugMsg("Clamorous Chase 8 Detected", sa);
-                DrawHelper.DrawCircle(sa, posOne, new Vector2(2f), 22600,
-                    $"Clamorous Chase 8-{ev.SourceId}",
-                    sa.Data.DefaultSafeColor);
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 22600,
-                    $"Clamorous Chase Navi 8-{ev.SourceId}");
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posA, new Vector2(2f), 8000,
-                    $"Clamorous Chase Navi 8-{ev.SourceId}", delay: 22600);
-
-                DrawHelper.DrawCircle(sa, posA, new Vector2(2f), 8000,
-                    $"Clamorous Chase 8-{ev.SourceId}",
-                    sa.Data.DefaultSafeColor, delay: 22600);
-
-                if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
-                    $"Clamorous Chase Navi 8-{ev.SourceId}", delay: 30600);
+                DebugMsg("Clamorous Chase 43958 anti-clockwise Detected", sa);
+                if (ClamorousChaseDict.ContainsKey(1) && ClamorousChaseDict[1] == sa.Data.Me)
+                {
+                    DebugMsg("Clamorous Chase 1 Detected", sa);
+                    DrawHelper.DrawCircle(sa, posD, new Vector2(2f), 8900,
+                        $"Clamorous Chase 1-{ev.SourceId}",
+                        sa.Data.DefaultSafeColor);
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posD, new Vector2(2f), 8900,
+                        $"Clamorous Chase Navi 1-{ev.SourceId}");
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
+                        $"Clamorous Chase Navi 1-{ev.SourceId}", delay: 8900);
+                }
+
+                if (ClamorousChaseDict.ContainsKey(2) && ClamorousChaseDict[2] == sa.Data.Me)
+                {
+                    DebugMsg("Clamorous Chase 2 Detected", sa);
+                    DrawHelper.DrawCircle(sa, posC, new Vector2(2f), 12000,
+                        $"Clamorous Chase 2-{ev.SourceId}",
+                        sa.Data.DefaultSafeColor);
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posC, new Vector2(2f), 12000,
+                        $"Clamorous Chase Navi 2-{ev.SourceId}");
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
+                        $"Clamorous Chase Navi 2-{ev.SourceId}", delay: 12000);
+                }
+
+                if (ClamorousChaseDict.ContainsKey(3) && ClamorousChaseDict[3] == sa.Data.Me)
+                {
+                    DebugMsg("Clamorous Chase 3 Detected", sa);
+                    DrawHelper.DrawCircle(sa, posB, new Vector2(2f), 15100,
+                        $"Clamorous Chase 3-{ev.SourceId}",
+                        sa.Data.DefaultSafeColor);
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posB, new Vector2(2f), 15100,
+                        $"Clamorous Chase Navi 3-{ev.SourceId}");
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
+                        $"Clamorous Chase Navi 3-{ev.SourceId}", delay: 15100);
+                }
+
+                if (ClamorousChaseDict.ContainsKey(4) && ClamorousChaseDict[4] == sa.Data.Me)
+                {
+                    DebugMsg("Clamorous Chase 4 Detected", sa);
+                    DrawHelper.DrawCircle(sa, posASafe, new Vector2(2f), 8900,
+                        $"Clamorous Chase 4-{ev.SourceId}",
+                        sa.Data.DefaultSafeColor);
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posASafe, new Vector2(2f), 8900,
+                        $"Clamorous Chase Navi 4-{ev.SourceId}");
+
+                    string msg = language == Language.Chinese ? "先在安全区等待Boss攻击后再引导" : "Wait in the safe zone, then bait.";
+                    if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
+                    if (isTTS) sa.Method.EdgeTTS($"{msg}");
+
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posA, new Vector2(2f), 9300,
+                        $"Clamorous Chase Navi 4-{ev.SourceId}", delay: 8900);
+
+                    DrawHelper.DrawCircle(sa, posA, new Vector2(2f), 9300,
+                        $"Clamorous Chase 4-{ev.SourceId}",
+                        sa.Data.DefaultSafeColor, delay: 8900);
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
+                        $"Clamorous Chase Navi 4-{ev.SourceId}", delay: 18200);
+                }
+
+                if (ClamorousChaseDict.ContainsKey(5) && ClamorousChaseDict[5] == sa.Data.Me)
+                {
+                    DebugMsg("Clamorous Chase 5 Detected", sa);
+                    DrawHelper.DrawCircle(sa, posOne, new Vector2(2f), 13300,
+                        $"Clamorous Chase 5-{ev.SourceId}",
+                        sa.Data.DefaultSafeColor);
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 13300,
+                        $"Clamorous Chase Navi 5-{ev.SourceId}");
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posD, new Vector2(2f), 8000,
+                        $"Clamorous Chase Navi 5-{ev.SourceId}", delay: 13300);
+
+                    DrawHelper.DrawCircle(sa, posD, new Vector2(2f), 8000,
+                        $"Clamorous Chase 5-{ev.SourceId}",
+                        sa.Data.DefaultSafeColor, delay: 13300);
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
+                        $"Clamorous Chase Navi 5-{ev.SourceId}", delay: 21300);
+                }
+
+                if (ClamorousChaseDict.ContainsKey(6) && ClamorousChaseDict[6] == sa.Data.Me)
+                {
+                    DebugMsg("Clamorous Chase 6 Detected", sa);
+                    DrawHelper.DrawCircle(sa, posOne, new Vector2(2f), 16400,
+                        $"Clamorous Chase 6-{ev.SourceId}",
+                        sa.Data.DefaultSafeColor);
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 16400,
+                        $"Clamorous Chase Navi 6-{ev.SourceId}");
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posC, new Vector2(2f), 8000,
+                        $"Clamorous Chase Navi 6-{ev.SourceId}", delay: 16400);
+
+                    DrawHelper.DrawCircle(sa, posC, new Vector2(2f), 8000,
+                        $"Clamorous Chase 6-{ev.SourceId}",
+                        sa.Data.DefaultSafeColor, delay: 16400);
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
+                        $"Clamorous Chase Navi 6-{ev.SourceId}", delay: 24400);
+                }
+
+
+                if (ClamorousChaseDict.ContainsKey(7) && ClamorousChaseDict[7] == sa.Data.Me)
+                {
+                    DebugMsg("Clamorous Chase 7 Detected", sa);
+                    DrawHelper.DrawCircle(sa, posOne, new Vector2(2f), 19500,
+                        $"Clamorous Chase 7-{ev.SourceId}",
+                        sa.Data.DefaultSafeColor);
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 19500,
+                        $"Clamorous Chase Navi 7-{ev.SourceId}");
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posB, new Vector2(2f), 8000,
+                        $"Clamorous Chase Navi 7-{ev.SourceId}", delay: 19500);
+
+                    DrawHelper.DrawCircle(sa, posB, new Vector2(2f), 8000,
+                        $"Clamorous Chase 7-{ev.SourceId}",
+                        sa.Data.DefaultSafeColor, delay: 19500);
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
+                        $"Clamorous Chase Navi 7-{ev.SourceId}", delay: 27500);
+                }
+
+                if (ClamorousChaseDict.ContainsKey(8) && ClamorousChaseDict[8] == sa.Data.Me)
+                {
+                    DebugMsg("Clamorous Chase 8 Detected", sa);
+                    DrawHelper.DrawCircle(sa, posOne, new Vector2(2f), 22600,
+                        $"Clamorous Chase 8-{ev.SourceId}",
+                        sa.Data.DefaultSafeColor);
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 22600,
+                        $"Clamorous Chase Navi 8-{ev.SourceId}");
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posA, new Vector2(2f), 8000,
+                        $"Clamorous Chase Navi 8-{ev.SourceId}", delay: 22600);
+
+                    DrawHelper.DrawCircle(sa, posA, new Vector2(2f), 8000,
+                        $"Clamorous Chase 8-{ev.SourceId}",
+                        sa.Data.DefaultSafeColor, delay: 22600);
+
+                    if (isLead) DrawHelper.DrawDisplacement(sa, posOne, new Vector2(2f), 4000,
+                        $"Clamorous Chase Navi 8-{ev.SourceId}", delay: 30600);
+                }
             }
         }
     }

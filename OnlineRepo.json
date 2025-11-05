@@ -586,12 +586,12 @@
   {
     "Name": "LV.100 护锁刃龙上位狩猎战 [The Windward Wilds (Extreme)]",
     "Guid": "b4a3871d-2499-4152-aaa2-a911ee1bbce2",
-    "Version": "0.0.0.1",
+    "Version": "0.0.0.2",
     "Author": "Veever",
     "Repo": "https://github.com/VeeverSW/Kodakku-Script",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/TheWindwardWildsExtreme.cs",
-    "Note": "v0.0.0.1\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n2. 播报左右侧均是以 #面对# Boss为准, 播报的并不是基于boss本体的左右，请注意辨别\r\n3. 本脚本使用攻略为game8(子言)\r\n4. 如果想要场景标记请确保你打开了ACT并且安装了鲶鱼精邮差(PostNamazu)插件\r\n5. 大部分机制处理都依赖于小队成员顺序，请务必确保小队成员顺序正确\r\n6. 绘制结束后精简(删除)了一些TTS，如有哪个地方需要可以反馈给我添加回来\r\n7. 分摊机制如果奶妈倒了的话可能会出现一些妙妙bug\r\n8. 网卡可能会小概率出现一些妙妙bug\r\n鸭门\r\n----------------------------------\r\n1. If you need a draw or notice any issues, @ me on DC or DM me.\r\n2. Left/Right notifies are **boss-relative** (based on you facing the boss), \r\n   not the boss model’s own left/right. Please keep this in mind.\r\n3. This script follows the Game8 & 子言 guide.\r\n4. If you want WayMarkers, make sure ACT is running and the PostNamazu plugin is installed.\r\n5. Most drawing depends on **party list order** — please make sure the party order is correct.\r\n6. Cleaned up a few TTS after the drawings. If you need any of them, let me know and I’ll restore them.\r\n7. Stack drawings may behave oddly if a healer goes down.\r\n8. There may be some odd bugs with network lag.\r\nDuckmen.",
-    "UpdateInfo": "",
+    "Note": "v0.0.0.2\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n2. 播报左右侧均是以 #面对# Boss为准, 播报的并不是基于boss本体的左右，请注意辨别\r\n3. 本脚本使用攻略为game8(子言)\r\n4. 如果想要场景标记请确保你打开了ACT并且安装了鲶鱼精邮差(PostNamazu)插件\r\n5. 大部分机制处理都依赖于小队成员顺序，请务必确保小队成员顺序正确\r\n6. 绘制结束后精简(删除)了一些TTS，如有哪个地方需要可以反馈给我添加回来\r\n7. 分摊机制如果奶妈倒了的话可能会出现一些妙妙bug\r\n8. 网卡可能会小概率出现一些妙妙bug\r\n鸭门\r\n----------------------------------\r\n1. If you need a draw or notice any issues, @ me on DC or DM me.\r\n2. Left/Right notifies are **boss-relative** (based on you facing the boss), \r\n   not the boss model’s own left/right. Please keep this in mind.\r\n3. This script follows the Game8 & 子言 guide.\r\n4. If you want WayMarkers, make sure ACT is running and the PostNamazu plugin is installed.\r\n5. Most drawing depends on **party list order** — please make sure the party order is correct.\r\n6. Cleaned up a few TTS after the drawings. If you need any of them, let me know and I’ll restore them.\r\n7. Stack drawings may behave oddly if a healer goes down.\r\n8. There may be some odd bugs with network lag.\r\nDuckmen.",
+    "UpdateInfo": "v0.0.0.2\r\n1. 给一些绘图增加了lock来维持稳定\r\n2. 修复了一些变量没有清除的问题\r\n3. 波状龙闪-43926的地火绘图改为一次性全部绘制\r\n4. 锁刃飞翔突进【龙闪】43907 和 43905的绘图时间重新规划，避免冲突\r\n鸭门\r\n----------------------------------\r\n1. Add locks to some drawings to improve stability. \r\n2. Fixed an issue where variables were not cleared.\r\n3. Wyvern’s Vengeance (ID: 43926) drawings are now rendered all at once instead of one by one.\r\n4. Edited the timing of Wyvern’s Siegeflight (IDs: 43907 and 43905) drawings to avoid conflicts.\r\nDuckmen.",
     "TerritoryIds": [
       1306
     ]
