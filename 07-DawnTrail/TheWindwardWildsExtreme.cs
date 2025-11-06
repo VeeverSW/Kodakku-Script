@@ -24,11 +24,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Numerics;
 using System.Runtime.Intrinsics.Arm;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using System.Xml.Linq;
 using KodaMarkType = KodakkuAssist.Module.GameOperate.MarkType;
 
@@ -46,7 +48,7 @@ public class TheWindwardWildsExtreme
     """
     v0.0.0.3
     ----- 感谢@Usami提供的惰性水晶绘制方法 -----
-
+    ----- 请在使用前阅读注意事项 以及根据情况修改用户设置 -----
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     2. 播报左右侧均是以 #面对# Boss为准, 播报的并不是基于boss本体的左右，请注意辨别
     3. 本脚本使用攻略为game8(子言)
@@ -56,10 +58,11 @@ public class TheWindwardWildsExtreme
     7. 分摊机制如果奶妈倒了的话可能会出现一些妙妙bug
     8. 网卡可能会小概率出现一些妙妙bug
     9. 龙闪炮处会有推荐指路和分摊指路，推荐指路为绿色，分摊指路为紫色，请注意区分
+    10. Boss模型和特效缩放比例设置请在用户设置中修改，1为默认值
     鸭门
     ----------------------------------
     ----- Thanks to @Usami for the distance-based Cracked Crystal drawing method.-----
-
+    ----- Please read the notes before use and adjust user settings as needed. -----
     1. If you need a draw or notice any issues, @ me on DC or DM me.
     2. Left/Right notifies are **boss-relative** (based on you facing the boss), 
        not the boss model’s own left/right. Please keep this in mind.
@@ -71,24 +74,28 @@ public class TheWindwardWildsExtreme
     8. There may be some odd bugs with network lag.
     9. Wyvern’s Weal now has both recommend and stack guide arrow.
        The recommended guide arrow is shown in green, and the stack guide arrow is shown in purple.
+    10. Boss Model Scale and VFX Scale can be adjusted in User Settings, 1 is the Game default value.
     Duckmen.
     """;
 
     const string UpdateStr =
     """
-    v0.0.0.3
-    1. 惰性水晶的绘制修改为距离监测绘制
-    2. 方法设置增加了P2Boss钢铁的中文
-    3. 分摊指路颜色更改为紫色，在龙闪炮中可以和指路推荐进行区分
+    v0.0.0.4
+    1. 新增了脚本版本号检测
+    2. 修改了P2场边波状龙闪的延迟和持续时间
+    3. 增加了Boss模型缩放比例和特效缩放比例设置，设置保存后将自动应用于Boss模型和特效
+    4. 尝试修复了锁刃飞翔突进【龙闪】的绘制错误问题
     鸭门
     ----------------------------------
-    1. The drawing of Cracked Crystals is now using distance-based.  
-    2. Changed stack guide arrow color to purple.
+    1. Added script version checking.
+    2. Modified the delay and duration of P2 Arena Edge Wyvern's Vengeance.
+    3. Added settings for Boss model scale and VFX scale. The changes are automatically applied to the Boss model.
+    4. Attempted to fix drawing issues with Wyvern's Siegeflight.
     Duckmen.
     """;
 
     private const string Name = "LV.100 护锁刃龙上位狩猎战 [The Windward Wilds (Extreme)]";
-    private const string Version = "0.0.0.3";
+    private const string Version = "0.0.0.4";
     private const string DebugVersion = "a";
 
     private const bool Debugging = false;
@@ -103,8 +110,11 @@ public class TheWindwardWildsExtreme
     [UserSetting("绘图不透明度，数值越大越显眼(Draw opacity — higher value = more visible)")]
     public static float ColorAlpha { get; set; } = 1f;
 
-    //[UserSetting("Boss模型缩放比例(Boss Model Scale)")]
-    //public static float BossModelScale { get; set; } = 1f;
+    [UserSetting("Boss模型缩放比例(Boss Model Scale)")]
+    public static float BossModelScale { get; set; } = 1f;
+
+    [UserSetting("Boss特效缩放比例(Boss VFX Scale)")]
+    public static float BossVFXScale { get; set; } = 1f;
 
     [UserSetting("文字横幅提示开关(Banner text toggle)")]
     public bool isText { get; set; } = true;
@@ -165,10 +175,10 @@ public class TheWindwardWildsExtreme
     private static GuardianArkveldPhase guardianArkveldPhase = GuardianArkveldPhase.Phase1;
 
 
-    public void DebugMsg(string str, ScriptAccessory accessory)
+    public void DebugMsg(string str, ScriptAccessory sa)
     {
         if (!isDebug) return;
-        accessory.Method.SendChat($"/e [DEBUG] {str}");
+        sa.Log.Debug($"[DEBUG] {str}");
     }
 
     private ScriptAccessory _sa = null;
@@ -195,18 +205,36 @@ public class TheWindwardWildsExtreme
     private long _lastStackTTSTime = 0;
     private const long TTS_COOLDOWN = 3000;
 
-    // AutoResetEvents
+    // My Index
+    private int myIndex = -1;
+    private static readonly List<string> role = ["MT", "ST", "H1", "H2", "D1", "D2", "D3", "D4"];
+
     public void Init(ScriptAccessory sa)
     {
         guardianArkveldPhase = GuardianArkveldPhase.Phase1;
         sa.Log.Debug($"脚本 {Name} v{Version}{DebugVersion} 完成初始化.");
         sa.Method.RemoveDraw(".*");
+
         if (PostNamazuPrint) PostWaymark(sa);
+
         RefreshParams();
         _sa = sa;
-        sa.Method.ClearFrameworkUpdateAction(this);
-    }
 
+        sa.Method.ClearFrameworkUpdateAction(this);
+
+        _ = ScriptVersionChecker.CheckVersionAsync(
+            sa,
+            "b4a3871d-2499-4152-aaa2-a911ee1bbce2",
+            Version,
+            showNotification: true
+        );
+
+        myIndex = sa.Data.PartyList.IndexOf(sa.Data.Me);
+        if (isDebug) sa.Log.Debug($"MyIndex initialized to: {myIndex}");
+
+        SpecialFunction.SetModelScale(sa, GuardianArkveldDataId, BossModelScale, BossVFXScale);
+    }
+     
     private void RefreshParams()
     {
         _crystals = [];
@@ -248,12 +276,18 @@ public class TheWindwardWildsExtreme
     #endregion
 
     [ScriptMethod(name: "主动进行场地标点 - Place waymarks", eventType: EventTypeEnum.NpcYell, eventCondition: ["HelloayaWorld:asdk"],
-    userControl: true)]
+    userControl: Debugging)]
     public void userNamazuPost(Event ev, ScriptAccessory sa)
     {
         PostWaymark(sa);
     }
 
+    [ScriptMethod(name: "Change Scale", eventType: EventTypeEnum.NpcYell, eventCondition: ["HelloayaWorld:asdk"],
+    userControl: Debugging)]
+    public void setModelscale(Event ev, ScriptAccessory sa)
+    {
+        SpecialFunction.SetModelScale(sa, GuardianArkveldDataId, BossModelScale, BossVFXScale);
+    }
 
     [ScriptMethod(name: "---- 时间轴记录 ----", eventType: EventTypeEnum.NpcYell, eventCondition: ["HelloayaWorld:asdf"],
         userControl: Debugging)]
@@ -275,6 +309,23 @@ public class TheWindwardWildsExtreme
 
     }
 
+    [ScriptMethod(name: "set JobIndex", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^(?i)(mt|st|h1|h2|d1|d2|d3|d4)$"], userControl: Debugging)]
+    public void SetMyIndex(Event ev, ScriptAccessory sa)
+    {
+        var input = ev["Message"]?.ToString()?.ToUpper();
+        if (string.IsNullOrEmpty(input)) return;
+
+        var index = role.FindIndex(r => r.Equals(input, StringComparison.OrdinalIgnoreCase));
+        if (index >= 0)
+        {
+            myIndex = index;
+            if (isDebug) sa.Log.Debug($"MyIndex manually set to: {myIndex} ({role[myIndex]})");
+            
+            string msg = language == Language.Chinese ? $"/e 职能已设置为 {role[myIndex]}" : $"/e Role has been set -> {role[myIndex]}";
+            sa.Method.SendChat($"{msg}");
+        }
+    }
+
     [ScriptMethod(name: "身份提示", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(43950)$"],
         userControl: true)]
     public void RoleTips(Event ev, ScriptAccessory sa)
@@ -284,12 +335,15 @@ public class TheWindwardWildsExtreme
         if (_initHint) return;
         _initHint = true;
 
-        var myIndex = sa.Data.PartyList.IndexOf(sa.Data.Me);
         List<string> role = ["MT", "ST", "H1", "H2", "D1", "D2", "D3", "D4"];
 
-        sa.Method.SendChat(
+        string msg = language == Language.Chinese ?
             $"/e 你是【{role[myIndex]}】，" +
-            $"若有误请及时调整。<se.2><se.2>");
+            $"若有误请及时调整。<se.2><se.2>" :
+            $"/e You are【{role[myIndex]}】，" +
+            $"Please adjust if incorrect.<se.2><se.2>";
+
+        sa.Method.SendChat($"{msg}");
     }
 
     private IGameObject? GetBossObject(ScriptAccessory sa)
@@ -349,19 +403,20 @@ public class TheWindwardWildsExtreme
         }
     }
 
-    [ScriptMethod(name: "锁刃飞翔突进【龙闪】 - Wyvern's Siegeflight", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(45111|43905|45104|43907)$"], suppress: 1000)]
+    [ScriptMethod(name: "锁刃飞翔突进【龙闪】 - Wyvern's Siegeflight", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(45111|43905|45104)$"])]
     public void WyvernsSiegeflight(Event ev, ScriptAccessory sa)
     {
         switch (ev.ActionId)
         {
             // 45111 small
             // 43905 split
+            // 
             case 45111 or 45104:
                 {
                     DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(8f, 40f), 6200, $"Wyvern's Siegeflight mid-{ev.SourceId}", new Vector4(1, 0, 0, ColorAlpha));
                     break;
                 }
-            case 43905 or 43907:
+            case 43905:
                 {
                     DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(20f, 40f), 3000, $"Wyvern's Siegeflight Left-{ev.SourceId}",
                         sa.Data.DefaultDangerColor, offset: new Vector3(12f, 0, 0f), delay: 6000);
@@ -499,7 +554,6 @@ public class TheWindwardWildsExtreme
         DebugMsg("In Group Stack Method", sa);
         var targetindex0 = sa.Data.PartyList.IndexOf((uint)StackPlayerId[0]);
         var targetindex1 = sa.Data.PartyList.IndexOf((uint)StackPlayerId[1]);
-        var myIndex = sa.Data.PartyList.IndexOf(sa.Data.Me);
 
         var object0 = IbcHelper.GetById(sa, StackPlayerId[0]);
         var object1 = IbcHelper.GetById(sa, StackPlayerId[1]);
@@ -687,11 +741,10 @@ public class TheWindwardWildsExtreme
     public async void GuardianResonance(Event ev, ScriptAccessory sa)
     {
         string msg = language == Language.Chinese ? $"1点集合 → 放3次圈 → 踩塔 (黄圈不要引导到塔上)" : $"Stack at point 1 → drop 3 circles → soak towers (No Puddles on Towers)";
-        string msg1 = language == Language.Chinese ? $"一点集合放圈后踩塔" : $"Stack at point one and drop circles then soak towers";
+        string msg1 = language == Language.Chinese ? $"衣点集合放圈后踩塔" : $"Stack at point one and drop circles then soak towers";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 5000, true);
         if (isTTS) sa.Method.EdgeTTS($"{msg1}");
 
-        var myIndex = sa.Data.PartyList.IndexOf(sa.Data.Me);
         List<string> role = ["MT", "ST", "H1", "H2", "D1", "D2", "D3", "D4"];
         await Task.Delay(1000);
         if (IsWestEastTower)
@@ -1273,7 +1326,6 @@ public class TheWindwardWildsExtreme
         var LeftTopPos = new Vector3(89.87f, 0f, 83.45f);
         var RightMidPos = new Vector3(118.30f, 0.00f, 96.75f);
         var LeftMidPos = new Vector3(82.35f, 0.00f, 96.75f);
-        var myIndex = IndexHelper.GetMyIndex(sa);
 
         if (ev.TargetId == sa.Data.Me)
         {
@@ -1581,8 +1633,10 @@ public class TheWindwardWildsExtreme
         var srot = ev.SourceRotation;
 
         float moveDistance = 8f;
-        int[] durations = { 7700, 1300, 1300, 1300, 1300, 1300 };
-        int[] delays = { 0, 7700, 9000, 10300, 11600, 12900 };
+        //int[] durations = { 7700, 1300, 1300, 1300, 1300, 1300 };
+        //int[] delays = { 0, 7700, 9000, 10300, 11600, 12900 };
+        int[] durations = { 7700, 2700, 2700, 2700, 2700, 2700 };
+        int[] delays = { 0, 6400, 7700, 9000, 10300, 11600 };
 
         for (int i = 0; i < 6; i++)
         {
@@ -2770,41 +2824,28 @@ public static class SpecialFunction
         sa.Log.Debug($"SetTargetable {targetable} => {obj.Name} {obj}");
     }
 
-    public static unsafe void SetModelScale(ScriptAccessory sa, uint dataId, float scale)
+    public static unsafe void SetModelScale(ScriptAccessory sa, uint dataId, float scale, float VfxScale)
     {
-        var obj = sa.Data.Objects.Where(o => o.DataId == dataId).FirstOrDefault();
-        if (obj == null)
+        sa.Method.RunOnMainThreadAsync(() =>
         {
-            sa.Log.Debug($"SetModelScale: Object with DataId {dataId} not found");
-            return;
-        }
+            var obj = sa.Data.Objects.FirstOrDefault(o => o.DataId == dataId);
+            if (obj == null) return;
 
-        if (!obj.IsValid())
-        {
-            sa.Log.Debug($"SetModelScale: Object {obj.Name} is not valid");
-            return;
-        }
-
-        try
-        {
             var gameObj = (GameObject*)obj.Address;
-            if (gameObj == null || !gameObj->IsReadyToDraw())
+            if (gameObj == null || !gameObj->IsReadyToDraw()) return;
+
+            gameObj->Scale = scale;
+            gameObj->VfxScale = VfxScale;
+
+            if (gameObj->IsCharacter())
             {
-                sa.Log.Debug($"SetModelScale: Object {obj.Name} is not ready to draw");
-                return;
+                var chara = (BattleChara*)gameObj;
+                chara->Character.CharacterData.ModelScale = scale;
             }
 
-            // 只修改 Scale 属性，避免同时修改多个属性导致冲突
-            gameObj->Scale = scale;
             gameObj->DisableDraw();
             gameObj->EnableDraw();
-
-            sa.Log.Debug($"SetModelScale: {obj.Name} scale set to {scale}");
-        }
-        catch (Exception ex)
-        {
-            sa.Log.Error($"SetModelScale failed for DataId {dataId}: {ex.Message}");
-        }
+        });
     }
 
     public static void SetRotation(this ScriptAccessory sa, IGameObject? obj, float radian, bool show = false)
@@ -3386,6 +3427,153 @@ public unsafe static class ExtensionVisibleMethod
         {
             return (b & (1 << pos)) != 0;
         }
+    }
+}
+#endregion
+
+#region 脚本版本检查
+public static class ScriptVersionChecker
+{
+    private const string OnlineRepoUrl = "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/refs/heads/main/OnlineRepo.json";
+    private static readonly HttpClient _httpClient = new HttpClient();
+
+    /// <summary>
+    /// 在线仓库脚本信息
+    /// </summary>
+    public class OnlineScriptInfo
+    {
+        public string Name { get; set; } = "";
+        public string Guid { get; set; } = "";
+        public string Version { get; set; } = "";
+        public string Author { get; set; } = "";
+        public string Repo { get; set; } = "";
+        public string DownloadUrl { get; set; } = "";
+        public string Note { get; set; } = "";
+        public string UpdateInfo { get; set; } = "";
+        public int[] TerritoryIds { get; set; } = Array.Empty<int>();
+    }
+
+    /// <summary>
+    /// 版本
+    /// </summary>
+    public enum VersionCompareResult
+    {
+        /// <summary>当前版本较新或相同</summary>
+        UpToDate,
+        /// <summary>有新版本可用</summary>
+        UpdateAvailable,
+        /// <summary>未找到匹配的脚本</summary>
+        NotFound,
+        /// <summary>检查失败</summary>
+        Error
+    }
+
+    /// <summary>
+    /// 检查脚本版本
+    /// </summary>
+    /// <param name="sa">ScriptAccessory</param>
+    /// <param name="guid">脚本GUID</param>
+    /// <param name="currentVersion">当前版本号</param>
+    /// <param name="showNotification">是否显示通知</param>
+    /// <returns>版本比较结果</returns>
+    public static async Task<(VersionCompareResult result, OnlineScriptInfo? onlineInfo)> CheckVersionAsync(
+        ScriptAccessory sa,
+        string guid,
+        string currentVersion,
+        bool showNotification = true)
+    {
+        try
+        {
+            sa.Log.Debug($"开始检查脚本版本 (GUID: {guid}, 当前版本: {currentVersion})");
+
+            var response = await _httpClient.GetStringAsync(OnlineRepoUrl);
+            var onlineScripts = JsonConvert.DeserializeObject<List<OnlineScriptInfo>>(response);
+
+            if (onlineScripts == null || onlineScripts.Count == 0)
+            {
+                sa.Log.Error("无法解析在线仓库数据");
+                return (VersionCompareResult.Error, null);
+            }
+
+            var onlineScript = onlineScripts.FirstOrDefault(s =>
+                s.Guid.Equals(guid, StringComparison.OrdinalIgnoreCase));
+
+            if (onlineScript == null)
+            {
+                sa.Log.Debug($"在线仓库中未找到 GUID 为 {guid} 的脚本");
+                if (showNotification)
+                {
+                    sa.Method.TextInfo("该脚本未在在线仓库中注册", 3000);
+                }
+                return (VersionCompareResult.NotFound, null);
+            }
+
+            sa.Log.Debug($"找到在线脚本: {onlineScript.Name}, 在线版本: {onlineScript.Version}");
+
+            var compareResult = CompareVersions(currentVersion, onlineScript.Version);
+
+            if (compareResult < 0)
+            {
+                sa.Log.Debug($"发现新版本: {onlineScript.Version} 请及时更新 (当前: {currentVersion})");
+                if (showNotification)
+                {
+                    sa.Method.TextInfo(
+                        $"发现新版本 {onlineScript.Version} 请及时更新\n当前版本: {currentVersion}",
+                        5000,
+                        true);
+                }
+                return (VersionCompareResult.UpdateAvailable, onlineScript);
+            }
+            else
+            {
+                sa.Log.Debug($"当前版本已是最新 (当前: {currentVersion}, 在线: {onlineScript.Version})");
+
+                return (VersionCompareResult.UpToDate, onlineScript);
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            sa.Log.Error($"网络请求失败: {ex.Message}");
+            if (showNotification)
+            {
+                sa.Method.TextInfo("版本检查失败: 网络错误", 3000, true);
+            }
+            return (VersionCompareResult.Error, null);
+        }
+        catch (Exception ex)
+        {
+            sa.Log.Error($"版本检查失败: {ex.Message}");
+            if (showNotification)
+            {
+                sa.Method.TextInfo("版本检查失败", 3000, true);
+            }
+            return (VersionCompareResult.Error, null);
+        }
+    }
+
+    /// <summary>
+    /// 比较版本号
+    /// </summary>
+    /// <param name="version1">版本1 (例如: "0.0.0.3")</param>
+    /// <param name="version2">版本2 (例如: "0.0.0.5")</param>
+    /// <returns>负数: version1 < version2, 0: 相等, 正数: version1 > version2</returns>
+    private static int CompareVersions(string version1, string version2)
+    {
+        var v1Parts = version1.Split('.').Select(p => int.TryParse(p, out var num) ? num : 0).ToArray();
+        var v2Parts = version2.Split('.').Select(p => int.TryParse(p, out var num) ? num : 0).ToArray();
+
+        int maxLength = Math.Max(v1Parts.Length, v2Parts.Length);
+
+        for (int i = 0; i < maxLength; i++)
+        {
+            int v1Part = i < v1Parts.Length ? v1Parts[i] : 0;
+            int v2Part = i < v2Parts.Length ? v2Parts[i] : 0;
+
+            if (v1Part < v2Part) return -1;
+            if (v1Part > v2Part) return 1;
+        }
+
+        return 0;
     }
 }
 #endregion
