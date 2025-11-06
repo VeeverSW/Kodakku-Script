@@ -44,7 +44,9 @@ public class TheWindwardWildsExtreme
 {
     const string NoteStr =
     """
-    v0.0.0.2
+    v0.0.0.3
+    ----- 感谢@Usami提供的惰性水晶绘制方法 -----
+
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     2. 播报左右侧均是以 #面对# Boss为准, 播报的并不是基于boss本体的左右，请注意辨别
     3. 本脚本使用攻略为game8(子言)
@@ -53,8 +55,11 @@ public class TheWindwardWildsExtreme
     6. 绘制结束后精简(删除)了一些TTS，如有哪个地方需要可以反馈给我添加回来
     7. 分摊机制如果奶妈倒了的话可能会出现一些妙妙bug
     8. 网卡可能会小概率出现一些妙妙bug
+    9. 龙闪炮处会有推荐指路和分摊指路，推荐指路为绿色，分摊指路为紫色，请注意区分
     鸭门
     ----------------------------------
+    ----- Thanks to @Usami for the distance-based Cracked Crystal drawing method.-----
+
     1. If you need a draw or notice any issues, @ me on DC or DM me.
     2. Left/Right notifies are **boss-relative** (based on you facing the boss), 
        not the boss model’s own left/right. Please keep this in mind.
@@ -64,27 +69,26 @@ public class TheWindwardWildsExtreme
     6. Cleaned up a few TTS after the drawings. If you need any of them, let me know and I’ll restore them.
     7. Stack drawings may behave oddly if a healer goes down.
     8. There may be some odd bugs with network lag.
+    9. Wyvern’s Weal now has both recommend and stack guide arrow.
+       The recommended guide arrow is shown in green, and the stack guide arrow is shown in purple.
     Duckmen.
     """;
 
     const string UpdateStr =
     """
-    v0.0.0.2
-    1. 给一些绘图增加了lock来维持稳定
-    2. 修复了一些变量没有清除的问题
-    3. 波状龙闪-43926的地火绘图改为一次性全部绘制
-    4. 锁刃飞翔突进【龙闪】43907 和 43905的绘图时间重新规划，避免冲突
+    v0.0.0.3
+    1. 惰性水晶的绘制修改为距离监测绘制
+    2. 方法设置增加了P2Boss钢铁的中文
+    3. 分摊指路颜色更改为紫色，在龙闪炮中可以和指路推荐进行区分
     鸭门
     ----------------------------------
-    1. Add locks to some drawings to improve stability. 
-    2. Fixed an issue where variables were not cleared.
-    3. Wyvern’s Vengeance (ID: 43926) drawings are now rendered all at once instead of one by one.
-    4. Edited the timing of Wyvern’s Siegeflight (IDs: 43907 and 43905) drawings to avoid conflicts.
+    1. The drawing of Cracked Crystals is now using distance-based.  
+    2. Changed stack guide arrow color to purple.
     Duckmen.
     """;
 
     private const string Name = "LV.100 护锁刃龙上位狩猎战 [The Windward Wilds (Extreme)]";
-    private const string Version = "0.0.0.2";
+    private const string Version = "0.0.0.3";
     private const string DebugVersion = "a";
 
     private const bool Debugging = false;
@@ -146,6 +150,7 @@ public class TheWindwardWildsExtreme
     public bool IsWestEastTower = true;
 
     private readonly object CountLock = new object();
+    private readonly object _crystalsLock = new object();
     List<ulong> StackPlayerId = new List<ulong>();
     Dictionary<int, ulong> ClamorousChaseDict = new Dictionary<int, ulong>();
     List<Vector3> ChainbladeBlowTriplePos = new List<Vector3>();
@@ -166,16 +171,56 @@ public class TheWindwardWildsExtreme
         accessory.Method.SendChat($"/e [DEBUG] {str}");
     }
 
+    private ScriptAccessory _sa = null;
+
+    // Class Defined
+    public class Crystal(IGameObject obj, bool drawn)
+    {
+        public IGameObject Obj { get; set; } = obj;
+        public bool Drawn { get; set; } = drawn;
+    }
+
+    // Params
+    private List<Crystal> _crystals = [];
+
+    // Trigger
+    private bool _crossExaflareCrystalTriggered = false;    // 十字地火
+    private bool _dragonBeamCrystalTriggered = false;       // 龙闪炮
+    private bool _edgeExaflareCrystalTriggered = false;     // 场边地火
+
+    // Framework Guid
+    private string _crystalCloseGuid = "";
+
+    // TTS Cooldown
+    private long _lastStackTTSTime = 0;
+    private const long TTS_COOLDOWN = 3000;
+
+    // AutoResetEvents
     public void Init(ScriptAccessory sa)
     {
         guardianArkveldPhase = GuardianArkveldPhase.Phase1;
         sa.Log.Debug($"脚本 {Name} v{Version}{DebugVersion} 完成初始化.");
         sa.Method.RemoveDraw(".*");
         if (PostNamazuPrint) PostWaymark(sa);
-        ChainbladeBlowTripleCount = 0;
+        RefreshParams();
+        _sa = sa;
+        sa.Method.ClearFrameworkUpdateAction(this);
+    }
+
+    private void RefreshParams()
+    {
+        _crystals = [];
+
+        _crossExaflareCrystalTriggered = false;
+        _dragonBeamCrystalTriggered = false;
+        _edgeExaflareCrystalTriggered = false;
         _initHint = false;
         IsWestEastTower = true;
         StackInProgress = false;
+
+        _crystalCloseGuid = "";
+        ChainbladeBlowTripleCount = 0;
+
         ClamorousChaseDict.Clear();
         ChainbladeBlowTriplePos.Clear();
     }
@@ -529,12 +574,18 @@ public class TheWindwardWildsExtreme
                     : $"Stack with {IbcHelper.GetObjectName(targetObject)}";
 
                 if (isText) sa.Method.TextInfo($"{msg}", duration: 5700, true);
-                if (isTTS) sa.Method.EdgeTTS($"{msg}");
+
+                long currentTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                if (isTTS && (currentTime - _lastStackTTSTime > TTS_COOLDOWN))
+                {
+                    sa.Method.EdgeTTS($"{msg}");
+                    _lastStackTTSTime = currentTime;
+                }
 
                 DrawHelper.DrawCircleObject(sa, targetPlayerId, new Vector2(4.5f), 7700,
                     $"Stack with {IbcHelper.GetObjectName(targetObject)}", color: sa.Data.DefaultSafeColor);
                 if (isLead) DrawHelper.DrawDisplacementObject(sa, targetPlayerId, new Vector2(2f), 7700,
-                    $"Stack Displacement with {IbcHelper.GetObjectName(targetObject)}");
+                    $"Stack Displacement with {IbcHelper.GetObjectName(targetObject)}", color: new Vector4(1, 0, 1, 2));
             }
         }
 
@@ -751,29 +802,60 @@ public class TheWindwardWildsExtreme
         }
     }
 
-    [ScriptMethod(name: "惰性水晶 - Cracked Crystal", eventType: EventTypeEnum.AddCombatant, eventCondition: ["DataId:regex:^(18662|18663)$"])]
-    public void CrackedCrystal(Event ev, ScriptAccessory sa)
+    [ScriptMethod(name: "波状龙闪惰性水晶绘制 - Wyvern's Vengeance Cracked Crystal Drawing", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(43926)$"],
+    userControl: true, suppress: 2000)]
+    public void CrossExaflareCrystalFw(Event ev, ScriptAccessory sa)
+    {
+        // Framework Start
+        if (_crossExaflareCrystalTriggered) return;
+
+        _crossExaflareCrystalTriggered = true;
+        sa.Log.Debug($"水晶实时距离计算，范围显示开启");
+        _crystalCloseGuid = sa.Method.RegistFrameworkUpdateAction(CrystalCloseFrameworkAction);
+    }
+
+    [ScriptMethod(name: "Wyvern's Vengeance - Init Other Framworks", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(43926)$"],
+        userControl: Debugging, suppress: 2000)]
+    public void CrossExaflareCrystalFwRefresh(Event ev, ScriptAccessory sa)
+    {
+        // _crossExaflareCrystalTriggered = false;
+        _dragonBeamCrystalTriggered = false;
+        _edgeExaflareCrystalTriggered = false;
+    }
+
+    [ScriptMethod(name: "Crystals Recorder", eventType: EventTypeEnum.AddCombatant, eventCondition: ["DataId:regex:^(1866[23])$"],
+    userControl: Debugging)]
+    public void CrystalRecord(Event ev, ScriptAccessory sa)
     {
         // 18662 small
         // 18663 large
-        if (ev.DataId() == 18662)
+        lock (_crystals)
         {
-            DebugMsg("small Crystal Detected", sa);
-            DrawHelper.DrawCircle(sa, ev.SourcePosition, new Vector2(6f), 12000, $"Cracked Crystal small-{ev.SourceId}",
-                new Vector4(0, 1, 1, ColorAlpha), scaleByTime: false);
-        } else
-        { 
-            DebugMsg("Large Crystal Detected", sa);
-            DrawHelper.DrawCircle(sa, ev.SourcePosition, new Vector2(12f), 12000, $"Cracked Crystal large-{ev.SourceId}",
-                new Vector4(0, 1, 1, ColorAlpha), scaleByTime: false);
+            var obj = sa.GetById(ev.SourceId);
+            if (obj is null) return;
+
+            _crystals.Add(new Crystal(obj, false));
+
+            var dataId = JsonConvert.DeserializeObject<uint>(ev["DataId"]);
+            if (isDebug) sa.Log.Debug($"记录下第 {_crystals.Count} 个 {(dataId == 18662 ? "小" : "大")} 水晶");
         }
     }
-
-    [ScriptMethod(name: "Cracked Crystal Clear", eventType: EventTypeEnum.ActionEffect, eventCondition: ["ActionId:regex:^(43924)$"], userControl: false)]
-    public void CrackedCrystalClear(Event ev, ScriptAccessory sa)
+    [ScriptMethod(name: "Remove Crystals", eventType: EventTypeEnum.ActionEffect, eventCondition: ["ActionId:regex:^(4392[45])$", "TargetIndex:1"],
+    userControl: Debugging)]
+    public void CrystalSplashRemove(Event ev, ScriptAccessory sa)
     {
-        sa.Method.RemoveDraw($"Cracked Crystal small.*");
-        sa.Method.RemoveDraw($"Cracked Crystal large.*");
+        lock (_crystalsLock)
+        {
+            var obj = sa.GetById(ev.SourceId);
+            if (obj is null) return;
+
+            sa.WriteVisible(obj, false);
+
+            sa.Method.RemoveDraw($"水晶-{ev.SourceId}");
+            _crystals.RemoveAll(x => x.Obj.GameObjectId == ev.SourceId);
+
+            if (isDebug) sa.Log.Debug($"水晶{ev.SourceId}爆炸，删除，List内剩余{_crystals.Count}");
+        }
     }
 
     [ScriptMethod(name: "大龙闪(大圈地火) - Wyvern's Radiance", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(44808)$"])]
@@ -1233,6 +1315,24 @@ public class TheWindwardWildsExtreme
         }
     }
 
+    [ScriptMethod(name: "龙闪炮惰性水晶绘制 - Wyvern's Weal Cracked Crystal Drawing", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(43937)$"],
+    userControl: true, suppress: 2000)]
+    public void DragonBeamCrystalFw(Event ev, ScriptAccessory sa)
+    {
+        if (_dragonBeamCrystalTriggered) return;
+        _dragonBeamCrystalTriggered = true;
+        if (isDebug) sa.Log.Debug($"水晶实时距离计算，范围显示开启");
+        _crystalCloseGuid = sa.Method.RegistFrameworkUpdateAction(CrystalCloseFrameworkAction);
+    }
+
+    [ScriptMethod(name: "Wyvern's Weal - Init Other Framworks", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(43937)$"],
+    userControl: Debugging, suppress: 2000)]
+    public void DragonBeamCrystalFwRefresh(Event ev, ScriptAccessory sa)
+    {
+        _crossExaflareCrystalTriggered = false;
+        _edgeExaflareCrystalTriggered = false;
+    }
+
     [ScriptMethod(name: "P2锁刃敲打 - P2 Chainblade Blow", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(45083|45086)$"])]
     public void P2ChainbladeBlow(Event ev, ScriptAccessory sa)
     {
@@ -1474,22 +1574,18 @@ public class TheWindwardWildsExtreme
         }
     }
 
-    [ScriptMethod(name: "P2波状龙闪 - P2 Wyvern's Vengeance", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(43952)$"])]
+    [ScriptMethod(name: "P2场边波状龙闪 - P2 Arena Edge Wyvern's Vengeance", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(43952)$"])]
     public void P2WyvernsVengeance(Event ev, ScriptAccessory sa)
     {
         var startPos = ev.EffectPosition;
         var srot = ev.SourceRotation;
 
-        float moveDistance = 8f; // 每次移动距离
-        int firstDelay = 7700; // 第一个圆的延迟
-        int subsequentInterval = 800; // 后续圆之间的间隔
-        int[] durations = { 7700, 1300, 1300, 1300, 1300, 1300 }; // 每个圆的持续时间
+        float moveDistance = 8f;
+        int[] durations = { 7700, 1300, 1300, 1300, 1300, 1300 };
         int[] delays = { 0, 7700, 9000, 10300, 11600, 12900 };
 
-        // 绘制6个圆（初始位置 + 5次移动）
         for (int i = 0; i < 6; i++)
         {
-            // 沿着面朝方向移动
             float X = startPos.X + moveDistance * i * MathF.Sin(srot);
             float Z = startPos.Z + moveDistance * i * MathF.Cos(srot);
             Vector3 drawPos = new Vector3(X, startPos.Y, Z);
@@ -1502,7 +1598,26 @@ public class TheWindwardWildsExtreme
         }
     }
 
-    [ScriptMethod(name: "P2Chariot - P2 Chariot", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(43933)$"])]
+    [ScriptMethod(name: "P2场边波状龙闪惰性水晶绘制 - P2 Arena Edge Wyvern's Vengeance Cracked Crystal Drawing", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(43952)$"],
+    userControl: true, suppress: 2000)]
+    public void EdgeExaflareCrystalFw(Event ev, ScriptAccessory sa)
+    {
+        if (_edgeExaflareCrystalTriggered) return;
+
+        _edgeExaflareCrystalTriggered = true;
+        sa.Log.Debug($"水晶实时距离计算，范围显示开启");
+        _crystalCloseGuid = sa.Method.RegistFrameworkUpdateAction(CrystalCloseFrameworkAction);
+    }
+
+    [ScriptMethod(name: "P2 Arena Edge Wyvern's Vengeance - Init Other Framworks", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(43952)$"],
+        userControl: Debugging, suppress: 2000)]
+    public void EdgeExaflareCrystalFwRefresh(Event ev, ScriptAccessory sa)
+    {
+        _crossExaflareCrystalTriggered = false;
+        _dragonBeamCrystalTriggered = false;
+    }
+
+    [ScriptMethod(name: "P2钢铁 - P2 Chariot", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(43933)$"])]
     public void P2Chariot(Event ev, ScriptAccessory sa)
     {
         DrawHelper.DrawCircle(sa, ev.EffectPosition, new Vector2(12f), 4700,
@@ -1512,6 +1627,61 @@ public class TheWindwardWildsExtreme
     }
 
     #endregion
+    #region Framework
+    private void CrystalCloseFrameworkAction()
+    {
+        ScriptAccessory sa = _sa;
+        var closeDistance = 2f;
+
+        var myobj = sa.Data.MyObject;
+        if (myobj is null) return;
+        var myPos = myobj.Position;
+
+        lock (_crystals)
+        {
+            if (_crystals.Count == 0)
+            {
+                if (isDebug) sa.Log.Debug($"水晶数量归零，清除");
+                sa.Method.UnregistFrameworkUpdateAction(_crystalCloseGuid);
+            }
+
+            foreach (var crystal in _crystals)
+            {
+                var distance = Vector3.Distance(crystal.Obj.Position, myPos);
+                var isSmallCrystal = crystal.Obj.DataId == 18662;
+                var crystalRange = isSmallCrystal ? 6 : 12;
+                bool isClose = distance < crystalRange + closeDistance;
+
+                if (isClose && !crystal.Drawn)
+                {
+                    if (isDebug) sa.Log.Debug($"玩家距离水晶{crystal.Obj.GameObjectId}近，显示绘图，范围{crystalRange}");
+                    DrawHelper.DrawCircleObject(sa, crystal.Obj.GameObjectId, new Vector2(crystalRange), 60000, $"水晶-{crystal.Obj.GameObjectId}",
+                        new Vector4(0, 1, 1, ColorAlpha), scaleByTime: false);
+                    crystal.Drawn = true;
+                }
+                else if (!isClose && crystal.Drawn)
+                {
+                    if (isDebug) sa.Log.Debug($"玩家距离水晶{crystal.Obj.GameObjectId}远，删除绘图");
+                    sa.Method.RemoveDraw($"水晶-{crystal.Obj.GameObjectId}");
+                    crystal.Drawn = false;
+                }
+            }
+        }
+    }
+    #endregion
+
+
+    [ScriptMethod(name: "Unit - Remove & Refresh ALL", eventType: EventTypeEnum.PlayActionTimeline, eventCondition: ["Id:73"],
+    userControl: Debugging)]
+    public void Uninit(Event ev, ScriptAccessory sa)
+    {
+        if (isDebug) sa.Log.Debug($"Uninit Triggered");
+        sa.Method.RemoveDraw(".*");
+        _crystals.RemoveAll(x => x.Obj.GameObjectId == ev.SourceId);
+        RefreshParams();
+
+        sa.Method.ClearFrameworkUpdateAction(this);
+    }
 
 
     #region 优先级字典
@@ -2678,6 +2848,85 @@ public static class SpecialFunction
         var dp = sa.DrawCircle(position, 0, 2000, $"传送点 {obj.Name.TextValue}", 0.5f, true, draw: false);
         sa.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Circle, dp);
 
+    }
+
+    [Flags]
+    public enum DrawState : uint
+    {
+        Invisibility = 0x00_00_00_02,
+        IsLoading = 0x00_00_08_00,
+        SomeNpcFlag = 0x00_00_01_00,
+        MaybeCulled = 0x00_00_04_00,
+        MaybeHiddenMinion = 0x00_00_80_00,
+        MaybeHiddenSummon = 0x00_80_00_00,
+    }
+
+    public static unsafe DrawState* ActorDrawState(IGameObject actor)
+        => (DrawState*)(&((GameObject*)actor.Address)->RenderFlags);
+
+    /// <summary>
+    /// 检查对象可见性（Read）
+    /// </summary>
+    /// <param name="sa">ScriptAccessory</param>
+    /// <param name="obj">Obj need check</param>
+    /// <param name="checkVisible">true=检查可见，false=检查不可见</param>
+    /// <returns>如果符合检查条件返回 True</returns>
+    public static unsafe bool IsActorVisible(this ScriptAccessory sa, IGameObject? obj, bool checkVisible = true)
+    {
+        if (obj == null) return false;
+
+        try
+        {
+            var state = *ActorDrawState(obj);
+            bool isVisible = (state & DrawState.Invisibility) == 0;
+
+            return checkVisible ? isVisible : !isVisible;
+        }
+        catch (Exception e)
+        {
+            sa.Log.Error($" {e} ");
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// 设置对象可见性（Write）
+    /// </summary>
+    public static unsafe void WriteVisible(this ScriptAccessory sa, IGameObject? actor, bool visible)
+    {
+        if (actor == null) return;
+
+        try
+        {
+            var statePtr = ActorDrawState(actor);
+            if (visible)
+                *statePtr &= ~DrawState.Invisibility;
+            else
+                *statePtr |= DrawState.Invisibility;
+        }
+        catch (Exception e)
+        {
+            sa.Log.Error($" {e} ");
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Check DrawState
+    /// </summary>
+    public static unsafe bool HasDrawState(this ScriptAccessory sa, IGameObject? actor, DrawState state)
+    {
+        if (actor == null) return false;
+
+        try
+        {
+            return (*ActorDrawState(actor) & state) != 0;
+        }
+        catch (Exception e)
+        {
+            sa.Log.Error($" {e} ");
+            return false;
+        }
     }
 }
 
