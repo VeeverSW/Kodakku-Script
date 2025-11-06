@@ -46,7 +46,7 @@ public class TheWindwardWildsExtreme
 {
     const string NoteStr =
     """
-    v0.0.0.3
+    v0.0.0.5
     ----- 感谢@Usami提供的惰性水晶绘制方法 -----
     ----- 请在使用前阅读注意事项 以及根据情况修改用户设置 -----
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
@@ -59,6 +59,7 @@ public class TheWindwardWildsExtreme
     8. 网卡可能会小概率出现一些妙妙bug
     9. 龙闪炮处会有推荐指路和分摊指路，推荐指路为绿色，分摊指路为紫色，请注意区分
     10. Boss模型和特效缩放比例设置请在用户设置中修改，1为默认值
+    11. 可以在聊天框输入 /e mt|st|h1|h2|d1|d2|d3|d4 来快速手动设置自己的职能，但是要确保治疗的顺序正确
     鸭门
     ----------------------------------
     ----- Thanks to @Usami for the distance-based Cracked Crystal drawing method.-----
@@ -75,27 +76,30 @@ public class TheWindwardWildsExtreme
     9. Wyvern’s Weal now has both recommend and stack guide arrow.
        The recommended guide arrow is shown in green, and the stack guide arrow is shown in purple.
     10. Boss Model Scale and VFX Scale can be adjusted in User Settings, 1 is the Game default value.
+    11. You can type /e mt|st|h1|h2|d1|d2|d3|d4 in chat to quickly set your role, but make sure the healer index is correct.
     Duckmen.
     """;
 
     const string UpdateStr =
     """
-    v0.0.0.4
+    v0.0.0.5
     1. 新增了脚本版本号检测
     2. 修改了P2场边波状龙闪的延迟和持续时间
     3. 增加了Boss模型缩放比例和特效缩放比例设置，设置保存后将自动应用于Boss模型和特效
     4. 尝试修复了锁刃飞翔突进【龙闪】的绘制错误问题
+    5. 新增检测/e mt|st|h1|h2|d1|d2|d3|d4 快速手动设置职能，但是要确保治疗的顺序正确
     鸭门
     ----------------------------------
     1. Added script version checking.
     2. Modified the delay and duration of P2 Arena Edge Wyvern's Vengeance.
     3. Added settings for Boss model scale and VFX scale. The changes are automatically applied to the Boss model.
     4. Attempted to fix drawing issues with Wyvern's Siegeflight.
+    5. Added /e mt|st|h1|h2|d1|d2|d3|d4 to quickly set role, but make sure the healer index is correct.
     Duckmen.
     """;
 
     private const string Name = "LV.100 护锁刃龙上位狩猎战 [The Windward Wilds (Extreme)]";
-    private const string Version = "0.0.0.4";
+    private const string Version = "0.0.0.5";
     private const string DebugVersion = "a";
 
     private const bool Debugging = false;
