@@ -29,6 +29,7 @@ using System.Runtime.Intrinsics.Arm;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using System.Net.Http;
 using static FFXIVClientStructs.FFXIV.Client.Game.UI.Telepo.Delegates;
 using KodaMarkType = KodakkuAssist.Module.GameOperate.MarkType;
 
@@ -44,22 +45,34 @@ public class TheWindwardWilds
 {
     const string NoteStr =
     """
-    v0.0.0.1
+    v0.0.0.2
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     2. 绘制结束后精简(删除)了一些TTS，如有哪个地方需要可以反馈给我添加回来
-    3. 下个版本计划添加Boss模型缩放功能(测试的时候炸游戏所以优先级往后调了)
+    3. Boss模型和特效缩放比例设置请在用户设置中修改，1为默认值
     鸭门
     ----------------------------------
     1. If you need a draw or notice any issues, @ me on DC or DM me.
     2. Cleaned up a few TTS after the drawings. If you need any of them, let me know and I’ll restore them.
-    3. Planned to add Boss model scaling in the next version (the game crashed during testing, so it’s on hold for now).
+    3. Boss Model Scale and VFX Scale can be adjusted in User Settings, 1 is the Game default value.
+    Duckmen.
+    """;
+
+    const string UpdateStr =
+    """
+    v0.0.0.2
+    1. 增加了Boss模型缩放比例和特效缩放比例设置，设置保存后将自动应用于Boss模型和特效
+    2. 新增了脚本版本号检测
+    鸭门
+    ----------------------------------
+    1. Added settings for Boss model scale and VFX scale. The changes are automatically applied to the Boss model.
+    2. Added script version checking.
     Duckmen.
     """;
 
     private const string Name = "LV.100 护锁刃龙狩猎战 [The Windward Wilds]";
-    private const string Version = "0.0.0.1";
+    private const string Version = "0.0.0.2";
     private const string DebugVersion = "a";
-    private const string UpdateInfo = "";
+    private const string UpdateInfo = UpdateStr;
 
     private const bool Debugging = false;
 
@@ -72,11 +85,11 @@ public class TheWindwardWilds
     [UserSetting("绘图不透明度，数值越大越显眼(Draw opacity — higher value = more visible)")]
     public static float ColorAlpha { get; set; } = 1f;
 
-    //[UserSetting("Boss模型缩放比例(Boss Model Scale)")]
-    //public static float BossModelScale { get; set; } = 1f;
+    [UserSetting("Boss模型缩放比例(Boss Model Scale)")]
+    public static float BossModelScale { get; set; } = 1f;
 
-    //[UserSetting("Boss特效缩放比例(Boss VFX Scale)")]
-    //public static float BossVFXScale { get; set; } = 1f;
+    [UserSetting("Boss特效缩放比例(Boss VFX Scale)")]
+    public static float BossVFXScale { get; set; } = 1f;
 
     [UserSetting("文字横幅提示开关(Banner text toggle)")]
     public bool isText { get; set; } = true;
@@ -138,6 +151,15 @@ public class TheWindwardWilds
         sa.Log.Debug($"脚本 {Name} v{Version}{DebugVersion} 完成初始化.");
         sa.Method.RemoveDraw(".*");
         ChainbladeBlowTripleCount = 0;
+
+        SpecialFunction.SetModelScale(sa, BossDataId, BossModelScale, BossVFXScale);
+
+        _ = ScriptVersionChecker.CheckVersionAsync(
+            sa,
+            "89c903db-488d-442d-9538-620460ef3966",
+            Version,
+            showNotification: true
+        );
     }
 
 
@@ -1739,23 +1761,26 @@ public static class SpecialFunction
 
     public static unsafe void SetModelScale(ScriptAccessory sa, uint dataId, float scale, float VfxScale)
     {
-        var obj = sa.Data.Objects.Where(o => o.DataId == dataId).FirstOrDefault();
-        if (obj == null) return;
-
-        var gameObj = (GameObject*)obj.Address;
-        if (gameObj == null || !gameObj->IsReadyToDraw()) return;
-
-        gameObj->Scale = scale;
-        gameObj->VfxScale = VfxScale;
-
-        if (gameObj->IsCharacter())
+        sa.Method.RunOnMainThreadAsync(() =>
         {
-            var chara = (BattleChara*)gameObj;
-            chara->Character.CharacterData.ModelScale = scale;
-        }
+            var obj = sa.Data.Objects.FirstOrDefault(o => o.DataId == dataId);
+            if (obj == null) return;
 
-        gameObj->DisableDraw();
-        gameObj->EnableDraw();
+            var gameObj = (GameObject*)obj.Address;
+            if (gameObj == null || !gameObj->IsReadyToDraw()) return;
+
+            gameObj->Scale = scale;
+            gameObj->VfxScale = VfxScale;
+
+            if (gameObj->IsCharacter())
+            {
+                var chara = (BattleChara*)gameObj;
+                chara->Character.CharacterData.ModelScale = scale;
+            }
+
+            gameObj->DisableDraw();
+            gameObj->EnableDraw();
+        });
     }
 
     public static void SetRotation(this ScriptAccessory sa, IGameObject? obj, float radian, bool show = false)
@@ -2242,6 +2267,154 @@ public unsafe static class ExtensionVisibleMethod
         {
             return (b & (1 << pos)) != 0;
         }
+    }
+}
+#endregion
+
+
+#region 脚本版本检查
+public static class ScriptVersionChecker
+{
+    private const string OnlineRepoUrl = "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/refs/heads/main/OnlineRepo.json";
+    private static readonly HttpClient _httpClient = new HttpClient();
+
+    /// <summary>
+    /// 在线仓库脚本信息
+    /// </summary>
+    public class OnlineScriptInfo
+    {
+        public string Name { get; set; } = "";
+        public string Guid { get; set; } = "";
+        public string Version { get; set; } = "";
+        public string Author { get; set; } = "";
+        public string Repo { get; set; } = "";
+        public string DownloadUrl { get; set; } = "";
+        public string Note { get; set; } = "";
+        public string UpdateInfo { get; set; } = "";
+        public int[] TerritoryIds { get; set; } = Array.Empty<int>();
+    }
+
+    /// <summary>
+    /// 版本
+    /// </summary>
+    public enum VersionCompareResult
+    {
+        /// <summary>当前版本较新或相同</summary>
+        UpToDate,
+        /// <summary>有新版本可用</summary>
+        UpdateAvailable,
+        /// <summary>未找到匹配的脚本</summary>
+        NotFound,
+        /// <summary>检查失败</summary>
+        Error
+    }
+
+    /// <summary>
+    /// 检查脚本版本
+    /// </summary>
+    /// <param name="sa">ScriptAccessory</param>
+    /// <param name="guid">脚本GUID</param>
+    /// <param name="currentVersion">当前版本号</param>
+    /// <param name="showNotification">是否显示通知</param>
+    /// <returns>版本比较结果</returns>
+    public static async Task<(VersionCompareResult result, OnlineScriptInfo? onlineInfo)> CheckVersionAsync(
+        ScriptAccessory sa,
+        string guid,
+        string currentVersion,
+        bool showNotification = true)
+    {
+        try
+        {
+            sa.Log.Debug($"开始检查脚本版本 (GUID: {guid}, 当前版本: {currentVersion})");
+
+            var response = await _httpClient.GetStringAsync(OnlineRepoUrl);
+            var onlineScripts = JsonConvert.DeserializeObject<List<OnlineScriptInfo>>(response);
+
+            if (onlineScripts == null || onlineScripts.Count == 0)
+            {
+                sa.Log.Error("无法解析在线仓库数据");
+                return (VersionCompareResult.Error, null);
+            }
+
+            var onlineScript = onlineScripts.FirstOrDefault(s =>
+                s.Guid.Equals(guid, StringComparison.OrdinalIgnoreCase));
+
+            if (onlineScript == null)
+            {
+                sa.Log.Debug($"在线仓库中未找到 GUID 为 {guid} 的脚本");
+                if (showNotification)
+                {
+                    sa.Method.TextInfo("该脚本未在在线仓库中注册", 3000);
+                }
+                return (VersionCompareResult.NotFound, null);
+            }
+
+            sa.Log.Debug($"找到在线脚本: {onlineScript.Name}, 在线版本: {onlineScript.Version}");
+
+            var compareResult = CompareVersions(currentVersion, onlineScript.Version);
+
+            if (compareResult < 0)
+            {
+                sa.Log.Debug($"发现新版本: {onlineScript.Version} 请及时更新 (当前: {currentVersion})");
+                if (showNotification)
+                {
+                    sa.Method.TextInfo(
+                        $"发现新版本 {onlineScript.Version} 请及时更新\n当前版本: {currentVersion}",
+                        5000,
+                        true);
+                }
+                return (VersionCompareResult.UpdateAvailable, onlineScript);
+            }
+            else
+            {
+                sa.Log.Debug($"当前版本已是最新 (当前: {currentVersion}, 在线: {onlineScript.Version})");
+
+                return (VersionCompareResult.UpToDate, onlineScript);
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            sa.Log.Error($"网络请求失败: {ex.Message}");
+            if (showNotification)
+            {
+                sa.Method.TextInfo("版本检查失败: 网络错误", 3000, true);
+            }
+            return (VersionCompareResult.Error, null);
+        }
+        catch (Exception ex)
+        {
+            sa.Log.Error($"版本检查失败: {ex.Message}");
+            if (showNotification)
+            {
+                sa.Method.TextInfo("版本检查失败", 3000, true);
+            }
+            return (VersionCompareResult.Error, null);
+        }
+    }
+
+    /// <summary>
+    /// 比较版本号
+    /// </summary>
+    /// <param name="version1">版本1 (例如: "0.0.0.3")</param>
+    /// <param name="version2">版本2 (例如: "0.0.0.5")</param>
+    /// <returns>负数: version1 < version2, 0: 相等, 正数: version1 > version2</returns>
+    private static int CompareVersions(string version1, string version2)
+    {
+        var v1Parts = version1.Split('.').Select(p => int.TryParse(p, out var num) ? num : 0).ToArray();
+        var v2Parts = version2.Split('.').Select(p => int.TryParse(p, out var num) ? num : 0).ToArray();
+
+        int maxLength = Math.Max(v1Parts.Length, v2Parts.Length);
+
+        for (int i = 0; i < maxLength; i++)
+        {
+            int v1Part = i < v1Parts.Length ? v1Parts[i] : 0;
+            int v2Part = i < v2Parts.Length ? v2Parts[i] : 0;
+
+            if (v1Part < v2Part) return -1;
+            if (v1Part > v2Part) return 1;
+        }
+
+        return 0;
     }
 }
 #endregion
