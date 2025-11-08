@@ -46,7 +46,7 @@ public class TheWindwardWildsExtreme
 {
     const string NoteStr =
     """
-    v0.0.0.5
+    v0.0.0.6
     ----- 感谢@Usami提供的惰性水晶绘制方法 -----
     ----- 请在使用前阅读注意事项 以及根据情况修改用户设置 -----
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
@@ -59,7 +59,7 @@ public class TheWindwardWildsExtreme
     8. 网卡可能会小概率出现一些妙妙bug
     9. 龙闪炮处会有推荐指路和分摊指路，推荐指路为绿色，分摊指路为紫色，请注意区分
     10. Boss模型和特效缩放比例设置请在用户设置中修改，1为默认值
-    11. 可以在聊天框输入 /e mt|st|h1|h2|d1|d2|d3|d4 来快速手动设置自己的职能，但是要确保治疗的顺序正确
+    11. 可以在用户设置中的职能设置来手动设置自己的职能，默认defalutRole为使用可达鸭职能顺序
     鸭门
     ----------------------------------
     ----- Thanks to @Usami for the distance-based Cracked Crystal drawing method.-----
@@ -76,30 +76,27 @@ public class TheWindwardWildsExtreme
     9. Wyvern’s Weal now has both recommend and stack guide arrow.
        The recommended guide arrow is shown in green, and the stack guide arrow is shown in purple.
     10. Boss Model Scale and VFX Scale can be adjusted in User Settings, 1 is the Game default value.
-    11. You can type /e mt|st|h1|h2|d1|d2|d3|d4 in chat to quickly set your role, but make sure the healer index is correct.
+    11. You can now manually set your Role in the User Settings → Role Settings.
+        `默认defalutRole` follows KodakkuAssist’s Role order.
     Duckmen.
     """;
 
     const string UpdateStr =
     """
-    v0.0.0.5
-    1. 新增了脚本版本号检测
-    2. 修改了P2场边波状龙闪的延迟和持续时间
-    3. 增加了Boss模型缩放比例和特效缩放比例设置，设置保存后将自动应用于Boss模型和特效
-    4. 尝试修复了锁刃飞翔突进【龙闪】的绘制错误问题
-    5. 新增检测/e mt|st|h1|h2|d1|d2|d3|d4 快速手动设置职能，但是要确保治疗的顺序正确
+    v0.0.0.6
+    1. 更改检测/e mt|st|h1|h2|d1|d2|d3|d4，使用用户设置中的职能设置来选择职能
+    2. 增加了AOE提示的判断
+    3. 尝试修复了分摊不绘制的问题
     鸭门
     ----------------------------------
-    1. Added script version checking.
-    2. Modified the delay and duration of P2 Arena Edge Wyvern's Vengeance.
-    3. Added settings for Boss model scale and VFX scale. The changes are automatically applied to the Boss model.
-    4. Attempted to fix drawing issues with Wyvern's Siegeflight.
-    5. Added /e mt|st|h1|h2|d1|d2|d3|d4 to quickly set role, but make sure the healer index is correct.
+    1. Removed /e mt|st|h1|h2|d1|d2|d3|d4 role command. Added Role Setting in User Settings.
+    2. Added check for AOEs.  
+    3. Attempted to fix stack drawing issues.
     Duckmen.
     """;
 
     private const string Name = "LV.100 护锁刃龙上位狩猎战 [The Windward Wilds (Extreme)]";
-    private const string Version = "0.0.0.5";
+    private const string Version = "0.0.0.6";
     private const string DebugVersion = "a";
 
     private const bool Debugging = false;
@@ -131,6 +128,9 @@ public class TheWindwardWildsExtreme
 
     [UserSetting("指路开关(Guide arrow toggle)")]
     public bool isLead { get; set; } = true;
+
+    [UserSetting("职能设置(Role Settings)")]
+    public IndexMode RoleSetting { get; set; } = IndexMode.默认defaultRole;
 
     //[UserSetting("目标标记开关(Target Marker toggle)")]
     //public bool isMark { get; set; } = true;
@@ -165,10 +165,11 @@ public class TheWindwardWildsExtreme
 
     private readonly object CountLock = new object();
     private readonly object _crystalsLock = new object();
+    private readonly object GroupStackLock = new object();
+
     List<ulong> StackPlayerId = new List<ulong>();
     Dictionary<int, ulong> ClamorousChaseDict = new Dictionary<int, ulong>();
     List<Vector3> ChainbladeBlowTriplePos = new List<Vector3>();
-
 
     private enum GuardianArkveldPhase
     {
@@ -210,8 +211,22 @@ public class TheWindwardWildsExtreme
     private const long TTS_COOLDOWN = 3000;
 
     // My Index
-    private int myIndex = -1;
+    //private int myIndex = -1;
     private static readonly List<string> role = ["MT", "ST", "H1", "H2", "D1", "D2", "D3", "D4"];
+    public enum IndexMode
+    {
+
+        默认defaultRole = -1,
+        MT = 0,
+        ST = 1,
+        H1 = 2,
+        H2 = 3,
+        D1 = 4,
+        D2 = 5,
+        D3 = 6,
+        D4 = 7
+    }
+
 
     public void Init(ScriptAccessory sa)
     {
@@ -232,9 +247,6 @@ public class TheWindwardWildsExtreme
             Version,
             showNotification: true
         );
-
-        myIndex = sa.Data.PartyList.IndexOf(sa.Data.Me);
-        if (isDebug) sa.Log.Debug($"MyIndex initialized to: {myIndex}");
 
         SpecialFunction.SetModelScale(sa, GuardianArkveldDataId, BossModelScale, BossVFXScale);
     }
@@ -313,21 +325,42 @@ public class TheWindwardWildsExtreme
 
     }
 
-    [ScriptMethod(name: "set JobIndex", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^(?i)(mt|st|h1|h2|d1|d2|d3|d4)$"], userControl: Debugging)]
-    public void SetMyIndex(Event ev, ScriptAccessory sa)
-    {
-        var input = ev["Message"]?.ToString()?.ToUpper();
-        if (string.IsNullOrEmpty(input)) return;
+    //[ScriptMethod(name: "set JobIndex", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^(?i)(mt|st|h1|h2|d1|d2|d3|d4)$"], userControl: Debugging)]
+    //public void SetMyIndex(Event ev, ScriptAccessory sa)
+    //{
+    //    var input = ev["Message"]?.ToString()?.ToUpper();
+    //    if (string.IsNullOrEmpty(input)) return;
 
-        var index = role.FindIndex(r => r.Equals(input, StringComparison.OrdinalIgnoreCase));
-        if (index >= 0)
+    //    var index = role.FindIndex(r => r.Equals(input, StringComparison.OrdinalIgnoreCase));
+    //    if (index >= 0)
+    //    {
+    //        myIndex = index;
+    //        if (isDebug) sa.Log.Debug($"MyIndex manually set to: {myIndex} ({role[myIndex]})");
+
+    //        string msg = language == Language.Chinese ? $"/e 职能已设置为 {role[myIndex]}" : $"/e Role has been set -> {role[myIndex]}";
+    //        sa.Method.SendChat($"{msg}");
+    //    }
+    //}
+
+    [ScriptMethod(name: "JobIndexTest", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^(?i)(index)$"], userControl: Debugging)]
+    public void MyIndex(Event ev, ScriptAccessory sa)
+    {
+        if (isDebug) sa.Method.SendChat($"/e MyIndex is: {GetMyIndex(sa)} ({role[GetMyIndex(sa)]}), index: {sa.Data.PartyList.IndexOf(sa.Data.Me)}");
+    }
+    
+    public int GetMyIndex(ScriptAccessory sa)
+    {
+        var myIndex = -1;
+        if (RoleSetting != IndexMode.默认defaultRole)
         {
-            myIndex = index;
-            if (isDebug) sa.Log.Debug($"MyIndex manually set to: {myIndex} ({role[myIndex]})");
-            
-            string msg = language == Language.Chinese ? $"/e 职能已设置为 {role[myIndex]}" : $"/e Role has been set -> {role[myIndex]}";
-            sa.Method.SendChat($"{msg}");
+            myIndex = (int)RoleSetting;
         }
+        else
+        {
+            myIndex = sa.Data.PartyList.IndexOf(sa.Data.Me);
+        }
+        if (isDebug) sa.Log.Debug($"MyIndex set to: {myIndex} ({role[myIndex]})");
+        return myIndex;
     }
 
     [ScriptMethod(name: "身份提示", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(43950)$"],
@@ -342,9 +375,9 @@ public class TheWindwardWildsExtreme
         List<string> role = ["MT", "ST", "H1", "H2", "D1", "D2", "D3", "D4"];
 
         string msg = language == Language.Chinese ?
-            $"/e 你是【{role[myIndex]}】，" +
+            $"/e 你是【{GetMyIndex(sa)}】，" +
             $"若有误请及时调整。<se.2><se.2>" :
-            $"/e You are【{role[myIndex]}】，" +
+            $"/e You are【{GetMyIndex(sa)}】，" +
             $"Please adjust if incorrect.<se.2><se.2>";
 
         sa.Method.SendChat($"{msg}");
@@ -355,13 +388,13 @@ public class TheWindwardWildsExtreme
         return sa.GetByDataId(GuardianArkveldDataId).FirstOrDefault();
     }
 
-    [ScriptMethod(name: "AOE提示 - AOE Notify", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(43950|)$"],
+    [ScriptMethod(name: "AOE提示 - AOE Notify", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(43950|43951|45202)$"],
         userControl: true)]
     public void AOENotify(Event ev, ScriptAccessory sa)
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.EdgeTTS($"{msg}"); 
         ChainbladeBlowTripleCount = 0;
         ClamorousChaseDict.Clear();
         ChainbladeBlowTriplePos.Clear();
@@ -554,100 +587,102 @@ public class TheWindwardWildsExtreme
             StackPlayerId.Add(ev.TargetId);
             if (StackPlayerId.Count < 2) return;
         }
-        StackInProgress = true;
-        DebugMsg("In Group Stack Method", sa);
-        var targetindex0 = sa.Data.PartyList.IndexOf((uint)StackPlayerId[0]);
-        var targetindex1 = sa.Data.PartyList.IndexOf((uint)StackPlayerId[1]);
-
-        var object0 = IbcHelper.GetById(sa, StackPlayerId[0]);
-        var object1 = IbcHelper.GetById(sa, StackPlayerId[1]);
-        if (object0 == null || object1 == null) return;
-
-        // Check H1 Group
-        bool IsH1Group(int index) => index is 0 or 2 or 4 or 5;
-
-        if (isDebug) DebugMsg($"targetindex0: {targetindex0}, targetindex1: {targetindex1}, myIndex: {myIndex}", sa);
-
-        // myobj got targeted
-        if (StackPlayerId.Contains(sa.Data.Me))
+        lock (GroupStackLock)
         {
-            bool nearBoss = IsH1Group(myIndex);
-            string msg = language == Language.Chinese
-                ? (nearBoss ? "靠近Boss分摊" : "远离Boss分摊")
-                : (nearBoss ? "Stack Near Boss" : "Stack Away Boss");
+            StackInProgress = true;
+            DebugMsg("In Group Stack Method", sa);
+            var targetindex0 = sa.Data.PartyList.IndexOf((uint)StackPlayerId[0]);
+            var targetindex1 = sa.Data.PartyList.IndexOf((uint)StackPlayerId[1]);
 
-            if (isDebug) DebugMsg(nearBoss ? "A" : "B", sa);
-            if (isText) sa.Method.TextInfo($"{msg}", duration: 5700, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
-            DrawHelper.DrawCircleObject(sa, sa.Data.Me, new Vector2(4.5f), 7700,
-                $"Stack {(nearBoss ? "Near" : "Away")}", color: sa.Data.DefaultSafeColor);
-        }
-        else
-        {
-            // myobj no targeted
-            int targetIndex = -1;
-            ulong targetPlayerId = 0;
-            IGameObject? targetObject = null;
+            var object0 = IbcHelper.GetById(sa, StackPlayerId[0]);
+            var object1 = IbcHelper.GetById(sa, StackPlayerId[1]);
+            if (object0 == null || object1 == null) return;
 
-            if (IsH1Group(myIndex))
+            // Check H1 Group
+            bool IsH1Group(int index) => index is 0 or 2 or 4 or 5;
+
+            if (isDebug) DebugMsg($"targetindex0: {targetindex0}, targetindex1: {targetindex1}, myIndex: {GetMyIndex(sa)}", sa);
+
+            // myobj got targeted
+            if (StackPlayerId.Contains(sa.Data.Me))
             {
-                // H1 Group
-                if (IsH1Group(targetindex0))
-                {
-                    targetIndex = 0;
-                    targetPlayerId = StackPlayerId[0];
-                    targetObject = object0;
-                }
-                else if (IsH1Group(targetindex1))
-                {
-                    targetIndex = 1;
-                    targetPlayerId = StackPlayerId[1];
-                    targetObject = object1;
-                }
+                bool nearBoss = IsH1Group(GetMyIndex(sa));
+                string msg = language == Language.Chinese
+                    ? (nearBoss ? "靠近Boss分摊" : "远离Boss分摊")
+                    : (nearBoss ? "Stack Near Boss" : "Stack Away Boss");
+
+                if (isDebug) DebugMsg(nearBoss ? "A" : "B", sa);
+                if (isText) sa.Method.TextInfo($"{msg}", duration: 5700, true);
+                if (isTTS) sa.Method.EdgeTTS($"{msg}");
+                DrawHelper.DrawCircleObject(sa, sa.Data.Me, new Vector2(4.5f), 7700,
+                    $"Stack {(nearBoss ? "Near" : "Away")}", color: sa.Data.DefaultSafeColor);
             }
             else
             {
-                // H2 Group
-                if (!IsH1Group(targetindex0))
+                // myobj no targeted
+                int targetIndex = -1;
+                ulong targetPlayerId = 0;
+                IGameObject? targetObject = null;
+
+                if (IsH1Group(GetMyIndex(sa)))
                 {
-                    targetIndex = 0;
-                    targetPlayerId = StackPlayerId[0];
-                    targetObject = object0;
+                    // H1 Group
+                    if (IsH1Group(targetindex0))
+                    {
+                        targetIndex = 0;
+                        targetPlayerId = StackPlayerId[0];
+                        targetObject = object0;
+                    }
+                    else if (IsH1Group(targetindex1))
+                    {
+                        targetIndex = 1;
+                        targetPlayerId = StackPlayerId[1];
+                        targetObject = object1;
+                    }
                 }
-                else if (!IsH1Group(targetindex1))
+                else
                 {
-                    targetIndex = 1;
-                    targetPlayerId = StackPlayerId[1];
-                    targetObject = object1;
+                    // H2 Group
+                    if (!IsH1Group(targetindex0))
+                    {
+                        targetIndex = 0;
+                        targetPlayerId = StackPlayerId[0];
+                        targetObject = object0;
+                    }
+                    else if (!IsH1Group(targetindex1))
+                    {
+                        targetIndex = 1;
+                        targetPlayerId = StackPlayerId[1];
+                        targetObject = object1;
+                    }
                 }
-            }
 
-            // Find Same Group Target
-            if (targetIndex >= 0 && targetObject != null)
-            {
-                if (isDebug) DebugMsg($"Going to stack with index {targetIndex}", sa);
-
-                string msg = language == Language.Chinese
-                    ? $"与{IbcHelper.GetObjectName(targetObject)}分摊"
-                    : $"Stack with {IbcHelper.GetObjectName(targetObject)}";
-
-                if (isText) sa.Method.TextInfo($"{msg}", duration: 5700, true);
-
-                long currentTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-                if (isTTS && (currentTime - _lastStackTTSTime > TTS_COOLDOWN))
+                // Find Same Group Target
+                if (targetIndex >= 0 && targetObject != null)
                 {
-                    sa.Method.EdgeTTS($"{msg}");
-                    _lastStackTTSTime = currentTime;
-                }
+                    if (isDebug) DebugMsg($"Going to stack with index {targetIndex}", sa);
 
-                DrawHelper.DrawCircleObject(sa, targetPlayerId, new Vector2(4.5f), 7700,
-                    $"Stack with {IbcHelper.GetObjectName(targetObject)}", color: sa.Data.DefaultSafeColor);
-                if (isLead) DrawHelper.DrawDisplacementObject(sa, targetPlayerId, new Vector2(2f), 7700,
-                    $"Stack Displacement with {IbcHelper.GetObjectName(targetObject)}", color: new Vector4(1, 0, 1, 2));
+                    string msg = language == Language.Chinese
+                        ? $"与{IbcHelper.GetObjectName(targetObject)}分摊"
+                        : $"Stack with {IbcHelper.GetObjectName(targetObject)}";
+
+                    if (isText) sa.Method.TextInfo($"{msg}", duration: 5700, true);
+
+                    long currentTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                    if (isTTS && (currentTime - _lastStackTTSTime > TTS_COOLDOWN))
+                    {
+                        sa.Method.EdgeTTS($"{msg}");
+                        _lastStackTTSTime = currentTime;
+                    }
+
+                    DrawHelper.DrawCircleObject(sa, targetPlayerId, new Vector2(4.5f), 7700,
+                        $"Stack with {IbcHelper.GetObjectName(targetObject)}", color: sa.Data.DefaultSafeColor);
+                    if (isLead) DrawHelper.DrawDisplacementObject(sa, targetPlayerId, new Vector2(2f), 7700,
+                        $"Stack Displacement with {IbcHelper.GetObjectName(targetObject)}", color: new Vector4(1, 0, 1, 2));
+                }
             }
         }
-
-        await Task.Delay(5000);
+        await Task.Delay(7000);
         StackPlayerId.Clear();
         StackInProgress = false;
     }
@@ -655,7 +690,7 @@ public class TheWindwardWildsExtreme
     [ScriptMethod(name: "分摊 - Stack", eventType: EventTypeEnum.TargetIcon, eventCondition: ["Id:regex:^(0064)$"])]
     public async void Stack(Event ev, ScriptAccessory sa)
     {
-        await Task.Delay(1000);
+        await Task.Delay(1100);
         if (StackInProgress) return;
 
         DebugMsg("In Stack Method", sa);
@@ -753,37 +788,37 @@ public class TheWindwardWildsExtreme
         await Task.Delay(1000);
         if (IsWestEastTower)
         {
-            switch (myIndex)
+            switch (GetMyIndex(sa))
             {
                 case 0: // MT
-                    DrawHelper.DrawCircle(sa, WestEastTowersPos[0], new Vector2(4f), 11000, $"Guardian Resonance-{Role[myIndex]}",
+                    DrawHelper.DrawCircle(sa, WestEastTowersPos[0], new Vector2(4f), 11000, $"Guardian Resonance-{Role[GetMyIndex(sa)]}",
                         sa.Data.DefaultSafeColor, scaleByTime: false, drawmode: DrawModeEnum.Imgui);
-                    if (isLead) DrawHelper.DrawDisplacement(sa, WestEastTowersPos[0], new Vector2(2f), 11000, $"Guardian Resonance Navi-{Role[myIndex]}");
+                    if (isLead) DrawHelper.DrawDisplacement(sa, WestEastTowersPos[0], new Vector2(2f), 11000, $"Guardian Resonance Navi-{Role[GetMyIndex(sa)]}");
                     break;
                 case 1: // ST
-                    DrawHelper.DrawCircle(sa, WestEastTowersPos[1], new Vector2(4f), 11000, $"Guardian Resonance-{Role[myIndex]}",
+                    DrawHelper.DrawCircle(sa, WestEastTowersPos[1], new Vector2(4f), 11000, $"Guardian Resonance-{Role[GetMyIndex(sa)]}",
                         sa.Data.DefaultSafeColor, scaleByTime: false, drawmode: DrawModeEnum.Imgui);
-                    if (isLead) DrawHelper.DrawDisplacement(sa, WestEastTowersPos[1], new Vector2(2f), 11000, $"Guardian Resonance Navi-{Role[myIndex]}");
+                    if (isLead) DrawHelper.DrawDisplacement(sa, WestEastTowersPos[1], new Vector2(2f), 11000, $"Guardian Resonance Navi-{Role[GetMyIndex(sa)]}");
                     break;
                 case 4: // D1
-                    DrawHelper.DrawCircle(sa, WestEastTowersPos[2], new Vector2(2f), 11000, $"Guardian Resonance-{Role[myIndex]}",
+                    DrawHelper.DrawCircle(sa, WestEastTowersPos[2], new Vector2(2f), 11000, $"Guardian Resonance-{Role[GetMyIndex(sa)]}",
                         sa.Data.DefaultSafeColor, scaleByTime: false, drawmode: DrawModeEnum.Imgui);
-                    if (isLead) DrawHelper.DrawDisplacement(sa, WestEastTowersPos[2], new Vector2(2f), 11000, $"Guardian Resonance Navi-{Role[myIndex]}");
+                    if (isLead) DrawHelper.DrawDisplacement(sa, WestEastTowersPos[2], new Vector2(2f), 11000, $"Guardian Resonance Navi-{Role[GetMyIndex(sa)]}");
                     break;
                 case 5: // D2
-                    DrawHelper.DrawCircle(sa, WestEastTowersPos[3], new Vector2(2f), 11000, $"Guardian Resonance-{Role[myIndex]}",
+                    DrawHelper.DrawCircle(sa, WestEastTowersPos[3], new Vector2(2f), 11000, $"Guardian Resonance-{Role[GetMyIndex(sa)]}",
                         sa.Data.DefaultSafeColor, scaleByTime: false, drawmode: DrawModeEnum.Imgui);
-                    if (isLead) DrawHelper.DrawDisplacement(sa, WestEastTowersPos[3], new Vector2(2f), 11000, $"Guardian Resonance Navi-{Role[myIndex]}");
+                    if (isLead) DrawHelper.DrawDisplacement(sa, WestEastTowersPos[3], new Vector2(2f), 11000, $"Guardian Resonance Navi-{Role[GetMyIndex(sa)]}");
                     break;
                 case 6: // D3
-                    DrawHelper.DrawCircle(sa, WestEastTowersPos[4], new Vector2(2f), 11000, $"Guardian Resonance-{Role[myIndex]}",
+                    DrawHelper.DrawCircle(sa, WestEastTowersPos[4], new Vector2(2f), 11000, $"Guardian Resonance-{Role[GetMyIndex(sa)]}",
                         sa.Data.DefaultSafeColor, scaleByTime: false, drawmode: DrawModeEnum.Imgui);
-                    if (isLead) DrawHelper.DrawDisplacement(sa, WestEastTowersPos[4], new Vector2(2f), 11000, $"Guardian Resonance Navi-{Role[myIndex]}");
+                    if (isLead) DrawHelper.DrawDisplacement(sa, WestEastTowersPos[4], new Vector2(2f), 11000, $"Guardian Resonance Navi-{Role[GetMyIndex(sa)]}");
                     break;
                 case 7: // D4
-                    DrawHelper.DrawCircle(sa, WestEastTowersPos[5], new Vector2(2f), 11000, $"Guardian Resonance-{Role[myIndex]}",
+                    DrawHelper.DrawCircle(sa, WestEastTowersPos[5], new Vector2(2f), 11000, $"Guardian Resonance-{Role[GetMyIndex(sa)]}",
                         sa.Data.DefaultSafeColor, scaleByTime: false, drawmode: DrawModeEnum.Imgui);
-                    if (isLead) DrawHelper.DrawDisplacement(sa, WestEastTowersPos[5], new Vector2(2f), 11000, $"Guardian Resonance Navi-{Role[myIndex]}");
+                    if (isLead) DrawHelper.DrawDisplacement(sa, WestEastTowersPos[5], new Vector2(2f), 11000, $"Guardian Resonance Navi-{Role[GetMyIndex(sa)]}");
                     break;
                 default:
                     await Task.Delay(4500);
@@ -794,37 +829,37 @@ public class TheWindwardWildsExtreme
             }
         } else
         {
-            switch (myIndex)
+            switch (GetMyIndex(sa))
             {
                 case 0: // MT
-                    DrawHelper.DrawCircle(sa, NorthSouthTowersPos[0], new Vector2(4f), 11000, $"Guardian Resonance-{Role[myIndex]}",
+                    DrawHelper.DrawCircle(sa, NorthSouthTowersPos[0], new Vector2(4f), 11000, $"Guardian Resonance-{Role[GetMyIndex(sa)]}",
                         sa.Data.DefaultSafeColor, scaleByTime: false, drawmode: DrawModeEnum.Imgui);
-                    if (isLead) DrawHelper.DrawDisplacement(sa, NorthSouthTowersPos[0], new Vector2(2f), 11000, $"Guardian Resonance Navi-{Role[myIndex]}");
+                    if (isLead) DrawHelper.DrawDisplacement(sa, NorthSouthTowersPos[0], new Vector2(2f), 11000, $"Guardian Resonance Navi-{Role[GetMyIndex(sa)]}");
                     break;
                 case 1: // ST
-                    DrawHelper.DrawCircle(sa, NorthSouthTowersPos[1], new Vector2(4f), 11000, $"Guardian Resonance-{Role[myIndex]}",
+                    DrawHelper.DrawCircle(sa, NorthSouthTowersPos[1], new Vector2(4f), 11000, $"Guardian Resonance-{Role[GetMyIndex(sa)]}",
                         sa.Data.DefaultSafeColor, scaleByTime: false, drawmode: DrawModeEnum.Imgui);
-                    if (isLead) DrawHelper.DrawDisplacement(sa, NorthSouthTowersPos[1], new Vector2(2f), 11000, $"Guardian Resonance Navi-{Role[myIndex]}");
+                    if (isLead) DrawHelper.DrawDisplacement(sa, NorthSouthTowersPos[1], new Vector2(2f), 11000, $"Guardian Resonance Navi-{Role[GetMyIndex(sa)]}");
                     break;
                 case 4: // D1
-                    DrawHelper.DrawCircle(sa, NorthSouthTowersPos[2], new Vector2(2f), 11000, $"Guardian Resonance-{Role[myIndex]}",
+                    DrawHelper.DrawCircle(sa, NorthSouthTowersPos[2], new Vector2(2f), 11000, $"Guardian Resonance-{Role[GetMyIndex(sa)]}",
                         sa.Data.DefaultSafeColor, scaleByTime: false, drawmode: DrawModeEnum.Imgui);
-                    if (isLead) DrawHelper.DrawDisplacement(sa, NorthSouthTowersPos[2], new Vector2(2f), 11000, $"Guardian Resonance Navi-{Role[myIndex]}");
+                    if (isLead) DrawHelper.DrawDisplacement(sa, NorthSouthTowersPos[2], new Vector2(2f), 11000, $"Guardian Resonance Navi-{Role[GetMyIndex(sa)]}");
                     break;
                 case 5: // D2
-                    DrawHelper.DrawCircle(sa, NorthSouthTowersPos[3], new Vector2(2f), 11000, $"Guardian Resonance-{Role[myIndex]}",
+                    DrawHelper.DrawCircle(sa, NorthSouthTowersPos[3], new Vector2(2f), 11000, $"Guardian Resonance-{Role[GetMyIndex(sa)]}",
                         sa.Data.DefaultSafeColor, scaleByTime: false, drawmode: DrawModeEnum.Imgui);
-                    if (isLead) DrawHelper.DrawDisplacement(sa, NorthSouthTowersPos[3], new Vector2(2f), 11000, $"Guardian Resonance Navi-{Role[myIndex]}");
+                    if (isLead) DrawHelper.DrawDisplacement(sa, NorthSouthTowersPos[3], new Vector2(2f), 11000, $"Guardian Resonance Navi-{Role[GetMyIndex(sa)]}");
                     break;
                 case 6: // D3
-                    DrawHelper.DrawCircle(sa, NorthSouthTowersPos[4], new Vector2(2f), 11000, $"Guardian Resonance-{Role[myIndex]}",
+                    DrawHelper.DrawCircle(sa, NorthSouthTowersPos[4], new Vector2(2f), 11000, $"Guardian Resonance-{Role[GetMyIndex(sa)]}",
                         sa.Data.DefaultSafeColor, scaleByTime: false, drawmode: DrawModeEnum.Imgui);
-                    if (isLead) DrawHelper.DrawDisplacement(sa, NorthSouthTowersPos[4], new Vector2(2f), 11000, $"Guardian Resonance Navi-{Role[myIndex]}");
+                    if (isLead) DrawHelper.DrawDisplacement(sa, NorthSouthTowersPos[4], new Vector2(2f), 11000, $"Guardian Resonance Navi-{Role[GetMyIndex(sa)]}");
                     break;
                 case 7: // D4
-                    DrawHelper.DrawCircle(sa, NorthSouthTowersPos[5], new Vector2(2f), 11000, $"Guardian Resonance-{Role[myIndex]}",
+                    DrawHelper.DrawCircle(sa, NorthSouthTowersPos[5], new Vector2(2f), 11000, $"Guardian Resonance-{Role[GetMyIndex(sa)]}",
                         sa.Data.DefaultSafeColor, scaleByTime: false, drawmode: DrawModeEnum.Imgui);
-                    if (isLead) DrawHelper.DrawDisplacement(sa, NorthSouthTowersPos[5], new Vector2(2f), 11000, $"Guardian Resonance Navi-{Role[myIndex]}");
+                    if (isLead) DrawHelper.DrawDisplacement(sa, NorthSouthTowersPos[5], new Vector2(2f), 11000, $"Guardian Resonance Navi-{Role[GetMyIndex(sa)]}");
                     break;
                 default:
                     await Task.Delay(4500);
@@ -1342,7 +1377,7 @@ public class TheWindwardWildsExtreme
             // Check H1 Group
             bool IsH1Group(int index) => index is 0 or 2 or 4 or 5;
 
-            if (IsH1Group(myIndex))
+            if (IsH1Group(GetMyIndex(sa)))
             {
                 if (isLead) DrawHelper.DrawDisplacement(sa, RightTopPos, new Vector2(2f), 9000, "Wyvern's Weal Target Lead Navi", delay: 16700);
             } else
@@ -1358,7 +1393,7 @@ public class TheWindwardWildsExtreme
 
             bool IsH1Group(int index) => index is 0 or 2 or 4 or 5;
 
-            if (IsH1Group(myIndex))
+            if (IsH1Group(GetMyIndex(sa)))
             {
                 if (isLead) DrawHelper.DrawDisplacement(sa, RightTopPos, new Vector2(2f), 9000, "Wyvern's Weal Target Lead Navi", delay: 16700);
             }
