@@ -62,6 +62,8 @@ You can disable TextInfo and TTS if you prefer to use it anyway.
 - LV.100 永久幽界中央终端 [the Meso Terminal]
 - LV.100 桑多利亚：第二巡行 [San d Oria The Second Walk]
 - 巡梦金库 [Vault Oneiron]
+- LV.100 护锁刃龙狩猎战 [The Windward Wilds]
+- LV.100 护锁刃龙上位狩猎战 [The Windward Wilds (Extreme)]
 
 
 - --------其他--------
