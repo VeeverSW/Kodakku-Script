@@ -40,13 +40,13 @@ namespace Veever.DawnTrail.TheWindwardWildsExtreme;
     version: Version, author: "Veever", note: NoteStr, updateInfo: UpdateStr)]
 
 // ^(?!.*((武僧|机工士|龙骑士|武士|忍者|蝰蛇剑士|钐镰客|舞者|吟游诗人|占星术士|贤者|学者|(朝日|夕月)小仙女|炽天使|白魔法师|战士|骑士|暗黑骑士|绝枪战士|绘灵法师|黑魔法师|青魔法师|召唤师|宝石兽|亚灵神巴哈姆特|亚灵神不死鸟|迦楼罗之灵|泰坦之灵|伊弗利特之灵|后式自走人偶)\] (Used|Cast))).*35501.*$
-// ^\[\w+\|[^|]+\|E\]\s\w+
+// ^\[\w+\|[^|]+\|E\]\s\w+ 
 
 public class TheWindwardWildsExtreme
 {
     const string NoteStr =
     """
-    v0.0.0.6
+    v0.0.0.7
     ----- 感谢@Usami提供的惰性水晶绘制方法 -----
     ----- 请在使用前阅读注意事项 以及根据情况修改用户设置 -----
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
@@ -83,20 +83,16 @@ public class TheWindwardWildsExtreme
 
     const string UpdateStr =
     """
-    v0.0.0.6
-    1. 更改检测/e mt|st|h1|h2|d1|d2|d3|d4，使用用户设置中的职能设置来选择职能
-    2. 增加了AOE提示的判断
-    3. 尝试修复了分摊不绘制的问题
+    v0.0.0.7
+    1. 职能显示bug修复
     鸭门
     ----------------------------------
-    1. Removed /e mt|st|h1|h2|d1|d2|d3|d4 role command. Added Role Setting in User Settings.
-    2. Added check for AOEs.  
-    3. Attempted to fix stack drawing issues.
+    1. fixed Role display bug.
     Duckmen.
     """;
 
     private const string Name = "LV.100 护锁刃龙上位狩猎战 [The Windward Wilds (Extreme)]";
-    private const string Version = "0.0.0.6";
+    private const string Version = "0.0.0.7";
     private const string DebugVersion = "a";
 
     private const bool Debugging = false;
@@ -375,9 +371,9 @@ public class TheWindwardWildsExtreme
         List<string> role = ["MT", "ST", "H1", "H2", "D1", "D2", "D3", "D4"];
 
         string msg = language == Language.Chinese ?
-            $"/e 你是【{GetMyIndex(sa)}】，" +
+            $"/e 你是【{role[GetMyIndex(sa)]}】，" +
             $"若有误请及时调整。<se.2><se.2>" :
-            $"/e You are【{GetMyIndex(sa)}】，" +
+            $"/e You are【{role[GetMyIndex(sa)]}】，" +
             $"Please adjust if incorrect.<se.2><se.2>";
 
         sa.Method.SendChat($"{msg}");
