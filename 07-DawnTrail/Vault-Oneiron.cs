@@ -42,7 +42,7 @@ public class Vault_Oneiron
 {
     const string NoteStr =
     """
-    v0.0.0.1
+    v0.0.0.2
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     鸭门
     ------------------------------
@@ -52,11 +52,11 @@ public class Vault_Oneiron
 
     const string UpdateInfo =
     """
-        v0.0.0.1
+        v0.0.0.2
     """;
 
     private const string Name = "巡梦金库 [Vault Oneiron]";
-    private const string Version = "0.0.0.1";
+    private const string Version = "0.0.0.2";
     private const string DebugVersion = "a";
 
     private const bool Debugging = true;
@@ -1186,7 +1186,7 @@ public static class ActionExt
     }
 
     public static bool IsSpellReady(this uint spellId) => IsReadyWithCanCast(spellId, ActionType.Action);
-    public static bool IsAbilityReady(this uint abilityId) => IsReadyWithCanCast(abilityId, ActionType.Ability);
+    public static bool IsAbilityReady(this uint abilityId) => IsReadyWithCanCast(abilityId, ActionType.EventAction);
 }
 
 #region 计算函数
@@ -2097,7 +2097,7 @@ public static class DrawHelper
 
     public static void DrawFan(ScriptAccessory accessory, Vector3 position, float rotation, Vector2 scale, float angle, 
                                 int duration, string name, Vector4? color = null, int delay = 0,
-                                bool fix = false, Vector3? offset = null, DrawModeEnum drawmode = DrawModeEnum.Default)
+                                bool fix = false, Vector3? offset = null, DrawModeEnum drawmode = DrawModeEnum.Default, bool scaleByTime = false)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = name;
@@ -2110,6 +2110,7 @@ public static class DrawHelper
         dp.DestoryAt = duration;
         dp.FixRotation = fix;
         dp.Offset = offset ?? new Vector3(0, 0, 0);
+        if (scaleByTime) dp.ScaleMode = ScaleMode.ByTime;
         accessory.Method.SendDraw(drawmode, DrawTypeEnum.Fan, dp);
     }
 
