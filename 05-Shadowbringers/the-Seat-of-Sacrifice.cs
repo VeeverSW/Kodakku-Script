@@ -37,13 +37,13 @@ using KodaMarkType = KodakkuAssist.Module.GameOperate.MarkType;
 namespace Veever.Shadowbringers.theSeatofSacrifice;
 
 [ScriptType(name: "LV.80 光之战士歼灭战 [the Seat of Sacrifice]", territorys: [922], guid: "864c6d7e-20bd-49b6-93ec-31b4d70e1afd",
-    version: "0.0.0.7", author: "Veever", note: noteStr)]
+    version: "0.0.0.8", author: "Veever", note: noteStr)]
 
 public class theSeatofSacrifice
 {
     const string noteStr =
     """
-    v0.0.0.7:
+    v0.0.0.8:
     1. 现已支持几乎所有机制播报及绘图
     2. 支持DR 自动动态演练开关（默认为打开状态）
     3. 目前光明剑不确定是否只有两个情况，如果有更多的情况没有画出来的话请带arr回放在dc向我反馈
@@ -834,7 +834,7 @@ public static class ActionExt
     }
 
     public static bool IsSpellReady(this uint spellId) => IsReadyWithCanCast(spellId, ActionType.Action);
-    public static bool IsAbilityReady(this uint abilityId) => IsReadyWithCanCast(abilityId, ActionType.Ability);
+    public static bool IsAbilityReady(this uint abilityId) => IsReadyWithCanCast(abilityId, ActionType.EventAction);
 }
 
 #region 计算函数
