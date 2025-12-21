@@ -42,7 +42,7 @@ public class MtGulg
 {
     const string NoteStr =
     """
-    v0.0.0.1
+    v0.0.0.2
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     鸭门
     ------------------------------
@@ -52,11 +52,11 @@ public class MtGulg
 
     const string UpdateInfo =
     """
-        v0.0.0.1
+        v0.0.0.2
     """;
 
     private const string Name = "LV.79 伪造天界格鲁格火山 [Mt. Gulg]";
-    private const string Version = "0.0.0.1";
+    private const string Version = "0.0.0.2";
     private const string DebugVersion = "a";
 
     private const bool Debugging = true;
@@ -832,7 +832,7 @@ public static class ActionExt
     }
 
     public static bool IsSpellReady(this uint spellId) => IsReadyWithCanCast(spellId, ActionType.Action);
-    public static bool IsAbilityReady(this uint abilityId) => IsReadyWithCanCast(abilityId, ActionType.Ability);
+    public static bool IsAbilityReady(this uint abilityId) => IsReadyWithCanCast(abilityId, ActionType.EventAction);
 }
 
 #region 计算函数
