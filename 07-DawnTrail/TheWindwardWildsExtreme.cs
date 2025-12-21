@@ -46,7 +46,7 @@ public class TheWindwardWildsExtreme
 {
     const string NoteStr =
     """
-    v0.0.0.7
+    v0.0.0.8
     ----- 感谢@Usami提供的惰性水晶绘制方法 -----
     ----- 请在使用前阅读注意事项 以及根据情况修改用户设置 -----
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
@@ -83,16 +83,16 @@ public class TheWindwardWildsExtreme
 
     const string UpdateStr =
     """
-    v0.0.0.7
-    1. 职能显示bug修复
+    v0.0.0.8
+    适配新版本
     鸭门
     ----------------------------------
-    1. fixed Role display bug.
+    1. Adapted for the new patch
     Duckmen.
     """;
 
     private const string Name = "LV.100 护锁刃龙上位狩猎战 [The Windward Wilds (Extreme)]";
-    private const string Version = "0.0.0.7";
+    private const string Version = "0.0.0.8";
     private const string DebugVersion = "a";
 
     private const bool Debugging = false;
@@ -2211,7 +2211,7 @@ public static class ActionExt
     }
 
     public static bool IsSpellReady(this uint spellId) => IsReadyWithCanCast(spellId, ActionType.Action);
-    public static bool IsAbilityReady(this uint abilityId) => IsReadyWithCanCast(abilityId, ActionType.Ability);
+    public static bool IsAbilityReady(this uint abilityId) => IsReadyWithCanCast(abilityId, ActionType.EventAction);
 }
 
 #region 计算函数

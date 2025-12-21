@@ -45,7 +45,7 @@ public class TheWindwardWilds
 {
     const string NoteStr =
     """
-    v0.0.0.2
+    v0.0.0.4
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     2. 绘制结束后精简(删除)了一些TTS，如有哪个地方需要可以反馈给我添加回来
     3. Boss模型和特效缩放比例设置请在用户设置中修改，1为默认值
@@ -59,18 +59,16 @@ public class TheWindwardWilds
 
     const string UpdateStr =
     """
-    v0.0.0.2
-    1. 增加了Boss模型缩放比例和特效缩放比例设置，设置保存后将自动应用于Boss模型和特效
-    2. 新增了脚本版本号检测
+    v0.0.0.4
+    适配新版本
     鸭门
     ----------------------------------
-    1. Added settings for Boss model scale and VFX scale. The changes are automatically applied to the Boss model.
-    2. Added script version checking.
+    1. Adapted for the new patch
     Duckmen.
     """;
 
     private const string Name = "LV.100 护锁刃龙狩猎战 [The Windward Wilds]";
-    private const string Version = "0.0.0.2";
+    private const string Version = "0.0.0.4";
     private const string DebugVersion = "a";
     private const string UpdateInfo = UpdateStr;
 
@@ -675,6 +673,16 @@ public class TheWindwardWilds
         }
     }
 
+    [ScriptMethod(name: "Unit - Remove & Refresh ALL", eventType: EventTypeEnum.PlayActionTimeline, eventCondition: ["Id:73"],
+    userControl: Debugging)]
+    public void Uninit(Event ev, ScriptAccessory sa)
+    {
+        if (isDebug) sa.Log.Debug($"Uninit Triggered");
+        sa.Method.RemoveDraw(".*");
+
+        sa.Method.ClearFrameworkUpdateAction(this);
+    }
+
     #endregion
 
 
@@ -1111,7 +1119,7 @@ public static class ActionExt
     }
 
     public static bool IsSpellReady(this uint spellId) => IsReadyWithCanCast(spellId, ActionType.Action);
-    public static bool IsAbilityReady(this uint abilityId) => IsReadyWithCanCast(abilityId, ActionType.Ability);
+    public static bool IsAbilityReady(this uint abilityId) => IsReadyWithCanCast(abilityId, ActionType.EventAction);
 }
 
 #region 计算函数
