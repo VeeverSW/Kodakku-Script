@@ -595,5 +595,18 @@
     "TerritoryIds": [
       1306
     ]
+  },
+  {
+    "Name": "LV.100 遗忘行路雾之迹 [Mistwake]",
+    "Guid": "b7d5e223-17b8-43bf-932f-dceddf10ba1a",
+    "Version": "0.0.0.1",
+    "Author": "Tetora & Veever",
+    "Repo": "https://github.com/VeeverSW/Kodakku-Script",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/Mistwake.cs",
+    "Note": "v0.0.0.1\r\n----- 请在使用前阅读注意事项 以及根据情况修改用户设置 -----\r\n----- 请支持南雲鉄虎喵！ 谢谢喵！ -----\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n2. Boss1 的 石头后范围可能不是特别精准, 请在战斗中视情况站位\r\n鸭门\r\n----------------------------------\r\n----- Please read the notes before use and adjust user settings as needed. -----\r\n----- Please support Tetora! Meow! Thank you! Meow! -----\r\n1. If you need a draw or notice any issues, @ me on DC or DM me.\r\n2. The safe zone behind the rock during Boss1 not be perfectly precise. Please adjust your position as needed during the duty.\r\nDuckmen.",
+    "UpdateInfo": "v0.0.0.1\r\n鸭门\r\n----------------------------------\r\nDuckmen.",
+    "TerritoryIds": [
+      1314
+    ]
   }
 ]
