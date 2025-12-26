@@ -152,7 +152,7 @@ public class Mistwake
     
     #region Mobs
     [ScriptMethod(name: "---- 小怪-Mobs ----", eventType: EventTypeEnum.NpcYell, eventCondition: ["HelloayaWorld:asdf"],
-        userControl: Debugging)]
+        userControl: true)]
     public void mobs(Event ev, ScriptAccessory sa)
     {
     }
@@ -239,7 +239,7 @@ public class Mistwake
 
     #region Boss1
     [ScriptMethod(name: "---- Boss1 ----", eventType: EventTypeEnum.NpcYell, eventCondition: ["HelloayaWorld:asdf"],
-        userControl: Debugging)]
+        userControl: true)]
     public void Boss1(Event ev, ScriptAccessory sa)
     {
     }
@@ -369,7 +369,7 @@ public class Mistwake
     
     #region Boss2
     [ScriptMethod(name: "---- Boss2 ----", eventType: EventTypeEnum.NpcYell, eventCondition: ["HelloayaWorld:asdf"],
-        userControl: Debugging)]
+        userControl: true)]
     public void Boss2(Event ev, ScriptAccessory sa)
     {
     }
@@ -404,7 +404,7 @@ public class Mistwake
         var drawName = $"Galloping Thunder - {ev.SourceId}_{++_drawCounter}";
         _thunderChargeDraws.Enqueue(drawName);
         
-        DrawHelper.DrawRectObjectTargetPos(sa, ev.SourceId, ev.EffectPosition, new Vector2(5), 15000, drawName, sa.Data.DefaultDangerColor, scalemode: ScaleMode.YByDistance);
+        DrawHelper.DrawRectObjectTargetPos(sa, ev.SourceId, ev.EffectPosition, new Vector2(5), 15000, drawName, new Vector4(1, 0, 0, ColorAlpha), scalemode: ScaleMode.YByDistance);
     }
 
     [ScriptMethod(name: "Galloping Thunder Destroy", eventType: EventTypeEnum.ActionEffect, eventCondition: ["ActionId:45347"], userControl: false)]
@@ -452,7 +452,7 @@ public class Mistwake
     public void ThunderIII(Event ev, ScriptAccessory sa)
     {
         DrawHelper.DrawCircleObject(sa, ev.TargetId, new Vector2(6f), 7200, "Thunder III",  sa.Data.DefaultSafeColor, scaleByTime: false);
-    }
+    }           
     
     [ScriptMethod(name: "雷电震击 死刑 - Shockbolt", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:45356"])]
     public void Shockbolt(Event ev, ScriptAccessory sa)
@@ -465,7 +465,7 @@ public class Mistwake
 
     #region Boss3
     [ScriptMethod(name: "---- Boss3 ----", eventType: EventTypeEnum.NpcYell, eventCondition: ["HelloayaWorld:asdf"],
-        userControl: Debugging)]
+        userControl: true)]
     public void Boss3(Event ev, ScriptAccessory sa)
     {
     }
@@ -670,7 +670,7 @@ public class Mistwake
         dp.Color = new Vector4(1f, 0f, 0f, ColorAlpha);
         dp.Scale = new (40f, 18f);
         dp.DestoryAt = 4500;
-        //dp.ScaleMode = ScaleMode.ByTime;
+        dp.ScaleMode = ScaleMode.ByTime;
         sa.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Straight, dp);
     }
     #endregion
