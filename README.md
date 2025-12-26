@@ -64,6 +64,7 @@ You can disable TextInfo and TTS if you prefer to use it anyway.
 - 巡梦金库 [Vault Oneiron]
 - LV.100 护锁刃龙狩猎战 [The Windward Wilds]
 - LV.100 护锁刃龙上位狩猎战 [The Windward Wilds (Extreme)]
+- LV.100 遗忘行路雾之迹 [Mistwake]
 
 
 - --------其他--------
