@@ -47,7 +47,7 @@ public class the_Clyteum
 {
     const string NoteStr =
     """
-    v0.0.0.1
+    v0.0.0.2
     ----- 请在使用前阅读注意事项 以及根据情况修改用户设置 -----
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     2. 英文翻译将在后续更新中添加（什么时候XIV 文本检索更新了我就更，懒得查表了）
@@ -63,14 +63,16 @@ public class the_Clyteum
 
     const string UpdateStr =
     """
-    v0.0.0.1
+    v0.0.0.2
+    更改了老三半场刀的范围
     鸭门
     ----------------------------------
+    Enlarge the range of Boss3's half aoe attack.
     Duckmen.
     """;
 
     private const string Name = "LV.100 军工要地克吕提俄斯魔导工厂 [the Clyteum]";
-    private const string Version = "0.0.0.1";
+    private const string Version = "0.0.0.2";
     private const string DebugVersion = "a";
 
     private const bool Debugging = false;
@@ -344,7 +346,7 @@ public class the_Clyteum
     [ScriptMethod(name: "虚无黑暗 - ", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^50313$"])]
     public void Boss3Xuwuheian(Event ev, ScriptAccessory sa)
     {
-        DrawHelper.DrawFanObject(sa, ev.SourceId, 0, new Vector2(20f), 180, 4700, $"Xuwuheian-{ev.SourceId}", sa.Data.DefaultDangerColor, scaleByTime: false);
+        DrawHelper.DrawFanObject(sa, ev.SourceId, 0, new Vector2(70f), 180, 4700, $"Xuwuheian-{ev.SourceId}", sa.Data.DefaultDangerColor, scaleByTime: false);
     }
 
     [ScriptMethod(name: "废料瘴气 - ", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(48937|48943)$"])]
