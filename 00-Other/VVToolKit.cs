@@ -2,13 +2,17 @@
 using Dalamud.Plugin;
 using Dalamud.Plugin.Ipc;
 using Dalamud.Utility.Numerics;
+using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Vfx;
 using FFXIVClientStructs.FFXIV.Client.System.Input;
 using FFXIVClientStructs.FFXIV.Client.UI;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
+using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using InteropGenerator.Runtime.Attributes;
 using KodakkuAssist.Data;
@@ -30,15 +34,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics.Arm;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using static FFXIVClientStructs.FFXIV.Client.UI.Misc.DataCenterHelper;
-using FFXIVClientStructs.FFXIV.Client.Game.Control;
-using System.Runtime.CompilerServices;
-using FFXIVClientStructs.FFXIV.Client.Game;
-using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 
 namespace Veever.Other.VVToolKit;
 
@@ -62,7 +63,7 @@ public class VVToolKit
 {
     const string NoteStr =
     """ 
-    v0.0.2.4
+    v0.0.2.5
     ---------------------------------------------------------
     1. 输入/e vvfind + 名字; 即可自动帮你找到范围内你想要找的人
     2. 如果想要关掉指路标记或者别的额外功能，输入/e vvstop
@@ -84,23 +85,18 @@ public class VVToolKit
 
     const string UpdateInfo =
     """
-        v0.0.2.4
-        vvrottarget 支持后面加参数来设置指定朝向
-        新增 vvlist 显示附近玩家
-        新增 vvselect 选择vvlist列出的指定玩家作为目标
-        新增 vvrot 将自己的朝向改为目标的当前朝向
-        新增 vvrotme 将自己的朝向改为指定的弧度
+        v0.0.2.5
+        Player修改为Pc
     """;
 
     private const string Name = "vv工具箱";
-    private const string Version = "0.0.2.4";
+    private const string Version = "0.0.2.5";
     private const string DebugVersion = "a";
 
     private const bool Debugging = true;
 
     [UserSetting("验证秘钥")]
-    public string key { get; set; } = "123";
-
+    public string key { get; set; } = "123"; 
     [UserSetting("文字横幅提示开关(Banner text toggle)")]
     public bool isText { get; set; } = true;
 
@@ -111,7 +107,7 @@ public class VVToolKit
     public bool OnlyFindTypeTrigger { get; set; } = true;
 
     [UserSetting("只寻找目标的分类")]
-    public Dalamud.Game.ClientState.Objects.Enums.ObjectKind OnlyFindType { get; set; } = Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Player;
+    public Dalamud.Game.ClientState.Objects.Enums.ObjectKind OnlyFindType { get; set; } = Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Pc;
 
     [UserSetting("TTS开关(TTS toggle)")]
     public bool isTTS { get; set; } = false;
@@ -125,6 +121,7 @@ public class VVToolKit
     [UserSetting("石之家")]
     public bool isStone { get; set; } = true;
 
+    [UserSetting("开盒")]
     public bool isOpenBox { get; set; } = false;
 
     public string name = "";
@@ -148,6 +145,13 @@ public class VVToolKit
         sa.Method.RemoveDraw(".*");
         sa.Method.ClearFrameworkUpdateAction(this);
         name = "";
+        _ = ScriptVersionChecker.CheckVersionAsync(
+            sa,
+            "260323f1-9d7d-4fd6-9222-282eb1aa9bf5",
+            Version,                                   
+            showNotification: true                     
+        );
+        sa.Log.Debug($"Id:{HelperExtensions.GetCurrentTerritoryId()}");
     }
 
 
@@ -417,7 +421,7 @@ public class VVToolKit
         lock (findLock)
         {
             cachedPlayers = sa.Data.Objects?
-                .Where(x => x.ObjectKind == Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Player)
+                .Where(x => x.ObjectKind == Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Pc)
                 .OrderBy(x => Vector3.Distance(myobj.Position, x.Position))
                 .Take(10)
                 .ToList() ?? new();
@@ -496,12 +500,12 @@ public class VVToolKit
             if (isText) sa.Method.TextInfo($"发现目标{finding}, 位置: {findingObj.Position.Quantized()}", 5700);
             if (isChat) sa.Method.SendChat($"/e 发现目标{finding}, 位置: {findingObj.Position.Quantized()}");
             if (isTTS) sa.Method.EdgeTTS($"发现目标{finding}");
-            if (isOpenBox && findingObj.ObjectKind != Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Player)
+            if (isOpenBox && findingObj.ObjectKind != Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Pc)
             {
                 sa.Log.Debug("非玩家，无法开盒");
             }
 
-            if (isOpenBox && findingObj.ObjectKind == Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Player)
+            if (isOpenBox && findingObj.ObjectKind == Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Pc)
             {
                 unsafe
                 {
@@ -514,6 +518,23 @@ public class VVToolKit
 
                     var StatusFlags = ((IPlayerCharacter)findingObj).StatusFlags;
                     var cid = address->ContentId;
+
+
+
+                    // 尝试多种方式获取名字，优先级从高到低
+                    var tname = address->NameString;
+                    if (string.IsNullOrEmpty(tname))
+                    {
+                        // 尝试从 Dalamud IGameObject 获取
+                        tname = findingObj.Name.ToString();
+                    }
+                    if (string.IsNullOrEmpty(tname))
+                    {
+                        // 如果还是空，使用 ContentId 作为标识
+                        tname = $"Player_{cid:X}";
+                        sa.Log.Debug($"无法获取玩家名字，使用 ContentId: {cid:X}");
+                    }
+
                     var Height = address->Height;
 
                     var sex = address->Sex;
@@ -531,7 +552,7 @@ public class VVToolKit
                     sa.Log.Debug($"\ncid: {cid},\nHp: {Health},\nMp: {Mana},\n" +
                         $"job: {job},\nlevel: {level}," +
                         $"\nsex: {sexStr},\nHomeWorld: {homeworldString}\n" +
-                        $"StatusFlags: {StatusFlags}");
+                        $"StatusFlags: {StatusFlags}, name: {tname}");
 
                     if (isStone)
                     {
@@ -1294,7 +1315,7 @@ public static class FFLogsHelper
             var worldName = player.HomeWorld.Value.Name.ToString();
 
             var dataCenterRow = player.HomeWorld.Value.DataCenter.RowId;
-            var region = player.HomeWorld.Value.DataCenter.Value.Region;
+            var region = player.HomeWorld.Value.DataCenter.Value.Region.RowId;
             var regionAbbr = RegionToFFLogsAbbr(region);
 
             var url = string.Format(FFLogsUrl, regionAbbr, worldName, playerName);
@@ -1327,4 +1348,162 @@ public static class FFLogsHelper
 }
 #endregion
 
+#region 脚本版本检查
+public static class ScriptVersionChecker
+{
+    private const string OnlineRepoUrl = "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/refs/heads/main/OnlineRepo.json";
+    private static readonly HttpClient _httpClient = new HttpClient();
 
+    /// <summary>
+    /// 在线仓库脚本信息
+    /// </summary>
+    public class OnlineScriptInfo
+    {
+        public string Name { get; set; } = "";
+        public string Guid { get; set; } = "";
+        public string Version { get; set; } = "";
+        public string Author { get; set; } = "";
+        public string Repo { get; set; } = "";
+        public string DownloadUrl { get; set; } = "";
+        public string Note { get; set; } = "";
+        public string UpdateInfo { get; set; } = "";
+        public int[] TerritoryIds { get; set; } = Array.Empty<int>();
+    }
+
+    /// <summary>
+    /// 版本比较结果
+    /// </summary>
+    public enum VersionCompareResult
+    {
+        /// <summary>当前版本较新或相同</summary>
+        UpToDate,
+        /// <summary>有新版本可用</summary>
+        UpdateAvailable,
+        /// <summary>未找到匹配的脚本</summary>
+        NotFound,
+        /// <summary>检查失败</summary>
+        Error
+    }
+
+    /// <summary>
+    /// 检查脚本版本
+    /// </summary>
+    /// <param name="sa">ScriptAccessory</param>
+    /// <param name="guid">脚本GUID</param>
+    /// <param name="currentVersion">当前版本号</param>
+    /// <param name="showNotification">是否显示通知</param>
+    /// <returns>版本比较结果</returns>
+    public static async Task<(VersionCompareResult result, OnlineScriptInfo? onlineInfo)> CheckVersionAsync(
+        ScriptAccessory sa,
+        string guid,
+        string currentVersion,
+        bool showNotification = true)
+    {
+        try
+        {
+            sa.Log.Debug($"开始检查脚本版本 (GUID: {guid}, 当前版本: {currentVersion})");
+
+            // 获取在线仓库数据
+            var response = await _httpClient.GetStringAsync(OnlineRepoUrl);
+            var onlineScripts = JsonConvert.DeserializeObject<List<OnlineScriptInfo>>(response);
+
+            if (onlineScripts == null || onlineScripts.Count == 0)
+            {
+                sa.Log.Error("无法解析在线仓库数据");
+                return (VersionCompareResult.Error, null);
+            }
+
+            // 查找匹配GUID的脚本
+            var onlineScript = onlineScripts.FirstOrDefault(s =>
+                s.Guid.Equals(guid, StringComparison.OrdinalIgnoreCase));
+
+            if (onlineScript == null)
+            {
+                sa.Log.Debug($"在线仓库中未找到 GUID 为 {guid} 的脚本");
+                if (showNotification)
+                {
+                    sa.Method.TextInfo("该脚本未在在线仓库中注册", 3000);
+                }
+                return (VersionCompareResult.NotFound, null);
+            }
+
+            sa.Log.Debug($"找到在线脚本: {onlineScript.Name}, 在线版本: {onlineScript.Version}");
+
+            // 比较版本号
+            var compareResult = CompareVersions(currentVersion, onlineScript.Version);
+
+            if (compareResult < 0)
+            {
+                // 有新版本
+                sa.Log.Debug($"发现新版本: {onlineScript.Version} (当前: {currentVersion})");
+                if (showNotification)
+                {
+                    sa.Method.TextInfo(
+                        $"发现新版本 {onlineScript.Version}\n当前版本: {currentVersion}",
+                        5000,
+                        true);
+                }
+                return (VersionCompareResult.UpdateAvailable, onlineScript);
+            }
+            else
+            {
+                // 已是最新版本
+                sa.Log.Debug($"当前版本已是最新 (当前: {currentVersion}, 在线: {onlineScript.Version})");
+                // 版本已是最新时不显示通知
+                return (VersionCompareResult.UpToDate, onlineScript);
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            sa.Log.Error($"网络请求失败: {ex.Message}");
+            if (showNotification)
+            {
+                sa.Method.TextInfo("版本检查失败: 网络错误", 3000, true);
+            }
+            return (VersionCompareResult.Error, null);
+        }
+        catch (Exception ex)
+        {
+            sa.Log.Error($"版本检查失败: {ex.Message}");
+            if (showNotification)
+            {
+                sa.Method.TextInfo("版本检查失败", 3000, true);
+            }
+            return (VersionCompareResult.Error, null);
+        }
+    }
+
+    /// <summary>
+    /// 比较两个语义化版本号
+    /// </summary>
+    /// <param name="version1">版本1 (例如: "0.0.0.3")</param>
+    /// <param name="version2">版本2 (例如: "0.0.0.5")</param>
+    /// <returns>负数: version1 < version2, 0: 相等, 正数: version1 > version2</returns>
+    private static int CompareVersions(string version1, string version2)
+    {
+        var v1Parts = version1.Split('.').Select(p => int.TryParse(p, out var num) ? num : 0).ToArray();
+        var v2Parts = version2.Split('.').Select(p => int.TryParse(p, out var num) ? num : 0).ToArray();
+
+        int maxLength = Math.Max(v1Parts.Length, v2Parts.Length);
+
+        for (int i = 0; i < maxLength; i++)
+        {
+            int v1Part = i < v1Parts.Length ? v1Parts[i] : 0;
+            int v2Part = i < v2Parts.Length ? v2Parts[i] : 0;
+
+            if (v1Part < v2Part) return -1;
+            if (v1Part > v2Part) return 1;
+        }
+
+        return 0;
+    }
+}
+#endregion
+
+public static class HelperExtensions
+{
+    public static unsafe uint GetCurrentTerritoryId()
+    {
+        return AgentMap.Instance()->CurrentTerritoryId;
+    }
+}
