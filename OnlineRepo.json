@@ -625,12 +625,12 @@
   {
     "Name": "LV.100 军工要地克吕提俄斯魔导工厂 [the Clyteum]",
     "Guid": "5f365ada-2833-4164-92b3-8d11b7275b80",
-    "Version": "0.0.0.2",
+    "Version": "0.0.0.3",
     "Author": "Veever",
     "Repo": "https://github.com/VeeverSW/Kodakku-Script",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/the-Clyteum.cs",
-    "Note": "v0.0.0.2\r\n----- 请在使用前阅读注意事项 以及根据情况修改用户设置 -----\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n2. 英文翻译将在后续更新中添加（什么时候XIV 文本检索更新了我就更，懒得查表了）\r\n3. 小怪部分和一些细节部分后续版本更新\r\n鸭门\r\n----------------------------------\r\n----- Please read the notes before use and adjust user settings as needed. -----\r\n1. If you need a draw or notice any issues, @ me on DC or DM me.\r\n2. English version will be added in the future update, I'll update it when XIV strings comp is updated.\r\n3. Mobs and some details will be added in future updates.\r\nDuckmen.",
-    "UpdateInfo": "v0.0.0.2\r\n更改了老三半场刀的范围\n鸭门\r\n----------------------------------\r\nEnlarge the range of Boss3's half aoe attack.\nDuckmen.",
+    "Note": "v0.0.0.3\r\n----- 请在使用前阅读注意事项 以及根据情况修改用户设置 -----\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n2. 英文翻译将在后续更新中添加（什么时候XIV 文本检索更新了我就更，懒得查表了）\r\n3. 小怪部分和一些细节部分后续版本更新\r\n鸭门\r\n----------------------------------\r\n----- Please read the notes before use and adjust user settings as needed. -----\r\n1. If you need a draw or notice any issues, @ me on DC or DM me.\r\n2. English version will be added in the future update, I'll update it when XIV strings comp is updated.\r\n3. Mobs and some details will be added in future updates.\r\nDuckmen.",
+    "UpdateInfo": "v0.0.0.3\r\n更新正式变量名\n鸭门\r\n----------------------------------\r\nUpdated official variable names.\nDuckmen.",
     "TerritoryIds": [
       1345
     ]
