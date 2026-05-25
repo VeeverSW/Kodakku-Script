@@ -47,11 +47,10 @@ public class the_Clyteum
 {
     const string NoteStr =
     """
-    v0.0.0.2
+    v0.0.0.3
     ----- 请在使用前阅读注意事项 以及根据情况修改用户设置 -----
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
-    2. 英文翻译将在后续更新中添加（什么时候XIV 文本检索更新了我就更，懒得查表了）
-    3. 小怪部分和一些细节部分后续版本更新
+    2. 小怪部分和一些细节部分后续版本更新
     鸭门
     ----------------------------------
     ----- Please read the notes before use and adjust user settings as needed. -----
@@ -63,16 +62,16 @@ public class the_Clyteum
 
     const string UpdateStr =
     """
-    v0.0.0.2
-    更改了老三半场刀的范围
+    v0.0.0.3
+    更新正式变量名
     鸭门
     ----------------------------------
-    Enlarge the range of Boss3's half aoe attack.
+    Updated official variable names.
     Duckmen.
     """;
 
     private const string Name = "LV.100 军工要地克吕提俄斯魔导工厂 [the Clyteum]";
-    private const string Version = "0.0.0.2";
+    private const string Version = "0.0.0.3";
     private const string DebugVersion = "a";
 
     private const bool Debugging = false;
@@ -164,28 +163,28 @@ public class the_Clyteum
         sa.Method.RemoveDraw($".*{ev.TargetId}");
     }
 
-    [ScriptMethod(name: "坚实岩牢 - ", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:48962"])]
-    public void Jianshiyanlao(Event ev, ScriptAccessory sa)
+    [ScriptMethod(name: "坚实岩牢 - Rock Throw", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:48962"])]
+    public void RockThrow(Event ev, ScriptAccessory sa)
     {
-        DrawHelper.DrawCircle(sa, ev.EffectPosition, new Vector2(5.9f), 3700, $"坚实岩牢-{ev.SourceId}", color: sa.Data.DefaultDangerColor);
+        DrawHelper.DrawCircle(sa, ev.EffectPosition, new Vector2(5.9f), 3700, $"Rock Throw-{ev.SourceId}", color: sa.Data.DefaultDangerColor);
     }
 
-    [ScriptMethod(name: "坚实岩牢 Clear", eventType: EventTypeEnum.CancelAction, eventCondition: ["ActionId:48962"], userControl: false)]
-    public void JianshiyanlaoClear(Event ev, ScriptAccessory sa)
+    [ScriptMethod(name: "Rock Throw Clear", eventType: EventTypeEnum.CancelAction, eventCondition: ["ActionId:48962"], userControl: false)]
+    public void RockThrowClear(Event ev, ScriptAccessory sa)
     {
-        sa.Method.RemoveDraw($"坚实岩牢-{ev.SourceId}");
+        sa.Method.RemoveDraw($"Rock Throw-{ev.SourceId}");
     }
 
-    [ScriptMethod(name: "毒波 - ", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:49184"])]
-    public void Dubo(Event ev, ScriptAccessory sa)
+    [ScriptMethod(name: "毒波 - Mow", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:49184"])]
+    public void Mow(Event ev, ScriptAccessory sa)
     {
-        DrawHelper.DrawFanObject(sa, ev.SourceId, 0, new Vector2(7f), 120, 3700, $"毒波-{ev.SourceId}", sa.Data.DefaultDangerColor);
+        DrawHelper.DrawFanObject(sa, ev.SourceId, 0, new Vector2(7f), 120, 3700, $"Mow-{ev.SourceId}", sa.Data.DefaultDangerColor);
     }
 
-    [ScriptMethod(name: "毒波 Clear", eventType: EventTypeEnum.CancelAction, eventCondition: ["ActionId:49184"], userControl: false)]
-    public void DuboClear(Event ev, ScriptAccessory sa)
+    [ScriptMethod(name: "Mow Clear", eventType: EventTypeEnum.CancelAction, eventCondition: ["ActionId:49184"], userControl: false)]
+    public void MowClear(Event ev, ScriptAccessory sa)
     {
-        sa.Method.RemoveDraw($"毒波-{ev.SourceId}");
+        sa.Method.RemoveDraw($"Mow-{ev.SourceId}");
     }
     #endregion
 
@@ -197,7 +196,7 @@ public class the_Clyteum
     {
     }
 
-    [ScriptMethod(name: "凶眼注目 - ", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:48896"])]
+    [ScriptMethod(name: "凶眼注目 - Eyes on Me", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:48896"])]
     public void Boss1AOE(Event ev, ScriptAccessory sa)
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
@@ -206,13 +205,13 @@ public class the_Clyteum
     }
 
 
-    [ScriptMethod(name: "石化光束 - ", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^5017[78]$"])]
+    [ScriptMethod(name: "石化光束 - Petrifying Beam", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^5017[78]$"])]
     public void Boss1Beam(Event ev, ScriptAccessory sa)
     {
-        DrawHelper.DrawFanObject(sa, ev.SourceId, 0, new Vector2(70f), 100, 8500, $"Buffet-{ev.SourceId}", new Vector4(0, 1, 1, 3), scaleByTime: false);
+        DrawHelper.DrawFanObject(sa, ev.SourceId, 0, new Vector2(70f), 100, 8500, $"Petrifying Beam-{ev.SourceId}", new Vector4(0, 1, 1, 3), scaleByTime: false);
     }
 
-    [ScriptMethod(name: "质量导弹 - ", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:48901"])]
+    [ScriptMethod(name: "质量导弹 - Penetrator Missile", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:48901"])]
     public void Boss1Stack(Event ev, ScriptAccessory sa)
     {
         string tname = ev["TargetName"]?.ToString() ?? "未知目标";
@@ -223,17 +222,17 @@ public class the_Clyteum
 
         sa.TTS($"{msg}", isEdgeTTS);
 
-        DrawHelper.DrawCircleObject(sa, ev.TargetId, new Vector2(6f), 4700, $"Boss1Stack-{ev.SourceId}", color: sa.Data.DefaultSafeColor, scaleByTime: false);
+        DrawHelper.DrawCircleObject(sa, ev.TargetId, new Vector2(6f), 4700, $"Penetrator Missile-{ev.SourceId}", color: sa.Data.DefaultSafeColor, scaleByTime: false);
     }
 
-    [ScriptMethod(name: "对地导弹 - ", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:48898"])]
-    public void Duididaodan(Event ev, ScriptAccessory sa)
+    [ScriptMethod(name: "对地导弹 - Surface Missile", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:48898"])]
+    public void SurfaceMissile(Event ev, ScriptAccessory sa)
     {
-        DrawHelper.DrawCircle(sa, ev.EffectPosition, new Vector2(5f), 2700, $"Duididaodan-{ev.SourceId}", color: new Vector4(1, 0, 0, ColorAlpha));
+        DrawHelper.DrawCircle(sa, ev.EffectPosition, new Vector2(5f), 2700, $"Surface Missile-{ev.SourceId}", color: new Vector4(1, 0, 0, ColorAlpha));
     }
 
-    [ScriptMethod(name: "动态扫描仪 - ", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:48893"])]
-    public void Dongtaisaomiaoyi(Event ev, ScriptAccessory sa)
+    [ScriptMethod(name: "动态扫描仪 - Motion Scanner", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:48893"])]
+    public void MotionScanner(Event ev, ScriptAccessory sa)
     {
         string msg = language == Language.Chinese ? "即将被扫描时不要动" : "Don't move when about to be scanned";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 5000, true);
@@ -249,7 +248,7 @@ public class the_Clyteum
     {
     }
 
-    [ScriptMethod(name: "暗黑冲击 - ", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:48884"])]
+    [ScriptMethod(name: "暗黑冲击 - Ripples of Gloom", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:48884"])]
     public void Boss2AOE(Event ev, ScriptAccessory sa)
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
@@ -259,27 +258,27 @@ public class the_Clyteum
 
     
 
-    [ScriptMethod(name: "肉弹 - ", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^48871$"])]
-    public void Boss2Roudan(Event ev, ScriptAccessory sa)
+    [ScriptMethod(name: "肉弹 - Mortifying Flesh", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^48871$"])]
+    public void Boss2MortifyingFlesh(Event ev, ScriptAccessory sa)
     {
-        DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(16, 40f), 4700, $"48871-{ev.SourceId}", sa.Data.DefaultDangerColor);
+        DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(16, 40f), 4700, $"Mortifying Flesh-{ev.SourceId}", sa.Data.DefaultDangerColor);
     }
 
-    [ScriptMethod(name: "肉弹2 - ", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^50400|48876$"])]
-    public void Boss2Roudan2(Event ev, ScriptAccessory sa)
+    [ScriptMethod(name: "肉弹2 - Mortifying Flesh2", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^50400|48876$"])]
+    public void Boss2MortifyingFlesh2(Event ev, ScriptAccessory sa)
     {
-        DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(16, 40f), 2500, $"50400-48876-{ev.SourceId}", sa.Data.DefaultDangerColor);
+        DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(16, 40f), 2500, $"Mortifying Flesh2-{ev.SourceId}", sa.Data.DefaultDangerColor);
     }
 
-    [ScriptMethod(name: "肉压杀 - ", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^48878$"])]
-    public void Boss2Rouyasha(Event ev, ScriptAccessory sa)
+    [ScriptMethod(name: "肉压杀 - Bodyweight Exorcism", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^48878$"])]
+    public void Boss2BodyweightExorcism(Event ev, ScriptAccessory sa)
     {
         string msg = language == Language.Chinese ? "注意击退" : "Be care of Knockback";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 2800, true);
         if (isTTS) sa.Method.EdgeTTS($"{msg}");
 
         var dp = sa.Data.GetDefaultDrawProperties();
-        dp.Name = "肉压杀";
+        dp.Name = "Bodyweight Exorcism";
         dp.Color = sa.Data.DefaultSafeColor;
         dp.Owner = sa.Data.Me;
         dp.TargetPosition = ev.SourcePosition;
@@ -295,14 +294,14 @@ public class the_Clyteum
         }
     }
 
-    [ScriptMethod(name: "呕吐 - ", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^50361$"])]
-    public void Boss2Outu(Event ev, ScriptAccessory sa)
+    [ScriptMethod(name: "呕吐 - Basic Vomit", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^50361$"])]
+    public void Boss2BasicVomit(Event ev, ScriptAccessory sa)
     {
-        DrawHelper.DrawFanObject(sa, ev.SourceId, 0, new Vector2(50f), 120, 4700, $"Outu-{ev.SourceId}", sa.Data.DefaultDangerColor, scaleByTime: false);
+        DrawHelper.DrawFanObject(sa, ev.SourceId, 0, new Vector2(50f), 120, 4700, $"Basic Vomit-{ev.SourceId}", sa.Data.DefaultDangerColor, scaleByTime: false);
     }
 
-    [ScriptMethod(name: "黑暗喷流 - ", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^48885$"])]
-    public void Boss2Heianbenliu(Event ev, ScriptAccessory sa)
+    [ScriptMethod(name: "黑暗喷流 - Evil Emission", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^48885$"])]
+    public void Boss2EvilEmission(Event ev, ScriptAccessory sa)
     {
         if (ev.TargetId == sa.Data.Me) 
         {
@@ -312,8 +311,8 @@ public class the_Clyteum
         }
     }
 
-    [ScriptMethod(name: "黑暗重爆 - ", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:48887"])]
-    public void Boss2Stack(Event ev, ScriptAccessory sa)
+    [ScriptMethod(name: "黑暗重爆 - Profane Pressure", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:48887"])]
+    public void Boss2ProfanePressure(Event ev, ScriptAccessory sa)
     {
         string tname = ev["TargetName"]?.ToString() ?? "未知目标";
 
@@ -323,7 +322,7 @@ public class the_Clyteum
 
         sa.TTS($"{msg}", isEdgeTTS);
 
-        DrawHelper.DrawCircleObject(sa, ev.TargetId, new Vector2(6f), 4700, $"Boss1Stack-{ev.SourceId}", color: sa.Data.DefaultSafeColor, scaleByTime: false);
+        DrawHelper.DrawCircleObject(sa, ev.TargetId, new Vector2(6f), 4700, $"Profane Pressure-{ev.SourceId}", color: sa.Data.DefaultSafeColor, scaleByTime: false);
     }
     #endregion
 
@@ -335,7 +334,7 @@ public class the_Clyteum
     }
 
 
-    [ScriptMethod(name: "废品处理 - ", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:48920"])]
+    [ScriptMethod(name: "废品处理 - Rubbish Disposal", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:48920"])]
     public void Boss3AOE(Event ev, ScriptAccessory sa)
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
@@ -343,29 +342,29 @@ public class the_Clyteum
         sa.TTS($"{msg}", isEdgeTTS);
     }
 
-    [ScriptMethod(name: "虚无黑暗 - ", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^50313$"])]
-    public void Boss3Xuwuheian(Event ev, ScriptAccessory sa)
+    [ScriptMethod(name: "虚无黑暗 - Void Dark", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^50313$"])]
+    public void Boss3VoidDark(Event ev, ScriptAccessory sa)
     {
-        DrawHelper.DrawFanObject(sa, ev.SourceId, 0, new Vector2(70f), 180, 4700, $"Xuwuheian-{ev.SourceId}", sa.Data.DefaultDangerColor, scaleByTime: false);
+        DrawHelper.DrawFanObject(sa, ev.SourceId, 0, new Vector2(70f), 180, 4700, $"Void Dark-{ev.SourceId}", sa.Data.DefaultDangerColor, scaleByTime: false);
     }
 
-    [ScriptMethod(name: "废料瘴气 - ", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(48937|48943)$"])]
-    public void Boss3Feiliaozhangqi(Event ev, ScriptAccessory sa)
+    [ScriptMethod(name: "废料瘴气 - Metallic Miasma", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(48937|48943)$"])]
+    public void Boss3MetallicMiasma(Event ev, ScriptAccessory sa)
     {
         int duration = int.TryParse(ev["DurationMilliseconds"]?.ToString(), out var d) ? d : 4700;
 
-        DrawHelper.DrawFanObject(sa, ev.SourceId, 0, new Vector2(60f), 30, duration, $"Feiliaozhangqi-{ev.SourceId}-{duration}", color: new Vector4(1, 0, 0, ColorAlpha), scaleByTime: false);
+        DrawHelper.DrawFanObject(sa, ev.SourceId, 0, new Vector2(60f), 30, duration, $"Metallic Miasma-{ev.SourceId}-{duration}", color: new Vector4(1, 0, 0, ColorAlpha), scaleByTime: false);
     }
 
-    [ScriptMethod(name: "废料光环 - ", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(48935|48940)$"])]
-    public void Feiliaoguanghuan(Event ev, ScriptAccessory sa)
+    [ScriptMethod(name: "废料光环 - Cast-off Halo", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(48935|48940)$"])]
+    public void Boss3CastOffHalo(Event ev, ScriptAccessory sa)
     {
         int duration = int.TryParse(ev["DurationMilliseconds"]?.ToString(), out var d) ? d : 6500;
-        DrawHelper.DrawCircle(sa, ev.EffectPosition, new Vector2(7f), duration, $"Feiliaoguanghuan-{ev.SourceId}-{duration}", color: new Vector4(1, 0, 0, ColorAlpha), scaleByTime: false);
+        DrawHelper.DrawCircle(sa, ev.EffectPosition, new Vector2(7f), duration, $"Cast-off Halo-{ev.SourceId}-{duration}", color: new Vector4(1, 0, 0, ColorAlpha), scaleByTime: false);
     }
 
-    [ScriptMethod(name: "贪食之线 - ", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:48930"])]
-    public void Boss3Stack(Event ev, ScriptAccessory sa)
+    [ScriptMethod(name: "贪食之线 - Gluttonous Wire", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:48930"])]
+    public void Boss3GluttonousWire(Event ev, ScriptAccessory sa)
     {
         string tname = ev["TargetName"]?.ToString() ?? "未知目标";
 
@@ -375,10 +374,10 @@ public class the_Clyteum
 
         sa.TTS($"{msg}", isEdgeTTS);
 
-        DrawHelper.DrawCircleObject(sa, ev.TargetId, new Vector2(6f), 4700, $"Boss1Stack-{ev.SourceId}", color: sa.Data.DefaultSafeColor, scaleByTime: false);
+        DrawHelper.DrawCircleObject(sa, ev.TargetId, new Vector2(6f), 4700, $"Gluttonous Wire-{ev.SourceId}", color: sa.Data.DefaultSafeColor, scaleByTime: false);
     }
 
-    [ScriptMethod(name: "影戏 - ", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:50314"])]
+    [ScriptMethod(name: "影戏 - Shadow Play", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:50314"])]
     public void Boss3TankBuster(Event ev, ScriptAccessory sa)
     {
         if (ev.TargetId == sa.Data.Me)
@@ -395,8 +394,8 @@ public class the_Clyteum
         }
     }
 
-    [ScriptMethod(name: "愤怒之线 - ", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^48928$"])]
-    public void Boss2Spread(Event ev, ScriptAccessory sa)
+    [ScriptMethod(name: "愤怒之线 - Wrathful Wire", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^48928$"])]
+    public void Boss3WrathfulWire(Event ev, ScriptAccessory sa)
     {
         if (ev.TargetId == sa.Data.Me)
         {
