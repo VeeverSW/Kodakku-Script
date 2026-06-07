@@ -523,12 +523,12 @@
   {
     "Name": "vv工具箱",
     "Guid": "260323f1-9d7d-4fd6-9222-282eb1aa9bf5",
-    "Version": "0.0.2.5",
+    "Version": "0.0.3.0",
     "Author": "Veever",
     "Repo": "https://github.com/VeeverSW/Kodakku-Script",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/00-Other/VVToolKit.cs",
-    "Note": "v0.0.2.5\r\n---------------------------------------------------------\r\n1. 输入/e vvfind + 名字; 即可自动帮你找到范围内你想要找的人\r\n2. 如果想要关掉指路标记或者别的额外功能，输入/e vvstop\r\n3. 输入/e vvmove 或 /e vvfly 即可调用vnav去到指定位置（也可以在方法设置中触发）\r\n4. /e vvguid 自动生成新的guid并复制到剪切板\r\n5. /e vvrot 将自己的朝向改为目标的当前朝向（需要先使用vvfind或者vvselect找到目标，仅本地可见）\r\n6. /e vvrotme [数字] 将自己的朝向改为指定的弧度\r\n7. /e vvrottarget 设置目标对象（玩家/宠物/NPC）的朝向为你当前的朝向（需要先使用vvfind或者vvselect找到目标，仅本地可见）\r\n8. /e vvrottarget [数字] 设置目标对象（玩家/宠物/NPC）的朝向为指定弧度（需要先使用vvfind或者vvselect找到目标，仅本地可见）\r\n9. /e vvlist 列出附近最多10个玩家\r\n10. /e vvselect [编号] 选择/vvlist列出的玩家作为目标\r\n11. /e vvvvv认证秘钥，认证后才可以使用额外功能\r\n---------------------------------------------------------\r\n以下是需密钥功能:\r\n1. /e vvtp\r\n\r\n鸭门",
-    "UpdateInfo": "    v0.0.2.5\r\n    Player修改为Pc",
+    "Note": "v0.0.3.0\r\n---------------------------------------------------------\r\n此工具箱已修改为dev辅助性工具，删除了之前的大部分功能，如无需要请删除\r\n1. /e vvguid 自动生成新的guid并复制到剪切板\r\n2. /e vvlist 列出附近最多10个玩家\r\n鸭门",
+    "UpdateInfo": "    v0.0.3.0\r\n    重构vvToolKit, 日后作为dev辅助性工具使用",
     "TerritoryIds": []
   },
   {
@@ -599,12 +599,12 @@
   {
     "Name": "LV.100 遗忘行路雾之迹 [Mistwake]",
     "Guid": "b7d5e223-17b8-43bf-932f-dceddf10ba1a",
-    "Version": "0.0.0.1",
+    "Version": "0.0.0.2",
     "Author": "Tetora & Veever",
     "Repo": "https://github.com/VeeverSW/Kodakku-Script",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/Mistwake.cs",
-    "Note": "v0.0.0.1\r\n----- 请在使用前阅读注意事项 以及根据情况修改用户设置 -----\r\n----- 请支持南雲鉄虎喵！ 谢谢喵！ -----\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n2. Boss1 的 石头后范围可能不是特别精准, 请在战斗中视情况站位\r\n鸭门\r\n----------------------------------\r\n----- Please read the notes before use and adjust user settings as needed. -----\r\n----- Please support Tetora! Meow! Thank you! Meow! -----\r\n1. If you need a draw or notice any issues, @ me on DC or DM me.\r\n2. The safe zone behind the rock during Boss1 not be perfectly precise. Please adjust your position as needed during the duty.\r\nDuckmen.",
-    "UpdateInfo": "v0.0.0.1\r\n鸭门\r\n----------------------------------\r\nDuckmen.",
+    "Note": "v0.0.0.2\r\n----- 请在使用前阅读注意事项 以及根据情况修改用户设置 -----\r\n----- 请支持南雲鉄虎喵！ 谢谢喵！ -----\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n2. Boss1 的 石头后范围可能不是特别精准, 请在战斗中视情况站位\r\n鸭门\r\n----------------------------------\r\n----- Please read the notes before use and adjust user settings as needed. -----\r\n----- Please support Tetora! Meow! Thank you! Meow! -----\r\n1. If you need a draw or notice any issues, @ me on DC or DM me.\r\n2. The safe zone behind the rock during Boss1 not be perfectly precise. Please adjust your position as needed during the duty.\r\nDuckmen.",
+    "UpdateInfo": "v0.0.0.2\r\n修复防击退逻辑\r\n鸭门\r\n----------------------------------\r\nFix anti-knockback logic.\r\nDuckmen.",
     "TerritoryIds": [
       1314
     ]
@@ -625,12 +625,12 @@
   {
     "Name": "LV.100 军工要地克吕提俄斯魔导工厂 [the Clyteum]",
     "Guid": "5f365ada-2833-4164-92b3-8d11b7275b80",
-    "Version": "0.0.0.3",
+    "Version": "0.0.0.4",
     "Author": "Veever",
     "Repo": "https://github.com/VeeverSW/Kodakku-Script",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/07-DawnTrail/the-Clyteum.cs",
-    "Note": "v0.0.0.3\r\n----- 请在使用前阅读注意事项 以及根据情况修改用户设置 -----\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n2. 英文翻译将在后续更新中添加（什么时候XIV 文本检索更新了我就更，懒得查表了）\r\n3. 小怪部分和一些细节部分后续版本更新\r\n鸭门\r\n----------------------------------\r\n----- Please read the notes before use and adjust user settings as needed. -----\r\n1. If you need a draw or notice any issues, @ me on DC or DM me.\r\n2. English version will be added in the future update, I'll update it when XIV strings comp is updated.\r\n3. Mobs and some details will be added in future updates.\r\nDuckmen.",
-    "UpdateInfo": "v0.0.0.3\r\n更新正式变量名\n鸭门\r\n----------------------------------\r\nUpdated official variable names.\nDuckmen.",
+    "Note": "v0.0.0.4\r\n----- 请在使用前阅读注意事项 以及根据情况修改用户设置 -----\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n2. 小怪部分和一些细节部分后续版本更新\r\n鸭门\r\n----------------------------------\r\n----- Please read the notes before use and adjust user settings as needed. -----\r\n1. If you need a draw or notice any issues, @ me on DC or DM me.\r\n2. English version will be added in the future update, I'll update it when XIV strings comp is updated.\r\n3. Mobs and some details will be added in future updates.\r\nDuckmen.",
+    "UpdateInfo": "v0.0.0.4\r\n修复防击退逻辑\r\n鸭门\r\n----------------------------------\r\nFix anti-knockback logic.\r\nDuckmen.",
     "TerritoryIds": [
       1345
     ]

@@ -13,48 +13,51 @@ using FFXIVClientStructs.FFXIV.Client.System.Input;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
+using FFXIVClientStructs.FFXIV.Common.Lua;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using InteropGenerator.Runtime.Attributes;
 using KodakkuAssist.Data;
 using KodakkuAssist.Extensions;
 using KodakkuAssist.Module.Draw;
 using KodakkuAssist.Module.Draw.Manager;
+using KodakkuAssist.Module.Draw.Vfx.VfxNative;
 using KodakkuAssist.Module.GameEvent;
 using KodakkuAssist.Module.GameEvent.Struct;
 using KodakkuAssist.Module.GameEvent.Types;
 using KodakkuAssist.Module.GameOperate;
 using KodakkuAssist.Script;
+using Lumina.Data;
 using Lumina.Excel.Sheets;
 using Lumina.Excel.Sheets.Experimental;
 using Newtonsoft.Json;
 using System;
+using System;
+using System.Collections.Generic;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Linq;
+using System.Net.Http;
 using System.Net.Http;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics.Arm;
 using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using System.Xml.Linq;
+using static FFXIVClientStructs.FFXIV.Client.Game.ActionManager.Delegates;
 using static FFXIVClientStructs.FFXIV.Client.UI.Misc.DataCenterHelper;
+using static KodakkuAssist.Script.ScriptAccessory;
+using KodaMarkType = KodakkuAssist.Module.GameOperate.MarkType;
+
 
 namespace Veever.Other.VVToolKit;
-
-/// <summary>
-/// 团队筛选模式
-/// </summary>
-public enum PartyFilterMode
-{
-    [Description("关闭筛选")]
-    Disabled = 0,
-    [Description("只画自己团队")]
-    OnlyMyParty = 1,
-    [Description("排除自己团队")]
-    ExcludeMyParty = 2
-}
 
 [ScriptType(name: Name, territorys: [], guid: "260323f1-9d7d-4fd6-9222-282eb1aa9bf5",
     version: Version, author: "Veever", note: NoteStr, updateInfo: UpdateInfo)]
@@ -63,51 +66,28 @@ public class VVToolKit
 {
     const string NoteStr =
     """ 
-    v0.0.2.5
+    v0.0.3.0
     ---------------------------------------------------------
-    1. 输入/e vvfind + 名字; 即可自动帮你找到范围内你想要找的人
-    2. 如果想要关掉指路标记或者别的额外功能，输入/e vvstop
-    3. 输入/e vvmove 或 /e vvfly 即可调用vnav去到指定位置（也可以在方法设置中触发）
-    4. /e vvguid 自动生成新的guid并复制到剪切板
-    5. /e vvrot 将自己的朝向改为目标的当前朝向（需要先使用vvfind或者vvselect找到目标，仅本地可见）
-    6. /e vvrotme [数字] 将自己的朝向改为指定的弧度
-    7. /e vvrottarget 设置目标对象（玩家/宠物/NPC）的朝向为你当前的朝向（需要先使用vvfind或者vvselect找到目标，仅本地可见）
-    8. /e vvrottarget [数字] 设置目标对象（玩家/宠物/NPC）的朝向为指定弧度（需要先使用vvfind或者vvselect找到目标，仅本地可见）
-    9. /e vvlist 列出附近最多10个玩家
-    10. /e vvselect [编号] 选择/vvlist列出的玩家作为目标
-    11. /e vvvvv认证秘钥，认证后才可以使用额外功能
-    ---------------------------------------------------------
-    以下是需密钥功能:
-    1. /e vvtp
-
+    此工具箱已修改为dev辅助性工具，删除了之前的大部分功能，如无需要请删除
+    1. /e vvguid 自动生成新的guid并复制到剪切板
+    2. /e vvlist 列出附近最多10个玩家
     鸭门
     """;
 
     const string UpdateInfo =
     """
-        v0.0.2.5
-        Player修改为Pc
+        v0.0.3.0
+        重构vvToolKit, 日后作为dev辅助性工具使用
     """;
 
     private const string Name = "vv工具箱";
-    private const string Version = "0.0.2.5";
+    private const string Version = "0.0.3.0";
     private const string DebugVersion = "a";
 
     private const bool Debugging = true;
 
-    [UserSetting("验证秘钥")]
-    public string key { get; set; } = "123"; 
     [UserSetting("文字横幅提示开关(Banner text toggle)")]
     public bool isText { get; set; } = true;
-
-    [UserSetting("显示追踪连线")]
-    public bool isDraw { get; set; } = true;
-
-    [UserSetting("开启目标分类筛选")]
-    public bool OnlyFindTypeTrigger { get; set; } = true;
-
-    [UserSetting("只寻找目标的分类")]
-    public Dalamud.Game.ClientState.Objects.Enums.ObjectKind OnlyFindType { get; set; } = Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Pc;
 
     [UserSetting("TTS开关(TTS toggle)")]
     public bool isTTS { get; set; } = false;
@@ -115,20 +95,7 @@ public class VVToolKit
     [UserSetting("是否将结果输出至聊天栏")]
     public bool isChat { get; set; } = false;
 
-    [UserSetting("FFLog")]
-    public bool isFFLog { get; set; } = true;
-
-    [UserSetting("石之家")]
-    public bool isStone { get; set; } = true;
-
-    [UserSetting("开盒")]
-    public bool isOpenBox { get; set; } = false;
-
     public string name = "";
-    public string findNameFramework = "";
-    public bool FindTargetObjectFramework = false;
-    // 都明文秘钥了就不要往下看屎山代码了QwQ
-    public string mainKey = "A-qdPv6??Hgr9sKyAYjXa.W~WigeEEVt2LF7pnr15QteK1ynF2e-Urh:MxCt@t,]:DmG-CMqmBCzLg^7+~#8sRP*pnX?wofsXHN4";
 
     private readonly object findLock = new object();
     private List<IGameObject> cachedPlayers = new();
@@ -138,7 +105,7 @@ public class VVToolKit
         if (!isChat) return;
         accessory.Method.SendChat($"/e [DEBUG] {str}");
     }
-    
+
     public void Init(ScriptAccessory sa)
     {
         sa.Log.Debug($"脚本 {Name} v{Version}{DebugVersion} 完成初始化.");
@@ -148,265 +115,13 @@ public class VVToolKit
         _ = ScriptVersionChecker.CheckVersionAsync(
             sa,
             "260323f1-9d7d-4fd6-9222-282eb1aa9bf5",
-            Version,                                   
-            showNotification: true                     
+            Version,
+            showNotification: true
         );
         sa.Log.Debug($"Id:{HelperExtensions.GetCurrentTerritoryId()}");
     }
 
 
-    [ScriptMethod(name: "验证秘钥", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvvvv$"])]
-    public void verifyKey(Event ev, ScriptAccessory sa)
-    {
-        if (key == mainKey)
-        {
-            isOpenBox = true;
-            sa.Log.Debug("Key verified, OpenBox!");
-            sa.Method.TextInfo("认证秘钥成功", 4700);
-        } else
-        {
-            sa.Method.TextInfo("认证秘钥失败", 4700, true);
-        }
-    }
-
-    public IGameObject? ob;
-
-    [ScriptMethod(name: "FindTarget", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvfind (.*)$"])]
-    public void FindTargetObject(Event ev, ScriptAccessory sa)
-    {
-        string testname = ev["Message"];
-        sa.Log.Debug($"get message: {testname}");
-
-        if (testname.StartsWith("vvfind "))
-        {
-            string targetName = testname.Substring(7);
-            name = targetName;
-            sa.Log.Debug($"Name: {targetName}");
-
-            findNameFramework = sa.Method.RegistFrameworkUpdateAction(() =>
-            {
-
-                var findingObj = sa.Data.Objects?.Where(x => x.Name.ToString() == name).FirstOrDefault();
-
-
-                if (findingObj == null) return;
-                if (OnlyFindTypeTrigger && findingObj.ObjectKind != OnlyFindType) return;
-
-                ob = findingObj;
-
-                FindTargetObjectFramework = true;
-
-                FindTargetDetail(ev, sa, findingObj);
-            });
-
-        }
-    }
-
-    [ScriptMethod(name: "StopFindTarget", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvstop$"])]
-    public void StopFindTargetObject(Event ev, ScriptAccessory sa)
-    {
-        sa.Method.SendChat("/e STOP");
-        sa.Method.ClearFrameworkUpdateAction(this);
-        sa.Method.RemoveDraw($"寻找目标");
-        sa.Method.SendChat($"/vnav stop");
-    }
-
-    [ScriptMethod(name: "StopFindTarget", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvguid$"])]
-    public void vvGuid(Event ev, ScriptAccessory sa)
-    {
-        Guid guid = Guid.NewGuid();
-        string guidString = guid.ToString();
-        
-        bool success = false;
-        try
-        {
-            var thread = new Thread(() =>
-            {
-                try
-                {
-                    System.Windows.Forms.Clipboard.SetText(guidString);
-                    success = true;
-                }
-                catch (Exception ex)
-                {
-                    sa.Log.Error($"剪切板线程内部错误: {ex.Message}");
-                }
-            });
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
-            thread.Join();
-
-            if (success)
-            {
-                sa.Method.SendChat($"/e {guidString} (已复制到剪切板)");
-                sa.Log.Debug($"GUID 已复制到剪切板: {guidString}");
-            }
-            else
-            {
-                sa.Method.SendChat($"/e {guidString} (复制失败)");
-            }
-        }
-        catch (Exception ex)
-        {
-            sa.Method.SendChat($"/e {guidString} (复制失败)");
-            sa.Log.Error($"复制到剪切板失败: {ex.Message}");
-        }
-    }
-
-    [ScriptMethod(name: "VnavMove", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvmove$"])]
-    public void vnavMove(Event ev, ScriptAccessory sa)
-    {
-        if (ob == null)
-        {
-            sa.Method.SendChat("/e 未找到目标对象,请先使用 /e vvfind 查找目标");
-            return;
-        }
-
-        var x = ob.Position.X;
-        var y = ob.Position.Y;
-        var z = ob.Position.Z;
-        sa.Method.SendChat($"/vnav moveto {x} {y} {z}");
-    }
-
-    [ScriptMethod(name: "VnavFly", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvfly$"])]
-    public void vnavFly(Event ev, ScriptAccessory sa)
-    {
-        if (ob == null)
-        {
-            sa.Method.SendChat("/e 未找到目标对象,请先使用 /e vvfind 查找目标");
-            return;
-        }
-
-        var x = ob.Position.X;
-        var y = ob.Position.Y;
-        var z = ob.Position.Z;
-        sa.Method.SendChat($"/vnav flyto {x} {y} {z}");
-    }
-
-
-    [ScriptMethod(name: "key needed TP(不要野外用！！)", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvtp$"])]
-    public void teleportOb(Event ev, ScriptAccessory sa)
-    {
-        if (key != mainKey) return;
-        if (ob == null) return;
-        SpecialFunction.SetPosition(sa, sa.Data.MyObject, ob.Position);
-    }
-
-
-    [ScriptMethod(name: "vvrot", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvrot$"])]
-    public void setRot(Event ev, ScriptAccessory sa)
-    {
-        var myobj = sa.Data.MyObject;
-        if (myobj == null) return;
-
-        if (ob == null || !ob.IsValid() || myobj == null || !myobj.IsValid())
-        {
-            sa.Log.Error($"Invalid Object");
-            return;
-        }
-
-        unsafe
-        {
-            GameObject* charaStruct = (GameObject*)myobj.Address;
-            charaStruct->SetRotation(ob.Rotation);
-        }
-        sa.Log.Debug($"改变面向 {myobj.Name.TextValue} | {myobj.Rotation.RadToDeg()} => obj: {ob.Name.TextValue} {ob.Rotation.RadToDeg()}");
-    }
-
-    [ScriptMethod(name: "vvrottarget", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvrottarget( (.+))?$"])]
-    public void setTargetRot(Event ev, ScriptAccessory sa)
-    {
-        var myobj = sa.Data.MyObject;
-        if (myobj == null)
-        {
-            sa.Method.SendChat("/e 无法获取玩家对象");
-            sa.Log.Error("MyObject is null");
-            return;
-        }
-
-        if (ob == null || !ob.IsValid())
-        {
-            sa.Method.SendChat("/e 目标对象无效，请先使用 /e vvfind 查找目标");
-            sa.Log.Error("ob is null or invalid");
-            return;
-        }
-
-        sa.Log.Debug($"目标对象: {ob.Name.TextValue}, ObjectKind: {ob.ObjectKind}, EntityId: {ob.EntityId}");
-
-        string message = ev["Message"];
-        float newRotation;
-        bool useCustomRotation = false;
-
-        if (message.Length > 11 && message.Substring(11).Trim().Length > 0)
-        {
-            string input = message.Substring(11).Trim();
-            if (float.TryParse(input, out float rotation))
-            {
-                newRotation = rotation;
-                useCustomRotation = true;
-            }
-            else
-            {
-                sa.Method.SendChat("/e 参数无效，请输入有效的数字");
-                sa.Log.Error($"Invalid rotation value: {input}");
-                return;
-            }
-        }
-        else
-        {
-            newRotation = myobj.Rotation;
-        }
-
-        unsafe
-        {
-            GameObject* targetStruct = (GameObject*)ob.Address;
-            float oldRotation = targetStruct->Rotation;
-
-            targetStruct->SetRotation(newRotation);
-
-            if (useCustomRotation)
-            {
-                sa.Log.Debug($"改变目标面向 {ob.Name.TextValue} ({ob.ObjectKind}) | {oldRotation.RadToDeg()}° => 指定朝向: {newRotation.RadToDeg()}°");
-                sa.Method.SendChat($"/e 目标 {ob.Name.TextValue} 已设置朝向为 {newRotation} 弧度 ({newRotation.RadToDeg():F1}°)");
-            }
-            else
-            {
-                sa.Log.Debug($"改变目标面向 {ob.Name.TextValue} ({ob.ObjectKind}) | {oldRotation.RadToDeg()}° => 玩家朝向: {newRotation.RadToDeg()}°");
-                sa.Method.SendChat($"/e 目标 {ob.Name.TextValue} 已设置为与你相同的朝向 ({newRotation.RadToDeg():F1}°)");
-            }
-        }
-    }
-
-    [ScriptMethod(name: "vvrotme", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvrotme (.+)$"])]
-    public void setMyRot(Event ev, ScriptAccessory sa)
-    {
-        var myobj = sa.Data.MyObject;
-        if (myobj == null)
-        {
-            sa.Method.SendChat("/e 无法获取玩家对象");
-            sa.Log.Error("MyObject is null");
-            return;
-        }
-
-        string input = ev["Message"].Substring(8).Trim();
-        if (!float.TryParse(input, out float rotation))
-        {
-            sa.Method.SendChat("/e 参数无效，请输入有效的数字");
-            sa.Log.Error($"Invalid rotation value: {input}");
-            return;
-        }
-
-        unsafe
-        {
-            GameObject* charaStruct = (GameObject*)myobj.Address;
-            float oldRotation = charaStruct->Rotation;
-
-            charaStruct->SetRotation(rotation);
-
-            sa.Log.Debug($"改变自身面向 {myobj.Name.TextValue} | {oldRotation.RadToDeg()}° => {rotation.RadToDeg()}°");
-            sa.Method.SendChat($"/e 已设置自身朝向为 {rotation} 弧度 ({rotation.RadToDeg():F1}°)");
-        }
-    }
 
     [ScriptMethod(name: "列出附近玩家", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvlist$"])]
     public async void listPlayers(Event ev, ScriptAccessory sa)
@@ -446,156 +161,86 @@ public class VVToolKit
         sa.Log.Debug($"已列出 {cachedPlayers.Count} 个附近的玩家");
     }
 
-    [ScriptMethod(name: "选择玩家", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvselect (\\d+)$"])]
-    public void selectPlayer(Event ev, ScriptAccessory sa)
+    [ScriptMethod(name: "vvguid", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvguid$"])]
+    public void vvGuid(Event ev, ScriptAccessory sa)
     {
-        string input = ev["Message"].Substring(9).Trim();
+        Guid guid = Guid.NewGuid();
+        string guidString = guid.ToString();
 
-        lock (findLock)
+        bool success = false;
+        try
         {
-            if (!int.TryParse(input, out int index) || index < 1 || index > cachedPlayers.Count)
+            var thread = new Thread(() =>
             {
-                sa.Method.SendChat("/e 无效的编号，请先使用 /e vvlist 列出玩家");
-                sa.Log.Error($"Invalid index: {input}, cachedPlayers count: {cachedPlayers.Count}");
-                return;
-            }
-
-            ob = cachedPlayers[index - 1];
-            if (ob == null || !ob.IsValid())
-            {
-                sa.Method.SendChat("/e 玩家对象无效");
-                sa.Log.Error("Selected player object is null or invalid");
-                return;
-            }
-
-            sa.Method.SendChat($"/e 已选择: {ob.Name}");
-            sa.Log.Debug($"Selected player: {ob.Name} (EntityId: {ob.EntityId})");
-        }
-    }
-
-    public void FindTargetDetail(Event ev, ScriptAccessory sa, IGameObject? findingObj)
-    {
-        // sa.Method.RemoveDraw("寻找目标");
-        //
-        // await Task.Delay(1100);
-
-        lock (findLock)
-        {
-
-            if (!FindTargetObjectFramework) return;
-
-            sa.Method.UnregistFrameworkUpdateAction(findNameFramework);
-            sa.Method.ClearFrameworkUpdateAction(this);
-
-            FindTargetObjectFramework = false;
-
-            if (findingObj == null) return;
-            
-
-            var finding = findingObj.Name;
-
-
-            sa.Log.Debug($"found object: {finding}, 位置: {findingObj.Position.Quantized()}");
-
-            if (isText) sa.Method.TextInfo($"发现目标{finding}, 位置: {findingObj.Position.Quantized()}", 5700);
-            if (isChat) sa.Method.SendChat($"/e 发现目标{finding}, 位置: {findingObj.Position.Quantized()}");
-            if (isTTS) sa.Method.EdgeTTS($"发现目标{finding}");
-            if (isOpenBox && findingObj.ObjectKind != Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Pc)
-            {
-                sa.Log.Debug("非玩家，无法开盒");
-            }
-
-            if (isOpenBox && findingObj.ObjectKind == Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Pc)
-            {
-                unsafe
+                try
                 {
-                    var address = (Character*)findingObj.Address;
-                    var Health = address->CharacterData.Health;
-                    var Mana = address->CharacterData.Mana;
-                    var job = IbcHelper.GetPlayerJob(sa, (IPlayerCharacter)findingObj, true);
-                    var level = address->CharacterData.Level;
-                    var homeworldString = ((IPlayerCharacter)findingObj).HomeWorld.Value.Name.ToString();
-
-                    var StatusFlags = ((IPlayerCharacter)findingObj).StatusFlags;
-                    var cid = address->ContentId;
-
-
-
-                    // 尝试多种方式获取名字，优先级从高到低
-                    var tname = address->NameString;
-                    if (string.IsNullOrEmpty(tname))
-                    {
-                        // 尝试从 Dalamud IGameObject 获取
-                        tname = findingObj.Name.ToString();
-                    }
-                    if (string.IsNullOrEmpty(tname))
-                    {
-                        // 如果还是空，使用 ContentId 作为标识
-                        tname = $"Player_{cid:X}";
-                        sa.Log.Debug($"无法获取玩家名字，使用 ContentId: {cid:X}");
-                    }
-
-                    var Height = address->Height;
-
-                    var sex = address->Sex;
-                    var sexStr = "";
-                    if (sex == 1)
-                    {
-                        sexStr = "女";
-                    }
-                    else
-                    {
-                        sexStr = "男";
-                    }
-
-
-                    sa.Log.Debug($"\ncid: {cid},\nHp: {Health},\nMp: {Mana},\n" +
-                        $"job: {job},\nlevel: {level}," +
-                        $"\nsex: {sexStr},\nHomeWorld: {homeworldString}\n" +
-                        $"StatusFlags: {StatusFlags}, name: {tname}");
-
-                    if (isStone)
-                    {
-                        _ = RisingStonHelper.SearchRisingStone(sa, (IPlayerCharacter)findingObj);
-                    }
-
-                    if (isFFLog) FFLogsHelper.OpenFFLogs(sa, (IPlayerCharacter)findingObj);
+                    System.Windows.Forms.Clipboard.SetText(guidString);
+                    success = true;
                 }
+                catch (Exception ex)
+                {
+                    sa.Log.Error($"剪切板线程内部错误: {ex.Message}");
+                }
+            });
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+            thread.Join();
 
-
-                if (isChat) sa.Method.SendChat($"/e 发现目标{finding}, 位置: {findingObj.Position.Quantized()}");
+            if (success)
+            {
+                sa.Method.SendChat($"/e {guidString} (已复制到剪切板)");
+                sa.Log.Debug($"GUID 已复制到剪切板: {guidString}");
             }
-
-            var dp1 = sa.Data.GetDefaultDrawProperties();
-            dp1.Name = $"寻找目标";
-            dp1.Owner = sa.Data.Me;
-            dp1.Color = sa.Data.DefaultSafeColor;
-            dp1.ScaleMode |= ScaleMode.YByDistance;
-            dp1.TargetObject = (ulong)findingObj.GameObjectId;
-            sa.Log.Debug($"EntityId: {(ulong)findingObj.EntityId}");
-            dp1.Scale = new(2);
-            dp1.DestoryAt = int.MaxValue;
-            dp1.FixRotation = true;
-            if (isDraw) sa.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Displacement, dp1);
-
-            sa.Method.ClearFrameworkUpdateAction(this);
+            else
+            {
+                sa.Method.SendChat($"/e {guidString} (复制失败)");
+            }
+        }
+        catch (Exception ex)
+        {
+            sa.Method.SendChat($"/e {guidString} (复制失败)");
+            sa.Log.Error($"复制到剪切板失败: {ex.Message}");
         }
     }
 
+    [ScriptMethod(name: "vvtest", eventType: EventTypeEnum.Chat, eventCondition: ["Type:Echo", "Message:regex:^vvtest$"])]
+    public void vvTest(Event ev, ScriptAccessory sa)
+    {
+        //var vfxpath = "vfx/common/eff/targetlockon_stlp01_c0o2.avfx";
+        //var myobj = sa.Data.MyObject;
+        //if (myobj == null) return;
+
+        //sa.Method.VfxMethod.CreateLockOn(23, sa.Data.MyObject.EntityId);
+
+        //sa.Method.UseAction(sa.Data.Me, 7548);
+
+
+
+        // scale: new Vector3(enlarge by X, height, enlarge by Z)
+        //var mypos = sa.Data.MyObject.Position;
+        //mypos.Y += 10;
+        //mypos.Z += 5;
+        //sa.Log.Debug($"玩家位置: {mypos}");
+        //sa.Method.VfxMethod.CreateOmen(239, new Vector3(2,3,2), mypos, 0);
+        // Omen
+        // 27    核爆         390-391
+        // 65-90-120    踩塔     带特效： 239-  638（start multi）
+        // 335   双人踩塔         336     三人踩塔          337     四人
+        // 453   分摊踩塔
+        // 467   死刑踩塔
+        // 540   双人死刑踩塔
+        // 176   十字
+        // 574-575-576      三角形
+
+        // lockon
+        // 72   分摊
+
+    }
 
 }
 
-
-public static class MathTools
-{
-    public static float DegToRad(this float deg) => (deg + 360f) % 360f / 180f * float.Pi;
-    public static float RadToDeg(this float rad) => (rad + 2 * float.Pi) % (2 * float.Pi) / float.Pi * 180f;
-
-}
-
-
-    #region 函数集
-    public static class EventExtensions
+#region 函数集
+public static class EventExtensions
 {
     private static bool ParseHexId(string? idStr, out uint id)
     {
@@ -622,7 +267,13 @@ public static class MathTools
     {
         return ParseHexId(ev["Index"], out var index) ? index : 0;
     }
+
+    public static uint DataId(this Event ev)
+    {
+        return JsonConvert.DeserializeObject<uint>(ev["DataId"]);
+    }
 }
+
 
 public static class IbcHelper
 {
@@ -647,6 +298,31 @@ public static class IbcHelper
         return fullName ? playerObject.ClassJob.Value.Name.ToString() : playerObject.ClassJob.Value.Abbreviation.ToString();
     }
 
+    /// <summary>
+    /// 获取玩家的职能
+    /// Return: "Tank"(坦克) / "Healer"(治疗) / "Melee DPS"(近战物理) / "Ranged Physical DPS"(远程物理) / "Ranged Magical DPS"(远程魔法) / "Unknown" / "None"
+    /// 大版本更新需要维护
+    /// </summary>
+    public static string GetPlayerRole(this ScriptAccessory sa, IPlayerCharacter? playerObject)
+    {
+        if (playerObject == null) return "None";
+
+        return playerObject.ClassJob.RowId switch
+        {
+            // Tank: 骑士、战士、暗黑骑士、绝枪战士
+            19 or 21 or 32 or 37 => "Tank",
+            // Healer: 白魔法师、学者、占星术士、贤者
+            24 or 28 or 33 or 40 => "Healer",
+            // Melee DPS: 武僧、龙骑士、忍者、武士、钐镰客、蝰蛇剑士
+            20 or 22 or 30 or 34 or 39 or 41 => "Melee DPS",
+            // Ranged Physical DPS: 吟游诗人、机工士、舞者
+            23 or 31 or 38 => "Ranged Physical DPS",
+            // Ranged Magical DPS: 黑魔法师、召唤师、赤魔法师、青魔法师、绘灵法师
+            25 or 27 or 35 or 36 or 42 => "Ranged Magical DPS",
+            _ => "Unknown"
+        };
+    }
+
     public static float GetStatusRemainingTime(this ScriptAccessory sa, IBattleChara? battleChara, uint statusId)
     {
         if (battleChara == null || !battleChara.IsValid()) return 0;
@@ -669,49 +345,50 @@ public static class IbcHelper
         }
     }
 
+    public static float GetHitboxRadius(IGameObject obj)
+    {
+        if (obj == null || !obj.IsValid()) return -1;
+        return obj.HitboxRadius;
+    }
+
+    public static string GetObjectName(IGameObject obj)
+    {
+        if (obj == null || !obj.IsValid()) return "None";
+        return obj.Name.ToString();
+    }
+
     /// <summary>
-    /// 获取对象身上的标记（Sign/Marker）
+    /// 获取指定标记索引的对象EntityId
     /// </summary>
-    /// <param name="obj">游戏对象</param>
-    /// <returns>标记类型</returns>
+    public static unsafe ulong GetMarkerEntityId(uint markerIndex)
+    {
+        var markingController = MarkingController.Instance();
+        if (markingController == null) return 0;
+        if (markerIndex >= 17) return 0;
+
+        return markingController->Markers[(int)markerIndex];
+    }
+
+    /// <summary>
+    /// 获取对象身上的标记
+    /// </summary>
+    /// <returns>MarkType</returns>
     public static MarkType GetObjectMarker(IGameObject? obj)
     {
         if (obj == null || !obj.IsValid()) return MarkType.None;
 
-        unsafe
+        ulong targetEntityId = obj.EntityId;
+
+        for (uint i = 0; i < 17; i++)
         {
-            // 直接从GameObject结构读取标记信息
-            var gameObj = (GameObject*)obj.Address;
-            if (gameObj == null) return MarkType.None;
-
-            // GameObject.NamePlateIconId 存储了头顶标记ID
-            // 标记ID范围: 0 = 无标记, 1-8 = 攻击标记, 61-63 = 止步标记, 等等
-            var iconId = gameObj->NamePlateIconId;
-
-            // 转换 iconId 到 MarkType
-            return iconId switch
+            var markerEntityId = GetMarkerEntityId(i);
+            if (markerEntityId == targetEntityId)
             {
-                0 => MarkType.None,
-                61 => MarkType.Attack1,
-                62 => MarkType.Attack2,
-                63 => MarkType.Attack3,
-                64 => MarkType.Attack4,
-                65 => MarkType.Attack5,
-                66 => MarkType.Bind1,
-                67 => MarkType.Bind2,
-                68 => MarkType.Bind3,
-                69 => MarkType.Ignore1,
-                70 => MarkType.Ignore2,
-                71 => MarkType.Square,
-                72 => MarkType.Circle,
-                73 => MarkType.Cross,
-                74 => MarkType.Triangle,
-                75 => MarkType.Attack6,
-                76 => MarkType.Attack7,
-                77 => MarkType.Attack8,
-                _ => MarkType.None
-            };
+                return (MarkType)i;
+            }
         }
+
+        return MarkType.None;
     }
 
     /// <summary>
@@ -723,7 +400,49 @@ public static class IbcHelper
     }
 
     /// <summary>
-    /// 获取标记的名称（中文）
+    /// 检查对象是否有任何标记
+    /// </summary>
+    public static bool HasAnyMarker(IGameObject? obj)
+    {
+        return GetObjectMarker(obj) != MarkType.None;
+    }
+
+    private static ulong GetMarkerForObject(IGameObject? obj)
+    {
+        if (obj == null) return 0;
+        unsafe
+        {
+            for (uint i = 0; i < 17; i++)
+            {
+                var markerEntityId = GetMarkerEntityId(i);
+                if (markerEntityId == obj.EntityId)
+                {
+                    return markerEntityId;
+                }
+            }
+        }
+        return 0;
+    }
+
+    private static MarkType GetMarkerTypeForObject(IGameObject? obj)
+    {
+        if (obj == null) return MarkType.None;
+        unsafe
+        {
+            for (uint i = 0; i < 17; i++)
+            {
+                var markerEntityId = GetMarkerEntityId(i);
+                if (markerEntityId == obj.EntityId)
+                {
+                    return (MarkType)i;
+                }
+            }
+        }
+        return MarkType.None;
+    }
+
+    /// <summary>
+    /// 获取标记的名称
     /// </summary>
     public static string GetMarkerName(MarkType markType)
     {
@@ -751,9 +470,6 @@ public static class IbcHelper
     }
 }
 
-/// <summary>
-/// 标记类型枚举
-/// </summary>
 public enum MarkType
 {
     None = -1,
@@ -776,6 +492,648 @@ public enum MarkType
     Attack8 = 16,
     Count = 17
 }
+
+public static class ActionExt
+{
+    public static unsafe bool IsReadyWithCanCast(uint actionId, ActionType actionType)
+    {
+        var am = ActionManager.Instance();
+        if (am == null) return false;
+
+        var adjustedId = am->GetAdjustedActionId(actionId);
+
+        // 0 = Ready）
+        if (am->GetActionStatus(actionType, adjustedId) != 0)
+            return false;
+
+        ulong targetId = 0;
+        var ts = TargetSystem.Instance();
+        if (ts != null && ts->GetTargetObject() != null)
+            targetId = ts->GetTargetObject()->GetGameObjectId();
+
+        return am->GetActionStatus(actionType, adjustedId, targetId) == 0;
+    }
+
+    public static bool IsSpellReady(this uint spellId) => IsReadyWithCanCast(spellId, ActionType.Action);
+    public static bool IsAbilityReady(this uint abilityId) => IsReadyWithCanCast(abilityId, ActionType.EventAction);
+}
+
+#region 计算函数
+
+public static class MathTools
+{
+    public static float DegToRad(this float deg) => (deg + 360f) % 360f / 180f * float.Pi;
+    public static float RadToDeg(this float rad) => (rad + 2 * float.Pi) % (2 * float.Pi) / float.Pi * 180f;
+
+    /// <summary>
+    /// 将弧度值规范化到 -π 到 π 范围
+    /// </summary>
+    public static float NormalizeRadian(this float rad)
+    {
+        rad = (rad + 2 * float.Pi) % (2 * float.Pi); // 先转到 0-2π
+        if (rad > float.Pi) rad -= 2 * float.Pi; // 如果大于 π，转到负数范围
+        return rad;
+    }
+
+    /// <summary>
+    /// 获得任意点与中心点的弧度值，以(0, 0, 1)方向为0，以(1, 0, 0)方向为pi/2。
+    /// 即，逆时针方向增加。
+    /// </summary>
+    /// <param name="point">任意点</param>
+    /// <param name="center">中心点</param>
+    /// <returns></returns>
+    public static float GetRadian(this Vector3 point, Vector3 center)
+        => MathF.Atan2(point.X - center.X, point.Z - center.Z);
+
+    /// <summary>
+    /// 获得任意点与中心点的长度。
+    /// </summary>
+    /// <param name="point">任意点</param>
+    /// <param name="center">中心点</param>
+    /// <returns></returns>
+    public static float GetLength(this Vector3 point, Vector3 center)
+        => new Vector2(point.X - center.X, point.Z - center.Z).Length();
+
+    /// <summary>
+    /// 将任意点以中心点为圆心，逆时针旋转并延长。
+    /// </summary>
+    /// <param name="point">任意点</param>
+    /// <param name="center">中心点</param>
+    /// <param name="radian">旋转弧度</param>
+    /// <param name="length">基于该点延伸长度</param>
+    /// <returns></returns>
+    public static Vector3 RotateAndExtend(this Vector3 point, Vector3 center, float radian, float length)
+    {
+        var baseRad = point.GetRadian(center);
+        var baseLength = point.GetLength(center);
+        var rotRad = baseRad + radian;
+        return new Vector3(
+            center.X + MathF.Sin(rotRad) * (length + baseLength),
+            center.Y,
+            center.Z + MathF.Cos(rotRad) * (length + baseLength)
+        );
+    }
+
+    /// <summary>
+    /// 获得某角度所在划分区域
+    /// </summary>
+    /// <param name="radian">输入弧度</param>
+    /// <param name="regionNum">区域划分数量</param>
+    /// <param name="baseRegionIdx">0度所在区域的初始Idx</param>>
+    /// <param name="isDiagDiv">是否为斜分割，默认为false</param>
+    /// <param name="isCw">是否顺时针增加，默认为false</param>
+    /// <returns></returns>
+    public static int RadianToRegion(this float radian, int regionNum, int baseRegionIdx = 0, bool isDiagDiv = false, bool isCw = false)
+    {
+        var sepRad = float.Pi * 2 / regionNum;
+        var inputAngle = radian * (isCw ? -1 : 1) + (isDiagDiv ? sepRad / 2 : 0);
+        var rad = (inputAngle + 4 * float.Pi) % (2 * float.Pi);
+        return ((int)Math.Floor(rad / sepRad) + baseRegionIdx + regionNum) % regionNum;
+    }
+
+    /// <summary>
+    /// 将输入点左右折叠
+    /// </summary>
+    /// <param name="point">待折叠点</param>
+    /// <param name="centerX">中心折线坐标点</param>
+    /// <returns></returns>
+    public static Vector3 FoldPointHorizon(this Vector3 point, float centerX)
+        => point with { X = 2 * centerX - point.X };
+
+    /// <summary>
+    /// 将输入点上下折叠
+    /// </summary>
+    /// <param name="point">待折叠点</param>
+    /// <param name="centerZ">中心折线坐标点</param>
+    /// <returns></returns>
+    public static Vector3 FoldPointVertical(this Vector3 point, float centerZ)
+        => point with { Z = 2 * centerZ - point.Z };
+
+    /// <summary>
+    /// 将输入点中心对称
+    /// </summary>
+    /// <param name="point">输入点</param>
+    /// <param name="center">中心点</param>
+    /// <returns></returns>
+    public static Vector3 PointCenterSymmetry(this Vector3 point, Vector3 center)
+        => point.RotateAndExtend(center, float.Pi, 0);
+
+    /// <summary>
+    /// 获取给定数的指定位数
+    /// </summary>
+    /// <param name="val">给定数值</param>
+    /// <param name="x">对应位数，个位为1</param>
+    /// <returns></returns>
+    public static int GetDecimalDigit(this int val, int x)
+    {
+        var valStr = val.ToString();
+        var length = valStr.Length;
+        if (x < 1 || x > length) return -1;
+        var digitChar = valStr[length - x]; // 从右往左取第x位
+        return int.Parse(digitChar.ToString());
+    }
+
+    /// <summary>
+    /// 根据角度和距离计算目标位置
+    /// </summary>
+    public static Vector3 GetPositionByAngle(Vector3 origin, float angleInDegrees, float distance)
+    {
+        float radian = angleInDegrees * MathF.PI / 180f;
+
+        return new Vector3(
+            origin.X + distance * MathF.Cos(radian),
+            origin.Y,
+            origin.Z + distance * MathF.Sin(radian)
+        );
+    }
+}
+
+#endregion 计算函数
+
+#region 位置序列函数
+public static class IndexHelper
+{
+    /// <summary>
+    /// 输入玩家dataId，获得对应的位置index
+    /// </summary>
+    /// <param name="pid">玩家SourceId</param>
+    /// <param name="sa"></param>
+    /// <returns>该玩家对应的位置index</returns>
+    public static int GetPlayerIdIndex(this ScriptAccessory sa, uint pid)
+    {
+        // 获得玩家 IDX
+        return sa.Data.PartyList.IndexOf(pid);
+    }
+
+    /// <summary>
+    /// 获得主视角玩家对应的位置index
+    /// </summary>
+    /// <param name="sa"></param>
+    /// <returns>主视角玩家对应的位置index</returns>
+    public static int GetMyIndex(this ScriptAccessory sa)
+    {
+        return sa.Data.PartyList.IndexOf(sa.Data.Me);
+    }
+
+    /// <summary>
+    /// 输入玩家dataId，获得对应的位置称呼，输出字符仅作文字输出用
+    /// </summary>
+    /// <param name="pid">玩家SourceId</param>
+    /// <param name="sa"></param>
+    /// <returns>该玩家对应的位置称呼</returns>
+    public static string GetPlayerJobById(this ScriptAccessory sa, uint pid)
+    {
+        // 获得玩家职能简称，无用处，仅作DEBUG输出
+        var idx = sa.Data.PartyList.IndexOf(pid);
+        var str = sa.GetPlayerJobByIndex(idx);
+        return str;
+    }
+
+    /// <summary>
+    /// 输入位置index，获得对应的位置称呼，输出字符仅作文字输出用
+    /// </summary>
+    /// <param name="idx">位置index</param>
+    /// <param name="fourPeople">是否为四人迷宫</param>
+    /// <param name="sa"></param>
+    /// <returns></returns>
+    public static string GetPlayerJobByIndex(this ScriptAccessory sa, int idx, bool fourPeople = false)
+    {
+        List<string> role8 = ["MT", "ST", "H1", "H2", "D1", "D2", "D3", "D4"];
+        List<string> role4 = ["T", "H", "D1", "D2"];
+        if (idx < 0 || idx >= 8 || (fourPeople && idx >= 4))
+            return "Unknown";
+        return fourPeople ? role4[idx] : role8[idx];
+    }
+
+    /// <summary>
+    /// 将List内信息转换为字符串。
+    /// </summary>
+    /// <param name="sa"></param>
+    /// <param name="myList"></param>
+    /// <param name="isJob">是职业，在转为字符串前调用转职业函数</param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static string BuildListStr<T>(this ScriptAccessory sa, List<T> myList, bool isJob = false)
+    {
+        return string.Join(", ", myList.Select(item =>
+        {
+            if (isJob && item != null && item is int i)
+                return sa.GetPlayerJobByIndex(i);
+            return item?.ToString() ?? "";
+        }));
+    }
+}
+#endregion 位置序列函数
+
+#region 绘图函数
+
+public static class DrawTools
+{
+    /// <summary>
+    /// 返回绘图
+    /// </summary>
+    /// <param name="sa"></param>
+    /// <param name="ownerObj">绘图基准，可为UID或位置</param>
+    /// <param name="targetObj">绘图指向目标，可为UID或位置</param>
+    /// <param name="delay">延时delay ms出现</param>
+    /// <param name="destroy">绘图自出现起，经destroy ms消失</param>
+    /// <param name="name">绘图名称</param>
+    /// <param name="radian">绘制图形弧度范围</param>
+    /// <param name="rotation">绘制图形旋转弧度，以owner面前为基准，逆时针增加</param>
+    /// <param name="width">绘制图形宽度，部分图形可保持与长度一致</param>
+    /// <param name="length">绘制图形长度，部分图形可保持与宽度一致</param>
+    /// <param name="innerWidth">绘制图形内宽，部分图形可保持与长度一致</param>
+    /// <param name="innerLength">绘制图形内长，部分图形可保持与宽度一致</param>
+    /// <param name="drawModeEnum">绘图方式</param>
+    /// <param name="drawTypeEnum">绘图类型</param>
+    /// <param name="isSafe">是否使用安全色</param>
+    /// <param name="byTime">动画效果随时间填充</param>
+    /// <param name="byY">动画效果随距离变更</param>
+    /// <param name="draw">是否直接绘图</param>
+    /// <returns></returns>
+    public static DrawPropertiesEdit DrawOwnerBase(this ScriptAccessory sa,
+        object ownerObj, object targetObj, int delay, int destroy, string name,
+        float radian, float rotation, float width, float length, float innerWidth, float innerLength,
+        DrawModeEnum drawModeEnum, DrawTypeEnum drawTypeEnum, bool isSafe = false,
+        bool byTime = false, bool byY = false, bool draw = true)
+    {
+        var dp = sa.Data.GetDefaultDrawProperties();
+        dp.Name = name;
+        dp.Scale = new Vector2(width, length);
+        dp.InnerScale = new Vector2(innerWidth, innerLength);
+        dp.Radian = radian;
+        dp.Rotation = rotation;
+        dp.Color = isSafe ? sa.Data.DefaultSafeColor : sa.Data.DefaultDangerColor;
+        dp.Delay = delay;
+        dp.DestoryAt = destroy;
+        dp.ScaleMode |= byTime ? ScaleMode.ByTime : ScaleMode.None;
+        dp.ScaleMode |= byY ? ScaleMode.YByDistance : ScaleMode.None;
+
+        switch (ownerObj)
+        {
+            case uint u:
+                dp.Owner = u;
+                break;
+            case ulong ul:
+                dp.Owner = ul;
+                break;
+            case Vector3 spos:
+                dp.Position = spos;
+                break;
+            default:
+                throw new ArgumentException($"ownerObj {ownerObj} 的目标类型 {ownerObj.GetType()} 输入错误");
+        }
+
+        switch (targetObj)
+        {
+            case 0:
+            case 0u:
+                break;
+            case uint u:
+                dp.TargetObject = u;
+                break;
+            case ulong ul:
+                dp.TargetObject = ul;
+                break;
+            case Vector3 tpos:
+                dp.TargetPosition = tpos;
+                break;
+            default:
+                throw new ArgumentException($"targetObj {targetObj} 的目标类型 {targetObj.GetType()} 输入错误");
+        }
+
+        if (draw)
+            sa.Method.SendDraw(drawModeEnum, drawTypeEnum, dp);
+        return dp;
+    }
+
+    /// <summary>
+    /// 返回指路绘图
+    /// </summary>
+    /// <param name="sa"></param>
+    /// <param name="ownerObj">出发点</param>
+    /// <param name="targetObj">结束点</param>
+    /// <param name="delay">延时</param>
+    /// <param name="destroy">消失时间</param>
+    /// <param name="name">绘图名字</param>
+    /// <param name="rotation">箭头旋转角度</param>
+    /// <param name="width">箭头宽度</param>
+    /// <param name="isSafe">是否安全色</param>
+    /// <param name="draw">是否直接绘制</param>
+    /// <returns></returns>
+    public static DrawPropertiesEdit DrawGuidance(this ScriptAccessory sa,
+        object ownerObj, object targetObj, int delay, int destroy, string name,
+        float rotation = 0, float width = 1f, bool isSafe = true, bool draw = true)
+        => sa.DrawOwnerBase(ownerObj, targetObj, delay, destroy, name, 0, rotation, width,
+            width, 0, 0, DrawModeEnum.Imgui, DrawTypeEnum.Displacement, isSafe, false, true, draw);
+
+    public static DrawPropertiesEdit DrawGuidance(this ScriptAccessory sa,
+        object targetObj, int delay, int destroy, string name, float rotation = 0, float width = 1f, bool isSafe = true,
+        bool draw = true)
+        => sa.DrawGuidance((ulong)sa.Data.Me, targetObj, delay, destroy, name, rotation, width, isSafe, draw);
+
+    /// <summary>
+    /// 返回圆形绘图
+    /// </summary>
+    /// <param name="sa"></param>
+    /// <param name="ownerObj">圆心</param>
+    /// <param name="delay">延时</param>
+    /// <param name="destroy">消失时间</param>
+    /// <param name="name">绘图名字</param>
+    /// <param name="scale">圆形径长</param>
+    /// <param name="byTime">是否随时间扩充</param>
+    /// <param name="isSafe">是否安全色</param>
+    /// <param name="draw">是否直接绘制</param>
+    /// <returns></returns>
+    public static DrawPropertiesEdit DrawCircle(this ScriptAccessory sa,
+        object ownerObj, int delay, int destroy, string name,
+        float scale, bool isSafe = false, bool byTime = false, bool draw = true)
+        => sa.DrawOwnerBase(ownerObj, 0, delay, destroy, name, 2 * float.Pi, 0, scale, scale,
+            0, 0, DrawModeEnum.Default, DrawTypeEnum.Circle, isSafe, byTime, false, draw);
+
+    /// <summary>
+    /// 返回环形绘图
+    /// </summary>
+    /// <param name="sa"></param>
+    /// <param name="ownerObj">圆心</param>
+    /// <param name="delay">延时</param>
+    /// <param name="destroy">消失时间</param>
+    /// <param name="name">绘图名字</param>
+    /// <param name="outScale">外径</param>
+    /// <param name="innerScale">内径</param>
+    /// <param name="byTime">是否随时间扩充</param>
+    /// <param name="isSafe">是否安全色</param>
+    /// <param name="draw">是否直接绘制</param>
+    /// <returns></returns>
+    public static DrawPropertiesEdit DrawDonut(this ScriptAccessory sa,
+        object ownerObj, int delay, int destroy, string name,
+        float outScale, float innerScale, bool isSafe = false, bool byTime = false, bool draw = true)
+        => sa.DrawOwnerBase(ownerObj, 0, delay, destroy, name, 2 * float.Pi, 0, outScale, outScale, innerScale,
+            innerScale, DrawModeEnum.Default, DrawTypeEnum.Donut, isSafe, byTime, false, draw);
+
+    /// <summary>
+    /// 返回扇形绘图
+    /// </summary>
+    /// <param name="sa"></param>
+    /// <param name="ownerObj">圆心</param>
+    /// <param name="targetObj">目标</param>
+    /// <param name="delay">延时</param>
+    /// <param name="destroy">消失时间</param>
+    /// <param name="name">绘图名字</param>
+    /// <param name="radian">弧度</param>
+    /// <param name="rotation">旋转角度</param>
+    /// <param name="outScale">外径</param>
+    /// <param name="innerScale">内径</param>
+    /// <param name="byTime">是否随时间扩充</param>
+    /// <param name="isSafe">是否安全色</param>
+    /// <param name="draw">是否直接绘制</param>
+    /// <returns></returns>
+    public static DrawPropertiesEdit DrawFan(this ScriptAccessory sa,
+        object ownerObj, object targetObj, int delay, int destroy, string name, float radian, float rotation,
+        float outScale, float innerScale, bool isSafe = false, bool byTime = false, bool draw = true)
+        => sa.DrawOwnerBase(ownerObj, targetObj, delay, destroy, name, radian, rotation, outScale, outScale, innerScale,
+            innerScale, DrawModeEnum.Default, DrawTypeEnum.Fan, isSafe, byTime, false, draw);
+
+    public static DrawPropertiesEdit DrawFan(this ScriptAccessory sa,
+        object ownerObj, int delay, int destroy, string name, float radian, float rotation,
+        float outScale, float innerScale, bool isSafe = false, bool byTime = false, bool draw = true)
+        => sa.DrawFan(ownerObj, 0, delay, destroy, name, radian, rotation, outScale, innerScale, isSafe, byTime, draw);
+
+    /// <summary>
+    /// 返回矩形绘图
+    /// </summary>
+    /// <param name="sa"></param>
+    /// <param name="ownerObj">矩形起始</param>
+    /// <param name="targetObj">目标</param>
+    /// <param name="delay">延时</param>
+    /// <param name="destroy">消失时间</param>
+    /// <param name="name">绘图名字</param>
+    /// <param name="rotation">旋转角度</param>
+    /// <param name="width">矩形宽度</param>
+    /// <param name="length">矩形长度</param>
+    /// <param name="byTime">是否随时间扩充</param>
+    /// <param name="byY">是否随距离扩充</param>
+    /// <param name="isSafe">是否安全色</param>
+    /// <param name="draw">是否直接绘制</param>
+    /// <returns></returns>
+    public static DrawPropertiesEdit DrawRect(this ScriptAccessory sa,
+        object ownerObj, object targetObj, int delay, int destroy, string name, float rotation,
+        float width, float length, bool isSafe = false, bool byTime = false, bool byY = false, bool draw = true)
+        => sa.DrawOwnerBase(ownerObj, targetObj, delay, destroy, name, 0, rotation, width, length, 0, 0,
+            DrawModeEnum.Default, DrawTypeEnum.Rect, isSafe, byTime, byY, draw);
+
+    public static DrawPropertiesEdit DrawRect(this ScriptAccessory sa,
+        object ownerObj, int delay, int destroy, string name, float rotation,
+        float width, float length, bool isSafe = false, bool byTime = false, bool byY = false, bool draw = true)
+        => sa.DrawRect(ownerObj, 0, delay, destroy, name, rotation, width, length, isSafe, byTime, byY, draw);
+
+    /// <summary>
+    /// 返回背对绘图
+    /// </summary>
+    /// <param name="sa"></param>
+    /// <param name="targetObj">目标</param>
+    /// <param name="delay">延时</param>
+    /// <param name="destroy">消失时间</param>
+    /// <param name="name">绘图名字</param>
+    /// <param name="isSafe">是否安全色</param>
+    /// <param name="draw">是否直接绘制</param>
+    /// <returns></returns>
+    public static DrawPropertiesEdit DrawSightAvoid(this ScriptAccessory sa,
+        object targetObj, int delay, int destroy, string name, bool isSafe = true, bool draw = true)
+        => sa.DrawOwnerBase(sa.Data.Me, targetObj, delay, destroy, name, 0, 0, 0, 0, 0, 0,
+            DrawModeEnum.Default, DrawTypeEnum.SightAvoid, isSafe, false, false, draw);
+
+    /// <summary>
+    /// 返回击退绘图
+    /// </summary>
+    /// <param name="sa"></param>
+    /// <param name="targetObj">击退源</param>
+    /// <param name="delay">延时</param>
+    /// <param name="destroy">消失时间</param>
+    /// <param name="name">绘图名字</param>
+    /// <param name="width">箭头宽</param>
+    /// <param name="length">箭头长</param>
+    /// <param name="isSafe">是否安全色</param>
+    /// <param name="draw">是否直接绘制</param>
+    /// <returns></returns>
+    public static DrawPropertiesEdit DrawKnockBack(this ScriptAccessory sa,
+        object targetObj, int delay, int destroy, string name, float width, float length,
+        bool isSafe = false, bool draw = true)
+        => sa.DrawOwnerBase(sa.Data.Me, targetObj, delay, destroy, name, 0, float.Pi, width, length, 0, 0,
+            DrawModeEnum.Default, DrawTypeEnum.Displacement, isSafe, false, false, draw);
+
+    /// <summary>
+    /// 返回线型绘图
+    /// </summary>
+    /// <param name="sa"></param>
+    /// <param name="ownerObj">线条起始</param>
+    /// <param name="targetObj">线条目标</param>
+    /// <param name="delay">延时</param>
+    /// <param name="destroy">消失时间</param>
+    /// <param name="name">绘图名字</param>
+    /// <param name="rotation">旋转角度</param>
+    /// <param name="width">线条宽度</param>
+    /// <param name="length">线条长度</param>
+    /// <param name="byTime">是否随时间扩充</param>
+    /// <param name="byY">是否随距离扩充</param>
+    /// <param name="isSafe">是否安全色</param>
+    /// <param name="draw">是否直接绘制</param>
+    /// <returns></returns>
+    public static DrawPropertiesEdit DrawLine(this ScriptAccessory sa,
+        object ownerObj, object targetObj, int delay, int destroy, string name, float rotation,
+        float width, float length, bool isSafe = false, bool byTime = false, bool byY = false, bool draw = true)
+        => sa.DrawOwnerBase(ownerObj, targetObj, delay, destroy, name, 1, rotation, width, length, 0, 0,
+            DrawModeEnum.Default, DrawTypeEnum.Line, isSafe, byTime, byY, draw);
+
+    /// <summary>
+    /// 返回两对象间连线绘图
+    /// </summary>
+    /// <param name="sa"></param>
+    /// <param name="ownerObj">起始源</param>
+    /// <param name="targetObj">目标源</param>
+    /// <param name="delay">延时</param>
+    /// <param name="destroy">消失时间</param>
+    /// <param name="name">绘图名字</param>
+    /// <param name="width">线宽</param>
+    /// <param name="isSafe">是否安全色</param>
+    /// <param name="draw">是否直接绘制</param>
+    /// <returns></returns>
+    public static DrawPropertiesEdit DrawConnection(this ScriptAccessory sa, object ownerObj, object targetObj,
+        int delay, int destroy, string name, float width = 1f, bool isSafe = false, bool draw = true)
+        => sa.DrawOwnerBase(ownerObj, targetObj, delay, destroy, name, 0, 0, width, width,
+            0, 0, DrawModeEnum.Imgui, DrawTypeEnum.Line, isSafe, false, true, draw);
+
+    /// <summary>
+    /// 赋予输入的dp以ownerId为源的远近目标绘图
+    /// </summary>
+    /// <param name="self"></param>
+    /// <param name="isNearOrder">从owner计算，近顺序或远顺序</param>
+    /// <param name="orderIdx">从1开始</param>
+    /// <returns></returns>
+    public static DrawPropertiesEdit SetOwnersDistanceOrder(this DrawPropertiesEdit self, bool isNearOrder,
+        uint orderIdx)
+    {
+        self.CentreResolvePattern = isNearOrder
+            ? PositionResolvePatternEnum.PlayerNearestOrder
+            : PositionResolvePatternEnum.PlayerFarestOrder;
+        self.CentreOrderIndex = orderIdx;
+        return self;
+    }
+
+    /// <summary>
+    /// 赋予输入的dp以ownerId为源的仇恨顺序绘图
+    /// </summary>
+    /// <param name="self"></param>
+    /// <param name="orderIdx">仇恨顺序，从1开始</param>
+    /// <returns></returns>
+    public static DrawPropertiesEdit SetOwnersEnmityOrder(this DrawPropertiesEdit self, uint orderIdx)
+    {
+        self.CentreResolvePattern = PositionResolvePatternEnum.OwnerEnmityOrder;
+        self.CentreOrderIndex = orderIdx;
+        return self;
+    }
+
+    /// <summary>
+    /// 赋予输入的dp以position为源的远近目标绘图
+    /// </summary>
+    /// <param name="self"></param>
+    /// <param name="isNearOrder">从owner计算，近顺序或远顺序</param>
+    /// <param name="orderIdx">从1开始</param>
+    /// <returns></returns>
+    public static DrawPropertiesEdit SetPositionDistanceOrder(this DrawPropertiesEdit self, bool isNearOrder,
+        uint orderIdx)
+    {
+        self.TargetResolvePattern = isNearOrder
+            ? PositionResolvePatternEnum.PlayerNearestOrder
+            : PositionResolvePatternEnum.PlayerFarestOrder;
+        self.TargetOrderIndex = orderIdx;
+        return self;
+    }
+
+    /// <summary>
+    /// 赋予输入的dp以ownerId施法目标为源的绘图
+    /// </summary>
+    /// <param name="self"></param>
+    /// <returns></returns>
+    public static DrawPropertiesEdit SetOwnersTarget(this DrawPropertiesEdit self)
+    {
+        self.TargetResolvePattern = PositionResolvePatternEnum.OwnerTarget;
+        return self;
+    }
+}
+
+#endregion 绘图函数
+
+#region 标点函数
+
+public static class MarkerHelper
+{
+    public static void LocalMarkClear(this ScriptAccessory sa)
+    {
+        sa.Log.Debug($"删除本地标点。");
+        sa.Method.Mark(0xE000000, KodaMarkType.Attack1, true);
+        sa.Method.Mark(0xE000000, KodaMarkType.Attack2, true);
+        sa.Method.Mark(0xE000000, KodaMarkType.Attack3, true);
+        sa.Method.Mark(0xE000000, KodaMarkType.Attack4, true);
+        sa.Method.Mark(0xE000000, KodaMarkType.Attack5, true);
+        sa.Method.Mark(0xE000000, KodaMarkType.Attack6, true);
+        sa.Method.Mark(0xE000000, KodaMarkType.Attack7, true);
+        sa.Method.Mark(0xE000000, KodaMarkType.Attack8, true);
+        sa.Method.Mark(0xE000000, KodaMarkType.Bind1, true);
+        sa.Method.Mark(0xE000000, KodaMarkType.Bind2, true);
+        sa.Method.Mark(0xE000000, KodaMarkType.Bind3, true);
+        sa.Method.Mark(0xE000000, KodaMarkType.Stop1, true);
+        sa.Method.Mark(0xE000000, KodaMarkType.Stop2, true);
+        sa.Method.Mark(0xE000000, KodaMarkType.Square, true);
+        sa.Method.Mark(0xE000000, KodaMarkType.Circle, true);
+        sa.Method.Mark(0xE000000, KodaMarkType.Cross, true);
+        sa.Method.Mark(0xE000000, KodaMarkType.Triangle, true);
+    }
+
+    public static void MarkClear(this ScriptAccessory sa,
+        bool enable = true, bool local = false, bool localString = false)
+    {
+        if (!enable) return;
+        sa.Log.Debug($"接收命令：删除标点");
+
+        if (local)
+        {
+            if (localString)
+                sa.Log.Debug($"[字符模拟] 删除本地标点。");
+            else
+                sa.LocalMarkClear();
+        }
+        else
+            sa.Method.MarkClear();
+    }
+
+    public static void MarkPlayerByIdx(this ScriptAccessory sa, int idx, KodaMarkType marker,
+        bool enable = true, bool local = false, bool localString = false)
+    {
+        if (!enable) return;
+        if (localString)
+            sa.Log.Debug($"[本地字符模拟] 为{idx}({sa.GetPlayerJobByIndex(idx)})标上{marker}。");
+        else
+            sa.Method.Mark(sa.Data.PartyList[idx], marker, local);
+    }
+
+    public static void MarkPlayerById(ScriptAccessory sa, uint id, KodaMarkType marker,
+        bool enable = true, bool local = false, bool localString = false)
+    {
+        if (!enable) return;
+        if (localString)
+            sa.Log.Debug($"[本地字符模拟] 为{sa.GetPlayerIdIndex(id)}({sa.GetPlayerJobById(id)})标上{marker}。");
+        else
+            sa.Method.Mark(id, marker, local);
+    }
+
+    public static int GetMarkedPlayerIndex(this ScriptAccessory sa, List<KodaMarkType> markerList, KodaMarkType marker)
+    {
+        return markerList.IndexOf(marker);
+    }
+}
+
+#endregion
 
 #region 特殊函数
 
@@ -805,7 +1163,31 @@ public static class SpecialFunction
         sa.Log.Debug($"SetTargetable {targetable} => {obj.Name} {obj}");
     }
 
-    public static void ScaleModify(this ScriptAccessory sa, IGameObject? obj, float scale)
+    public static unsafe void SetModelScale(ScriptAccessory sa, uint dataId, float scale, float VfxScale)
+    {
+        sa.Method.RunOnMainThreadAsync(() =>
+        {
+            var obj = sa.Data.Objects.FirstOrDefault(o => o.DataId == dataId);
+            if (obj == null) return;
+
+            var gameObj = (GameObject*)obj.Address;
+            if (gameObj == null || !gameObj->IsReadyToDraw()) return;
+
+            gameObj->Scale = scale;
+            gameObj->VfxScale = VfxScale;
+
+            if (gameObj->IsCharacter())
+            {
+                var chara = (BattleChara*)gameObj;
+                chara->Character.CharacterData.ModelScale = scale;
+            }
+
+            gameObj->DisableDraw();
+            gameObj->EnableDraw();
+        });
+    }
+
+    public static void SetRotation(this ScriptAccessory sa, IGameObject? obj, float radian, bool show = false)
     {
         if (obj == null || !obj.IsValid())
         {
@@ -815,11 +1197,17 @@ public static class SpecialFunction
         unsafe
         {
             GameObject* charaStruct = (GameObject*)obj.Address;
-            charaStruct->Scale = scale;
-            charaStruct->DisableDraw();
-            charaStruct->EnableDraw();
+            charaStruct->SetRotation(radian);
         }
-        sa.Log.Debug($"ScaleModify => {obj.Name.TextValue} | {obj} => {scale}");
+        sa.Log.Debug($"改变面向 {obj.Name.TextValue} | {obj.EntityId} => {radian.RadToDeg()}");
+
+        if (!show) return;
+        var ownerObj = sa.GetById(obj.EntityId);
+        if (ownerObj == null) return;
+        var dp = sa.DrawGuidance(ownerObj, 0, 0, 2000, $"改变面向 {obj.Name.TextValue}", radian, draw: false);
+        dp.FixRotation = true;
+        sa.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Arrow, dp);
+
     }
 
     public static void SetPosition(this ScriptAccessory sa, IGameObject? obj, Vector3 position, bool show = false)
@@ -837,6 +1225,88 @@ public static class SpecialFunction
         sa.Log.Debug($"改变位置 => {obj.Name.TextValue} | {obj.EntityId} => {position}");
 
         if (!show) return;
+        var dp = sa.DrawCircle(position, 0, 2000, $"传送点 {obj.Name.TextValue}", 0.5f, true, draw: false);
+        sa.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Circle, dp);
+
+    }
+
+    [Flags]
+    public enum DrawState : uint
+    {
+        Invisibility = 0x00_00_00_02,
+        IsLoading = 0x00_00_08_00,
+        SomeNpcFlag = 0x00_00_01_00,
+        MaybeCulled = 0x00_00_04_00,
+        MaybeHiddenMinion = 0x00_00_80_00,
+        MaybeHiddenSummon = 0x00_80_00_00,
+    }
+
+    public static unsafe DrawState* ActorDrawState(IGameObject actor)
+        => (DrawState*)(&((GameObject*)actor.Address)->RenderFlags);
+
+    /// <summary>
+    /// 检查对象可见性（Read）
+    /// </summary>
+    /// <param name="sa">ScriptAccessory</param>
+    /// <param name="obj">Obj need check</param>
+    /// <param name="checkVisible">true=检查可见，false=检查不可见</param>
+    /// <returns>如果符合检查条件返回 True</returns>
+    public static unsafe bool IsActorVisible(this ScriptAccessory sa, IGameObject? obj, bool checkVisible = true)
+    {
+        if (obj == null) return false;
+
+        try
+        {
+            var state = *ActorDrawState(obj);
+            bool isVisible = (state & DrawState.Invisibility) == 0;
+
+            return checkVisible ? isVisible : !isVisible;
+        }
+        catch (Exception e)
+        {
+            sa.Log.Error($" {e} ");
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// 设置对象可见性（Write）
+    /// </summary>
+    public static unsafe void WriteVisible(this ScriptAccessory sa, IGameObject? actor, bool visible)
+    {
+        if (actor == null) return;
+
+        try
+        {
+            var statePtr = ActorDrawState(actor);
+            if (visible)
+                *statePtr &= ~DrawState.Invisibility;
+            else
+                *statePtr |= DrawState.Invisibility;
+        }
+        catch (Exception e)
+        {
+            sa.Log.Error($" {e} ");
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Check DrawState
+    /// </summary>
+    public static unsafe bool HasDrawState(this ScriptAccessory sa, IGameObject? actor, DrawState state)
+    {
+        if (actor == null) return false;
+
+        try
+        {
+            return (*ActorDrawState(actor) & state) != 0;
+        }
+        catch (Exception e)
+        {
+            sa.Log.Error($" {e} ");
+            return false;
+        }
     }
 }
 
@@ -928,7 +1398,7 @@ public static class DrawHelper
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Rect, dp);
     }
 
-    public static void DrawCircle(ScriptAccessory accessory, Vector3 position, Vector2 scale, int duration, string name, Vector4? color = null, bool scaleByTime = true, int delay = 0, DrawModeEnum drawmode = DrawModeEnum.Default)
+    public static void DrawCircle(ScriptAccessory accessory, Vector3 position, Vector2 scale, int duration, string name, Vector4? color = null, bool scaleByTime = true, int delay = 0, DrawModeEnum drawmode = DrawModeEnum.Default, Vector3? offset = null)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = name;
@@ -937,11 +1407,12 @@ public static class DrawHelper
         dp.Scale = scale;
         dp.Delay = delay;
         dp.DestoryAt = duration;
+        dp.Offset = offset ?? new Vector3(0, 0, 0);
         if (scaleByTime) dp.ScaleMode = ScaleMode.ByTime;
         accessory.Method.SendDraw(drawmode, DrawTypeEnum.Circle, dp);
     }
 
-    public static void DrawDisplacement(ScriptAccessory accessory, Vector3 targetPos, Vector2 scale, int duration, string name, Vector4? color = null, int delay = 0)
+    public static void DrawDisplacement(ScriptAccessory accessory, Vector3 targetPos, Vector2 scale, int duration, string name, Vector4? color = null, int delay = 0, DrawModeEnum drawmode = DrawModeEnum.Imgui)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = name;
@@ -952,7 +1423,7 @@ public static class DrawHelper
         dp.Scale = scale;
         dp.Delay = delay;
         dp.DestoryAt = duration;
-        accessory.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Displacement, dp);
+        accessory.Method.SendDraw(drawmode, DrawTypeEnum.Displacement, dp);
     }
 
     public static void DrawDisplacementby2points(ScriptAccessory accessory, Vector3 origin, Vector3 target, Vector2 scale, int duration, string name, Vector4? color = null, int delay = 0)
@@ -969,7 +1440,7 @@ public static class DrawHelper
         accessory.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Displacement, dp);
     }
 
-    public static void DrawDisplacementObject(ScriptAccessory accessory, ulong target, Vector2 scale, int duration, string name, Vector4? color = null, int delay = 0, bool fix = false, DrawModeEnum drawmode = DrawModeEnum.Imgui)
+    public static void DrawDisplacementObject(ScriptAccessory accessory, ulong target, Vector2 scale, int duration, string name, float? rotation = null, Vector4? color = null, int delay = 0, bool fix = false, DrawModeEnum drawmode = DrawModeEnum.Imgui)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = name;
@@ -978,7 +1449,8 @@ public static class DrawHelper
         dp.ScaleMode |= ScaleMode.YByDistance;
         dp.TargetObject = target;
         dp.Scale = scale;
-        dp.Delay = delay; 
+        if (rotation.HasValue) dp.Rotation = rotation.Value;
+        dp.Delay = delay;
         dp.FixRotation = fix;
         dp.DestoryAt = duration;
         accessory.Method.SendDraw(drawmode, DrawTypeEnum.Displacement, dp);
@@ -1011,7 +1483,22 @@ public static class DrawHelper
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Rect, dp);
     }
 
-    public static void DrawRectPosNoTarget(ScriptAccessory accessory, Vector3 pos, Vector2 scale, int duration, string name, Vector4? color = null, int delay = 0, ScaleMode scalemode = ScaleMode.None, Vector3? offset = null, DrawModeEnum drawMode = DrawModeEnum.Default)
+    public static void DrawRectObjectNoTargetWithRot(ScriptAccessory accessory, ulong owner, Vector2 scale, float rotation, int duration, string name, Vector4? color = null, int delay = 0, ScaleMode scalemode = ScaleMode.None, Vector3? offset = null)
+    {
+        var dp = accessory.Data.GetDefaultDrawProperties();
+        dp.Name = name;
+        dp.Color = color ?? accessory.Data.DefaultDangerColor;
+        dp.Owner = owner;
+        dp.Scale = scale;
+        dp.Rotation = rotation;
+        dp.Delay = delay;
+        dp.DestoryAt = duration;
+        dp.ScaleMode = scalemode;
+        dp.Offset = offset ?? new Vector3(0, 0, 0);
+        accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Rect, dp);
+    }
+
+    public static void DrawRectPosNoTarget(ScriptAccessory accessory, Vector3 pos, Vector2 scale, float rotation, int duration, string name, Vector4? color = null, int delay = 0, ScaleMode scalemode = ScaleMode.None, Vector3? offset = null, DrawModeEnum drawMode = DrawModeEnum.Default)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = name;
@@ -1019,11 +1506,28 @@ public static class DrawHelper
         dp.Position = pos;
         dp.Scale = scale;
         dp.Delay = delay;
+        dp.Rotation = rotation;
         dp.DestoryAt = duration;
         dp.ScaleMode = scalemode;
         dp.Offset = offset ?? new Vector3(0, 0, 0);
         accessory.Method.SendDraw(drawMode, DrawTypeEnum.Rect, dp);
     }
+
+    public static void DrawRectPosTarget(ScriptAccessory accessory, Vector3 pos, Vector3 targetpos, Vector2 scale, int duration, string name, Vector4? color = null, int delay = 0, ScaleMode scalemode = ScaleMode.None, Vector3? offset = null, DrawModeEnum drawMode = DrawModeEnum.Default)
+    {
+        var dp = accessory.Data.GetDefaultDrawProperties();
+        dp.Name = name;
+        dp.Color = color ?? accessory.Data.DefaultDangerColor;
+        dp.Position = pos;
+        dp.TargetPosition = targetpos;
+        dp.Scale = scale;
+        dp.Delay = delay;
+        dp.DestoryAt = duration;
+        dp.ScaleMode = scalemode;
+        dp.Offset = offset ?? new Vector3(0, 0, 0);
+        accessory.Method.SendDraw(drawMode, DrawTypeEnum.Rect, dp);
+    }
+
     public static void DrawRectObjectTarget(ScriptAccessory accessory, ulong owner, ulong target, Vector2 scale, int duration, string name, Vector4? color = null, int delay = 0, ScaleMode scalemode = ScaleMode.None)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
@@ -1038,7 +1542,24 @@ public static class DrawHelper
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Rect, dp);
     }
 
-    public static void DrawFan(ScriptAccessory accessory, Vector3 position, float rotation, Vector2 scale, float angle, int duration, string name, Vector4? color = null, int delay = 0, bool fix = false)
+    public static void DrawRectObjectTargetPos(ScriptAccessory accessory, ulong owner, Vector3 targetPos, Vector2 scale, int duration, string name,
+                                                Vector4? color = null, int delay = 0, ScaleMode scalemode = ScaleMode.None)
+    {
+        var dp = accessory.Data.GetDefaultDrawProperties();
+        dp.Name = name;
+        dp.Color = color ?? accessory.Data.DefaultDangerColor;
+        dp.Owner = owner;
+        dp.TargetPosition = targetPos;
+        dp.Scale = scale;
+        dp.Delay = delay;
+        dp.DestoryAt = duration;
+        dp.ScaleMode = scalemode;
+        accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Rect, dp);
+    }
+
+    public static void DrawFan(ScriptAccessory accessory, Vector3 position, float rotation, Vector2 scale, float angle,
+                                int duration, string name, Vector4? color = null, int delay = 0,
+                                bool fix = false, Vector3? offset = null, DrawModeEnum drawmode = DrawModeEnum.Default, bool scaleByTime = false)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = name;
@@ -1050,10 +1571,42 @@ public static class DrawHelper
         dp.Delay = delay;
         dp.DestoryAt = duration;
         dp.FixRotation = fix;
+        dp.Offset = offset ?? new Vector3(0, 0, 0);
+        if (scaleByTime) dp.ScaleMode = ScaleMode.ByTime;
+        accessory.Method.SendDraw(drawmode, DrawTypeEnum.Fan, dp);
+    }
+
+    public static void DrawFanNoRot(ScriptAccessory accessory, Vector3 position, Vector2 scale, float angle, int duration, string name, Vector4? color = null, int delay = 0, bool fix = false)
+    {
+        var dp = accessory.Data.GetDefaultDrawProperties();
+        dp.Name = name;
+        dp.Color = color ?? accessory.Data.DefaultDangerColor;
+        dp.Position = position;
+        dp.Scale = scale;
+        dp.Radian = angle * (float.Pi / 180);
+        dp.Delay = delay;
+        dp.DestoryAt = duration;
+        dp.FixRotation = fix;
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Fan, dp);
     }
 
-    public static void DrawFanObject(ScriptAccessory accessory, ulong owner, float rotation, Vector2 scale, float angle, int duration, string name, Vector4? color = null, int delay = 0, bool scaleByTime = true, bool fix = false, Vector3? offset = null)
+    public static void DrawFanObjectNoRot(ScriptAccessory accessory, ulong owner, Vector2 scale, float angle, int duration, string name, Vector4? color = null, int delay = 0, bool fix = false)
+    {
+        var dp = accessory.Data.GetDefaultDrawProperties();
+        dp.Name = name;
+        dp.Color = color ?? accessory.Data.DefaultDangerColor;
+        dp.Owner = owner;
+        dp.Scale = scale;
+        dp.Radian = angle * (float.Pi / 180);
+        dp.Delay = delay;
+        dp.DestoryAt = duration;
+        dp.FixRotation = fix;
+        accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Fan, dp);
+    }
+
+    public static void DrawFanObject(ScriptAccessory accessory, ulong owner, float rotation,
+        Vector2 scale, float angle, int duration, string name, Vector4? color = null,
+        int delay = 0, bool scaleByTime = true, bool fix = false, Vector3? offset = null, DrawModeEnum drawmode = DrawModeEnum.Default)
     {
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = name;
@@ -1067,7 +1620,27 @@ public static class DrawHelper
         dp.FixRotation = fix;
         dp.Offset = offset ?? new Vector3(0, 0, 0);
         if (scaleByTime) dp.ScaleMode = ScaleMode.ByTime;
-        accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Fan, dp);
+        accessory.Method.SendDraw(drawmode, DrawTypeEnum.Fan, dp);
+    }
+
+    public static void DrawFanPos(ScriptAccessory accessory, Vector3 position, Vector3 targetPosition, float rotation,
+        Vector2 scale, float angle, int duration, string name, Vector4? color = null,
+        int delay = 0, bool scaleByTime = true, bool fix = false, Vector3? offset = null, DrawModeEnum drawmode = DrawModeEnum.Default)
+    {
+        var dp = accessory.Data.GetDefaultDrawProperties();
+        dp.Name = name;
+        dp.Color = color ?? accessory.Data.DefaultDangerColor;
+        dp.Position = position;
+        dp.TargetPosition = targetPosition;
+        dp.Rotation = rotation;
+        dp.Scale = scale;
+        dp.Radian = angle * (float.Pi / 180);
+        dp.Delay = delay;
+        dp.DestoryAt = duration;
+        dp.FixRotation = fix;
+        dp.Offset = offset ?? new Vector3(0, 0, 0);
+        if (scaleByTime) dp.ScaleMode = ScaleMode.ByTime;
+        accessory.Method.SendDraw(drawmode, DrawTypeEnum.Fan, dp);
     }
 
     public static void DrawLine(ScriptAccessory accessory, Vector3 startPosition, Vector3 endPosition, float width, int duration, string name, Vector4? color = null, int delay = 0)
@@ -1124,12 +1697,98 @@ public static class DrawHelper
         if (scaleByTime) dp.ScaleMode = ScaleMode.ByTime;
         accessory.Method.SendDraw(drawmode, DrawTypeEnum.Donut, dp);
     }
+
+    public static void DrawDountPos(ScriptAccessory accessory, Vector3 position, Vector3 targetPosition, float rotation, Vector2 scale, float radian, Vector2 innerscale,
+        int duration, string name, Vector4? color = null, bool scaleByTime = true, int delay = 0, Vector3? offset = null, DrawModeEnum drawmode = DrawModeEnum.Default)
+    {
+        var dp = accessory.Data.GetDefaultDrawProperties();
+        dp.Name = name;
+        dp.Color = color ?? accessory.Data.DefaultDangerColor;
+        dp.Position = position;
+        dp.TargetPosition = targetPosition;
+        dp.Rotation = rotation;
+        dp.Radian = radian;
+        dp.Scale = scale;
+        dp.InnerScale = innerscale;
+        dp.Delay = delay;
+        dp.DestoryAt = duration;
+        if (scaleByTime) dp.ScaleMode = ScaleMode.ByTime;
+        dp.Offset = offset ?? new Vector3(0, 0, 0);
+        accessory.Method.SendDraw(drawmode, DrawTypeEnum.Donut, dp);
+    }
+
+    public static void DrawDountObjectPos(ScriptAccessory accessory, ulong obj, Vector3 targetPosition, float rotation, Vector2 scale, float radian, Vector2 innerscale,
+        int duration, string name, Vector4? color = null, bool scaleByTime = true, int delay = 0, Vector3? offset = null, DrawModeEnum drawmode = DrawModeEnum.Default)
+    {
+        var dp = accessory.Data.GetDefaultDrawProperties();
+        dp.Name = name;
+        dp.Color = color ?? accessory.Data.DefaultDangerColor;
+        dp.Owner = obj;
+        dp.TargetPosition = targetPosition;
+        dp.Rotation = rotation;
+        dp.Radian = radian;
+        dp.Scale = scale;
+        dp.InnerScale = innerscale;
+        dp.Delay = delay;
+        dp.DestoryAt = duration;
+        if (scaleByTime) dp.ScaleMode = ScaleMode.ByTime;
+        dp.Offset = offset ?? new Vector3(0, 0, 0);
+        accessory.Method.SendDraw(drawmode, DrawTypeEnum.Donut, dp);
+    }
+
+    public static void DrawDountObject(ScriptAccessory accessory, ulong? ob, Vector2 scale, Vector2 innerscale, int duration, string name, Vector4? color = null, bool scaleByTime = true, int delay = 0, DrawModeEnum drawmode = DrawModeEnum.Default)
+    {
+        if (ob == null) return;
+        var dp = accessory.Data.GetDefaultDrawProperties();
+        dp.Name = name;
+        dp.Color = color ?? accessory.Data.DefaultDangerColor;
+        dp.Owner = ob.Value;
+        dp.Radian = 2 * float.Pi;
+        dp.Scale = scale;
+        dp.InnerScale = innerscale;
+        dp.Delay = delay;
+        dp.DestoryAt = duration;
+        if (scaleByTime) dp.ScaleMode = ScaleMode.ByTime;
+        accessory.Method.SendDraw(drawmode, DrawTypeEnum.Donut, dp);
+    }
 }
 
 
 #endregion 函数集
 
 #region 扩展方法
+public static class Extensions
+{
+    public static void TTS(this ScriptAccessory accessory, string text, bool isEdgeTTS)
+    {
+        if (isEdgeTTS)
+        {
+            accessory.Method.EdgeTTS(text);
+        }
+        else
+        {
+            accessory.Method.TTS(text);
+        }
+    }
+
+    public static void antiKnockBack(this MethodAccessory method, ScriptAccessory sa)
+    {
+        // 7559 沉稳咏唱
+        // 7548 亲疏自行
+        var myobj = sa.Data.MyObject;
+
+        if (IbcHelper.GetPlayerRole(sa, myobj) == "Tank" || IbcHelper.GetPlayerRole(sa, myobj) == "Melee DPS" || IbcHelper.GetPlayerRole(sa, myobj) == "Ranged Physical DPS")
+        {
+            method.UseAction(myobj.EntityId, 7548);
+        }
+
+        if (IbcHelper.GetPlayerRole(sa, myobj) == "Healer" || IbcHelper.GetPlayerRole(sa, myobj) == "Ranged Magical DPS")
+        {
+            method.UseAction(myobj.EntityId, 7559);
+        }
+    }
+}
+
 public static class ExtensionMethods
 {
     public static float Round(this float value, float precision) => MathF.Round(value / precision) * precision;
@@ -1216,138 +1875,6 @@ public unsafe static class ExtensionVisibleMethod
 }
 #endregion
 
-#region 石之家查询
-public static class RisingStonHelper
-{
-    private const string SearchAPI = "https://apiff14risingstones.web.sdo.com/api/common/search?type=6&keywords={0}&page={1}&limit=50";
-    private const string PlayerInfo = "https://ff14risingstones.web.sdo.com/pc/index.html#/me/info?uuid={0}";
-    private static readonly HttpClient httpClient = new HttpClient();
-
-    public static async Task SearchRisingStone(ScriptAccessory sa, IPlayerCharacter player)
-    {
-        if (player == null) return;
-
-        var playerName = player.Name.ToString();
-        var worldName = player.HomeWorld.Value.Name.ToString();
-
-        sa.Log.Debug($"正在查询石之家: {playerName}@{worldName}");
-
-        try
-        {
-            var page = 1;
-            var isFound = false;
-            const int delayBetweenRequests = 1000;
-
-            while (!isFound && page <= 10)
-            {
-                var url = string.Format(SearchAPI, playerName, page);
-                var response = await httpClient.GetStringAsync(url);
-                var result = JsonConvert.DeserializeObject<RSPlayerSearchResult>(response);
-
-                if (result?.data == null || result.data.Count == 0)
-                {
-                    sa.Log.Debug($"石之家: 未找到玩家 {playerName}");
-                    break;
-                }
-
-                foreach (var rsPlayer in result.data)
-                {
-                    if (rsPlayer.character_name == playerName && rsPlayer.group_name == worldName)
-                    {
-                        var uuid = rsPlayer.uuid;
-                        var profileUrl = string.Format(PlayerInfo, uuid);
-                        sa.Log.Debug($"找到石之家资料: {profileUrl}");
-
-                        Process.Start(new ProcessStartInfo
-                        {
-                            FileName = profileUrl,
-                            UseShellExecute = true
-                        });
-
-                        isFound = true;
-                        break;
-                    }
-                }
-
-                if (!isFound)
-                {
-                    await Task.Delay(delayBetweenRequests);
-                    page++;
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            sa.Log.Error($"查询石之家失败: {ex.Message}");
-        }
-    }
-
-    // JSON
-    public class RSPlayerSearchResult
-    {
-        public int status { get; set; }
-        public string message { get; set; } = "";
-        public List<RSPlayer> data { get; set; } = new();
-    }
-
-    public class RSPlayer
-    {
-        public string uuid { get; set; } = "";
-        public string character_name { get; set; } = "";
-        public string group_name { get; set; } = "";
-        public int level { get; set; }
-    }
-}
-#endregion
-
-#region FFLogs
-public static class FFLogsHelper
-{
-    private const string FFLogsUrl = "https://cn.fflogs.com/character/{0}/{1}/{2}";
-
-    public static void OpenFFLogs(ScriptAccessory sa, IPlayerCharacter player)
-    {
-        if (player == null) return;
-
-        try
-        {
-            var playerName = player.Name.ToString();
-            var worldName = player.HomeWorld.Value.Name.ToString();
-
-            var dataCenterRow = player.HomeWorld.Value.DataCenter.RowId;
-            var region = player.HomeWorld.Value.DataCenter.Value.Region.RowId;
-            var regionAbbr = RegionToFFLogsAbbr(region);
-
-            var url = string.Format(FFLogsUrl, regionAbbr, worldName, playerName);
-
-            sa.Log.Debug($"打开 FFLogs: {url} (Region: {region}, DC: {dataCenterRow})");
-
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = url,
-                UseShellExecute = true
-            });
-        }
-        catch (Exception ex)
-        {
-            sa.Log.Error($"打开 FFLogs 失败: {ex.Message}");
-        }
-    }
-
-    private static string RegionToFFLogsAbbr(uint region) =>
-        region switch
-        {
-            1 => "JP",
-            2 => "NA",
-            3 => "EU",
-            4 => "OC",
-            5 => "CN",
-            6 => "KR",
-            _ => "CN"
-        };
-}
-#endregion
-
 #region 脚本版本检查
 public static class ScriptVersionChecker
 {
@@ -1371,7 +1898,7 @@ public static class ScriptVersionChecker
     }
 
     /// <summary>
-    /// 版本比较结果
+    /// 版本
     /// </summary>
     public enum VersionCompareResult
     {
@@ -1403,7 +1930,6 @@ public static class ScriptVersionChecker
         {
             sa.Log.Debug($"开始检查脚本版本 (GUID: {guid}, 当前版本: {currentVersion})");
 
-            // 获取在线仓库数据
             var response = await _httpClient.GetStringAsync(OnlineRepoUrl);
             var onlineScripts = JsonConvert.DeserializeObject<List<OnlineScriptInfo>>(response);
 
@@ -1413,7 +1939,6 @@ public static class ScriptVersionChecker
                 return (VersionCompareResult.Error, null);
             }
 
-            // 查找匹配GUID的脚本
             var onlineScript = onlineScripts.FirstOrDefault(s =>
                 s.Guid.Equals(guid, StringComparison.OrdinalIgnoreCase));
 
@@ -1429,17 +1954,15 @@ public static class ScriptVersionChecker
 
             sa.Log.Debug($"找到在线脚本: {onlineScript.Name}, 在线版本: {onlineScript.Version}");
 
-            // 比较版本号
             var compareResult = CompareVersions(currentVersion, onlineScript.Version);
 
             if (compareResult < 0)
             {
-                // 有新版本
-                sa.Log.Debug($"发现新版本: {onlineScript.Version} (当前: {currentVersion})");
+                sa.Log.Debug($"发现新版本: {onlineScript.Version} 请及时更新 (当前: {currentVersion})");
                 if (showNotification)
                 {
                     sa.Method.TextInfo(
-                        $"发现新版本 {onlineScript.Version}\n当前版本: {currentVersion}",
+                        $"发现新版本 {onlineScript.Version} 请及时更新\n当前版本: {currentVersion}",
                         5000,
                         true);
                 }
@@ -1447,9 +1970,8 @@ public static class ScriptVersionChecker
             }
             else
             {
-                // 已是最新版本
                 sa.Log.Debug($"当前版本已是最新 (当前: {currentVersion}, 在线: {onlineScript.Version})");
-                // 版本已是最新时不显示通知
+
                 return (VersionCompareResult.UpToDate, onlineScript);
             }
         }
@@ -1474,7 +1996,7 @@ public static class ScriptVersionChecker
     }
 
     /// <summary>
-    /// 比较两个语义化版本号
+    /// 比较版本号
     /// </summary>
     /// <param name="version1">版本1 (例如: "0.0.0.3")</param>
     /// <param name="version2">版本2 (例如: "0.0.0.5")</param>

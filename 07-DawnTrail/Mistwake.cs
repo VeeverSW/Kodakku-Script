@@ -32,6 +32,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using System.Xml.Linq;
+using static KodakkuAssist.Script.ScriptAccessory;
 using KodaMarkType = KodakkuAssist.Module.GameOperate.MarkType;
 
 namespace Veever.DawnTrail.Mistwake;
@@ -46,7 +47,7 @@ public class Mistwake
 {
     const string NoteStr =
     """
-    v0.0.0.1
+    v0.0.0.2
     ----- 请在使用前阅读注意事项 以及根据情况修改用户设置 -----
     ----- 请支持南雲鉄虎喵！ 谢谢喵！ -----
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
@@ -62,14 +63,16 @@ public class Mistwake
 
     const string UpdateStr =
     """
-    v0.0.0.1
+    v0.0.0.2
+    修复防击退逻辑
     鸭门
     ----------------------------------
+    Fix anti-knockback logic.
     Duckmen.
     """;
 
     private const string Name = "LV.100 遗忘行路雾之迹 [Mistwake]";
-    private const string Version = "0.0.0.1";
+    private const string Version = "0.0.0.2";
     private const string DebugVersion = "a";
 
     private const bool Debugging = false;
@@ -646,8 +649,8 @@ public class Mistwake
         _Boss3FulgurousFallGuid = sa.Method.RegistFrameworkUpdateAction(Boss3FulgurousFallFrameworkAction);
 
         await Task.Delay(1500);
-        if (useAntiKnockBack) sa.Method.UseAction(sa.Data.Me, 7559);
-        if (useAntiKnockBack) sa.Method.UseAction(sa.Data.Me, 7548);
+
+        if (useAntiKnockBack) sa.Method.antiKnockBack(sa);
     }
     
     
@@ -738,17 +741,25 @@ public static class IbcHelper
 
     /// <summary>
     /// 获取玩家的职能
-    /// Return: "Tank"(坦克) / "Healer"(治疗) / "Melee DPS"(近战) / "Ranged DPS"(远程) / "Unknown" / "None"
+    /// Return: "Tank"(坦克) / "Healer"(治疗) / "Melee DPS"(近战物理) / "Ranged Physical DPS"(远程物理) / "Ranged Magical DPS"(远程魔法) / "Unknown" / "None"
+    /// 大版本更新需要维护
     /// </summary>
     public static string GetPlayerRole(this ScriptAccessory sa, IPlayerCharacter? playerObject)
     {
         if (playerObject == null) return "None";
-        return playerObject.ClassJob.Value.Role switch
+
+        return playerObject.ClassJob.RowId switch
         {
-            1 => "Tank",        // 坦克
-            4 => "Healer",      // 治疗
-            2 => "Melee DPS",   // 近战DPS
-            3 => "Ranged DPS",  // 远程DPS
+            // Tank: 骑士、战士、暗黑骑士、绝枪战士
+            19 or 21 or 32 or 37 => "Tank",
+            // Healer: 白魔法师、学者、占星术士、贤者
+            24 or 28 or 33 or 40 => "Healer",
+            // Melee DPS: 武僧、龙骑士、忍者、武士、钐镰客、蝰蛇剑士
+            20 or 22 or 30 or 34 or 39 or 41 => "Melee DPS",
+            // Ranged Physical DPS: 吟游诗人、机工士、舞者
+            23 or 31 or 38 => "Ranged Physical DPS",
+            // Ranged Magical DPS: 黑魔法师、召唤师、赤魔法师、青魔法师、绘灵法师
+            25 or 27 or 35 or 36 or 42 => "Ranged Magical DPS",
             _ => "Unknown"
         };
     }
@@ -1971,7 +1982,7 @@ public static class DrawHelper
         dp.ScaleMode = scalemode;
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Rect, dp);
     }
-    
+
     public static void DrawRectObjectTargetPos(ScriptAccessory accessory, ulong owner, Vector3 targetPos, Vector2 scale, int duration, string name,
                                                 Vector4? color = null, int delay = 0, ScaleMode scalemode = ScaleMode.None)
     {
@@ -2052,7 +2063,7 @@ public static class DrawHelper
         if (scaleByTime) dp.ScaleMode = ScaleMode.ByTime;
         accessory.Method.SendDraw(drawmode, DrawTypeEnum.Fan, dp);
     }
-    
+
     public static void DrawFanPos(ScriptAccessory accessory, Vector3 position, Vector3 targetPosition, float rotation,
         Vector2 scale, float angle, int duration, string name, Vector4? color = null,
         int delay = 0, bool scaleByTime = true, bool fix = false, Vector3? offset = null, DrawModeEnum drawmode = DrawModeEnum.Default)
@@ -2127,7 +2138,7 @@ public static class DrawHelper
         if (scaleByTime) dp.ScaleMode = ScaleMode.ByTime;
         accessory.Method.SendDraw(drawmode, DrawTypeEnum.Donut, dp);
     }
-    
+
     public static void DrawDountPos(ScriptAccessory accessory, Vector3 position, Vector3 targetPosition, float rotation, Vector2 scale, float radian, Vector2 innerscale,
         int duration, string name, Vector4? color = null, bool scaleByTime = true, int delay = 0, Vector3? offset = null, DrawModeEnum drawmode = DrawModeEnum.Default)
     {
@@ -2146,7 +2157,7 @@ public static class DrawHelper
         dp.Offset = offset ?? new Vector3(0, 0, 0);
         accessory.Method.SendDraw(drawmode, DrawTypeEnum.Donut, dp);
     }
-    
+
     public static void DrawDountObjectPos(ScriptAccessory accessory, ulong obj, Vector3 targetPosition, float rotation, Vector2 scale, float radian, Vector2 innerscale,
         int duration, string name, Vector4? color = null, bool scaleByTime = true, int delay = 0, Vector3? offset = null, DrawModeEnum drawmode = DrawModeEnum.Default)
     {
@@ -2198,6 +2209,23 @@ public static class Extensions
         else
         {
             accessory.Method.TTS(text);
+        }
+    }
+
+    public static void antiKnockBack(this MethodAccessory method, ScriptAccessory sa)
+    {
+        // 7559 沉稳咏唱
+        // 7548 亲疏自行
+        var myobj = sa.Data.MyObject;
+
+        if (IbcHelper.GetPlayerRole(sa, myobj) == "Tank" || IbcHelper.GetPlayerRole(sa, myobj) == "Melee DPS" || IbcHelper.GetPlayerRole(sa, myobj) == "Ranged Physical DPS")
+        {
+            method.UseAction(myobj.EntityId, 7548);
+        }
+
+        if (IbcHelper.GetPlayerRole(sa, myobj) == "Healer" || IbcHelper.GetPlayerRole(sa, myobj) == "Ranged Magical DPS")
+        {
+            method.UseAction(myobj.EntityId, 7559);
         }
     }
 }
