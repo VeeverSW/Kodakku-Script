@@ -46,8 +46,8 @@ namespace Veever.DawnTrail.Mistwake;
 public class Mistwake
 {
     const string NoteStr =
-    """
-    v0.0.0.2
+    $"""
+    v{Version}
     ----- 请在使用前阅读注意事项 以及根据情况修改用户设置 -----
     ----- 请支持南雲鉄虎喵！ 谢谢喵！ -----
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
@@ -62,17 +62,17 @@ public class Mistwake
     """;
 
     const string UpdateStr =
-    """
-    v0.0.0.2
-    修复防击退逻辑
+    $"""
+    v{Version}
+    删除了更新提醒的网络报错提示，为版本更新提示加上了脚本名字和作者名字
     鸭门
     ----------------------------------
-    Fix anti-knockback logic.
+    Deleted the network error message for update checking, added script name and author to update notification.
     Duckmen.
     """;
 
     private const string Name = "LV.100 遗忘行路雾之迹 [Mistwake]";
-    private const string Version = "0.0.0.2";
+    private const string Version = "0.0.0.4";
     private const string DebugVersion = "a";
 
     private const bool Debugging = false;
@@ -2385,25 +2385,25 @@ public static class ScriptVersionChecker
 
             if (onlineScript == null)
             {
-                sa.Log.Debug($"在线仓库中未找到 GUID 为 {guid} 的脚本");
-                if (showNotification)
-                {
-                    sa.Method.TextInfo("该脚本未在在线仓库中注册", 3000);
-                }
+                //sa.Log.Debug($"在线仓库中未找到 GUID 为 {guid} 的脚本");
+                //if (showNotification)
+                //{
+                //    sa.Method.TextInfo("该脚本未在在线仓库中注册", 3000);
+                //}
                 return (VersionCompareResult.NotFound, null);
             }
 
-            sa.Log.Debug($"找到在线脚本: {onlineScript.Name}, 在线版本: {onlineScript.Version}");
+            sa.Log.Debug($"{onlineScript.Name} by {onlineScript.Author}: 找到在线脚本: {onlineScript.Name}, 在线版本: {onlineScript.Version}");
 
             var compareResult = CompareVersions(currentVersion, onlineScript.Version);
 
             if (compareResult < 0)
             {
-                sa.Log.Debug($"发现新版本: {onlineScript.Version} 请及时更新 (当前: {currentVersion})");
+                sa.Log.Debug($"{onlineScript.Name} by {onlineScript.Author}: 发现新版本: {onlineScript.Version} 请及时更新 (当前: {currentVersion})");
                 if (showNotification)
                 {
                     sa.Method.TextInfo(
-                        $"发现新版本 {onlineScript.Version} 请及时更新\n当前版本: {currentVersion}",
+                        $"{onlineScript.Name} by {onlineScript.Author}: 发现新版本: {onlineScript.Version} 请及时更新\n当前版本: {currentVersion}",
                         5000,
                         true);
                 }
@@ -2411,27 +2411,27 @@ public static class ScriptVersionChecker
             }
             else
             {
-                sa.Log.Debug($"当前版本已是最新 (当前: {currentVersion}, 在线: {onlineScript.Version})");
+                sa.Log.Debug($"{onlineScript.Name} by {onlineScript.Author}: 当前版本已是最新 (当前: {currentVersion}, 在线: {onlineScript.Version})");
 
                 return (VersionCompareResult.UpToDate, onlineScript);
             }
         }
         catch (HttpRequestException ex)
         {
-            sa.Log.Error($"网络请求失败: {ex.Message}");
-            if (showNotification)
-            {
-                sa.Method.TextInfo("版本检查失败: 网络错误", 3000, true);
-            }
+            //sa.Log.Error($"网络请求失败: {ex.Message}");
+            //if (showNotification)
+            //{
+            //    sa.Method.TextInfo("版本检查失败: 网络错误", 3000, true);
+            //}
             return (VersionCompareResult.Error, null);
         }
         catch (Exception ex)
         {
-            sa.Log.Error($"版本检查失败: {ex.Message}");
-            if (showNotification)
-            {
-                sa.Method.TextInfo("版本检查失败", 3000, true);
-            }
+            //sa.Log.Error($"版本检查失败: {ex.Message}");
+            //if (showNotification)
+            //{
+            //    sa.Method.TextInfo("版本检查失败", 3000, true);
+            //}
             return (VersionCompareResult.Error, null);
         }
     }

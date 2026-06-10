@@ -65,8 +65,8 @@ namespace Veever.Other.VVToolKit;
 public class VVToolKit
 {
     const string NoteStr =
-    """ 
-    v0.0.3.0
+    $"""
+    v{Version}
     ---------------------------------------------------------
     此工具箱已修改为dev辅助性工具，删除了之前的大部分功能，如无需要请删除
     1. /e vvguid 自动生成新的guid并复制到剪切板
@@ -75,13 +75,17 @@ public class VVToolKit
     """;
 
     const string UpdateInfo =
-    """
-        v0.0.3.0
-        重构vvToolKit, 日后作为dev辅助性工具使用
+    $"""
+    v{Version}
+    删除了更新提醒的网络报错提示，为版本更新提示加上了脚本名字和作者名字
+    鸭门
+    ----------------------------------
+    Deleted the network error message for update checking, added script name and author to update notification.
+    Duckmen.
     """;
 
     private const string Name = "vv工具箱";
-    private const string Version = "0.0.3.0";
+    private const string Version = "0.0.3.1";
     private const string DebugVersion = "a";
 
     private const bool Debugging = true;
@@ -234,7 +238,7 @@ public class VVToolKit
 
         // lockon
         // 72   分摊
-
+        sa.Log.Debug($"{sa.Method.hitboxRadius(sa.Data.MyObject)}");
     }
 
 }
@@ -1787,6 +1791,10 @@ public static class Extensions
             method.UseAction(myobj.EntityId, 7559);
         }
     }
+    public static float hitboxRadius(this MethodAccessory method, IPlayerCharacter obj)
+    {
+        return obj.HitboxRadius;
+    }
 }
 
 public static class ExtensionMethods
@@ -1944,25 +1952,25 @@ public static class ScriptVersionChecker
 
             if (onlineScript == null)
             {
-                sa.Log.Debug($"在线仓库中未找到 GUID 为 {guid} 的脚本");
-                if (showNotification)
-                {
-                    sa.Method.TextInfo("该脚本未在在线仓库中注册", 3000);
-                }
+                //sa.Log.Debug($"在线仓库中未找到 GUID 为 {guid} 的脚本");
+                //if (showNotification)
+                //{
+                //    sa.Method.TextInfo("该脚本未在在线仓库中注册", 3000);
+                //}
                 return (VersionCompareResult.NotFound, null);
             }
 
-            sa.Log.Debug($"找到在线脚本: {onlineScript.Name}, 在线版本: {onlineScript.Version}");
+            sa.Log.Debug($"{onlineScript.Name} by {onlineScript.Author}: 找到在线脚本: {onlineScript.Name}, 在线版本: {onlineScript.Version}");
 
             var compareResult = CompareVersions(currentVersion, onlineScript.Version);
 
             if (compareResult < 0)
             {
-                sa.Log.Debug($"发现新版本: {onlineScript.Version} 请及时更新 (当前: {currentVersion})");
+                sa.Log.Debug($"{onlineScript.Name} by {onlineScript.Author}: 发现新版本: {onlineScript.Version} 请及时更新 (当前: {currentVersion})");
                 if (showNotification)
                 {
                     sa.Method.TextInfo(
-                        $"发现新版本 {onlineScript.Version} 请及时更新\n当前版本: {currentVersion}",
+                        $"{onlineScript.Name} by {onlineScript.Author}: 发现新版本: {onlineScript.Version} 请及时更新\n当前版本: {currentVersion}",
                         5000,
                         true);
                 }
@@ -1970,27 +1978,27 @@ public static class ScriptVersionChecker
             }
             else
             {
-                sa.Log.Debug($"当前版本已是最新 (当前: {currentVersion}, 在线: {onlineScript.Version})");
+                sa.Log.Debug($"{onlineScript.Name} by {onlineScript.Author}: 当前版本已是最新 (当前: {currentVersion}, 在线: {onlineScript.Version})");
 
                 return (VersionCompareResult.UpToDate, onlineScript);
             }
         }
         catch (HttpRequestException ex)
         {
-            sa.Log.Error($"网络请求失败: {ex.Message}");
-            if (showNotification)
-            {
-                sa.Method.TextInfo("版本检查失败: 网络错误", 3000, true);
-            }
+            //sa.Log.Error($"网络请求失败: {ex.Message}");
+            //if (showNotification)
+            //{
+            //    sa.Method.TextInfo("版本检查失败: 网络错误", 3000, true);
+            //}
             return (VersionCompareResult.Error, null);
         }
         catch (Exception ex)
         {
-            sa.Log.Error($"版本检查失败: {ex.Message}");
-            if (showNotification)
-            {
-                sa.Method.TextInfo("版本检查失败", 3000, true);
-            }
+            //sa.Log.Error($"版本检查失败: {ex.Message}");
+            //if (showNotification)
+            //{
+            //    sa.Method.TextInfo("版本检查失败", 3000, true);
+            //}
             return (VersionCompareResult.Error, null);
         }
     }
