@@ -83,7 +83,7 @@ public class TheWindwardWildsExtreme
 
     const string UpdateStr =
     $"""
-    v{ Version }
+    v{Version}
     修复了TTS
     鸭门
     ----------------------------------

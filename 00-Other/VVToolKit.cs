@@ -16,6 +16,7 @@ using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using FFXIVClientStructs.FFXIV.Common.Lua;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using InteropGenerator.Runtime.Attributes;
+using System.Management;
 using KodakkuAssist.Data;
 using KodakkuAssist.Extensions;
 using KodakkuAssist.Module.Draw;
@@ -220,12 +221,16 @@ public class VVToolKit
 
 
 
-        // scale: new Vector3(enlarge by X, height, enlarge by Z)
-        //var mypos = sa.Data.MyObject.Position;
-        //mypos.Y += 10;
-        //mypos.Z += 5;
-        //sa.Log.Debug($"玩家位置: {mypos}");
-        //sa.Method.VfxMethod.CreateOmen(239, new Vector3(2,3,2), mypos, 0);
+        //scale: new Vector3(enlarge by X, height, enlarge by Z)
+        var mypos = sa.Data.MyObject.Position;
+        mypos.Y += 10;
+        mypos.Z += 5;
+        sa.Log.Debug($"玩家位置: {mypos}");
+        sa.Method.VfxMethod.CreateOmen(335, new Vector3(2, 3, 2), mypos, 0);
+        //sa.Method.RunOnMainThreadAsync(() =>
+        //{
+        //    sa.Method.VfxMethod.SetVfxSpeed();
+        //});
         // Omen
         // 27    核爆         390-391
         // 65-90-120    踩塔     带特效： 239-  638（start multi）
@@ -238,7 +243,7 @@ public class VVToolKit
 
         // lockon
         // 72   分摊
-        sa.Log.Debug($"{sa.Method.hitboxRadius(sa.Data.MyObject)}");
+        //sa.Log.Debug($"{sa.Method.hitboxRadius(sa.Data.MyObject)}");
     }
 
 }
@@ -1763,18 +1768,6 @@ public static class DrawHelper
 #region 扩展方法
 public static class Extensions
 {
-    public static void TTS(this ScriptAccessory accessory, string text, bool isEdgeTTS)
-    {
-        if (isEdgeTTS)
-        {
-            accessory.Method.EdgeTTS(text);
-        }
-        else
-        {
-            accessory.Method.TTS(text);
-        }
-    }
-
     public static void antiKnockBack(this MethodAccessory method, ScriptAccessory sa)
     {
         // 7559 沉稳咏唱

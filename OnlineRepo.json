@@ -345,7 +345,7 @@
     "Author": "Veever",
     "Repo": "https://github.com/VeeverSW/Kodakku-Script",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/00-Other/VVToolKit.cs",
-    "Note": "v0.0.3.1\r\n---------------------------------------------------------\r\n此工具箱已修改为dev辅助性工具，删除了之前的大部分功能，如无需要请删除\r\n1. /e vvguid 自动生成新的guid并复制到剪切板\r\n2. /e vvlist 列出附近最多10个玩家\r\n鸭门",
+    "Note": "v0.0.3.1\r\n---------------------------------------------------------\r\n此工具箱已修改为dev辅助性工具，删除了之前的大部分功能，如无需要请删除\r\n1. /e vvguid 自动生成新的guid并复制到剪切板\r\n2. /e vvlist 列出附近最多10个玩家\r\n3. /e vvspec 打印本机硬件配置（CPU/内存/显卡/显存）\r\n鸭门",
     "UpdateInfo": "v0.0.3.1\r\n删除了更新提醒的网络报错提示，为版本更新提示加上了脚本名字和作者名字\r\n鸭门\r\n----------------------------------\r\nDeleted the network error message for update checking, added script name and author to update notification.\r\nDuckmen.",
     "TerritoryIds": []
   },
