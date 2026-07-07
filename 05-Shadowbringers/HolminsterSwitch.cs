@@ -10,14 +10,14 @@ using System.Reflection.Metadata;
 namespace Veever.Shadowbringers.HolminsterSwitch;
 
 [ScriptType(name: "LV.71 遇袭集落水滩村", territorys: [837], guid: "a407d364-b2bd-4e12-9332-70ca3829ece7",
-    version:"0.0.0.9", author: "Veever", note: noteStr)]
+    version:"0.0.1.0", author: "Veever", note: noteStr)]
 
 public class HolminsterSwitch
 {
     const string noteStr =
     """
-    v0.0.0.9:
-    1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
+    v0.0.1.0:
+    1. 现在支持文字横幅/TTS开关
     2. 以前的这几个脚本的底层扩展目前懒得重构（就能加啥随便加了）
     鸭门。
     """;
@@ -25,8 +25,6 @@ public class HolminsterSwitch
     public bool isText { get; set; } = true;
     [UserSetting("TTS开关")]
     public bool isTTS { get; set; } = false;
-    [UserSetting("DR TTS开关")]
-    public bool isDRTTS { get; set; } = true;
 
     public void Init(ScriptAccessory accessory)
     {
@@ -56,7 +54,6 @@ public class HolminsterSwitch
     {
         if (isText) accessory.Method.TextInfo("AOE", duration: 4000, true);
         if (isTTS) accessory.Method.TTS("AOE");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts AOE");
     }
 
     [ScriptMethod(name: "Boss1钢铁", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:15816"])]
@@ -75,7 +72,6 @@ public class HolminsterSwitch
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
 
         if (isTTS) accessory.Method.TTS("钢铁，远离Boss");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts 钢铁，远离Boss");
     }
 
     [ScriptMethod(name: "Boss1螺旋突刺", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:15814"])]
@@ -99,7 +95,6 @@ public class HolminsterSwitch
     {
         if (isText) accessory.Method.TextInfo("死刑准备", duration: 4000, true);
         if (isTTS) accessory.Method.TTS("死刑准备");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts 死刑准备");
     }
 
 
@@ -114,7 +109,6 @@ public class HolminsterSwitch
     {
         if (isText) accessory.Method.TextInfo("死刑准备", duration: 4000, true);
         if (isTTS) accessory.Method.TTS("死刑准备");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts 死刑准备");
     }
 
 
@@ -123,7 +117,6 @@ public class HolminsterSwitch
     {
         if (isText) accessory.Method.TextInfo("AOE", duration: 4000, true);
         if (isTTS) accessory.Method.TTS("AOE");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts AOE");
     }
 
     [ScriptMethod(name: "Boss2麻将点名", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:15829"])]
@@ -148,7 +141,6 @@ public class HolminsterSwitch
 
         if (isText) accessory.Method.TextInfo("分散，不要重叠", duration: 8000, true);
         if (isTTS) accessory.Method.TTS("分散，不要重叠");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts 分散，不要重叠");
 
     }
 
@@ -170,7 +162,6 @@ public class HolminsterSwitch
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
 
         if (isTTS) accessory.Method.TTS($"躲避圆圈并与 {tname} 分摊");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts 躲避圆圈并与 {tname} 分摊");
     }
 
     #endregion
@@ -181,7 +172,6 @@ public class HolminsterSwitch
     {
         if (isText) accessory.Method.TextInfo("死刑准备", duration: 4000, true);
         if (isTTS) accessory.Method.TTS("死刑准备");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts 死刑准备");
     }
 
     [ScriptMethod(name: "Boss3AOE", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:15832"])]
@@ -190,7 +180,6 @@ public class HolminsterSwitch
         if (isText) accessory.Method.TextInfo("AOE", duration: 4000, true);
 
         if (isTTS) accessory.Method.TTS("AOE");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts AOE");
     }
 
     [ScriptMethod(name: "Boss3钟摆", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:16777"])]
@@ -198,7 +187,6 @@ public class HolminsterSwitch
     {
         if (isText) accessory.Method.TextInfo("远离坦克和场中", duration: 4000, true);
         if (isTTS) accessory.Method.TTS("远离坦克和场中");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts 远离坦克和场中");
         var midPoint = new Vector3(134, 23, -465);
 
         var dp = accessory.Data.GetDefaultDrawProperties();
@@ -232,7 +220,6 @@ public class HolminsterSwitch
 
         if (isText) accessory.Method.TextInfo("攻击锁链", duration: 4000, true);
         if (isTTS) accessory.Method.TTS("攻击锁链");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts 攻击锁链");
     }
 
     [ScriptMethod(name: "Boss3鞭打", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(1584[67])$"])]
@@ -256,7 +243,6 @@ public class HolminsterSwitch
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Fan, dp);
         if (isText) accessory.Method.TextInfo($"去Boss{(isR ? "左" : "右")}面", duration: 4000, true);
         if (isTTS) accessory.Method.TTS($"去Boss{(isR ? "左" : "右")}面");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts 去Boss{(isR ? "左" : "右")}面");
     }
 
     [ScriptMethod(name: "Boss3分摊", eventType: EventTypeEnum.ActionEffect, eventCondition: ["ActionId:15844"])]
@@ -279,7 +265,6 @@ public class HolminsterSwitch
         accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Rect, dp);
 
         if (isTTS) accessory.Method.TTS($"与 {tname} 分摊");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts 与 {tname} 分摊");
     }
 
 
@@ -288,7 +273,6 @@ public class HolminsterSwitch
     {
         if (isText) accessory.Method.TextInfo("跟随身后扇形躲避", duration: 4000, true);
         if (isTTS) accessory.Method.TTS("跟随身后扇形躲避");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts 跟随身后扇形躲避");
         //var dp = accessory.Data.GetDefaultDrawProperties();
         //if (!ParseObjectId(@event["SourceId"], out var sid)) return;
         //var efp = JsonConvert.DeserializeObject<Vector3>(@event["EffectPosition"]);

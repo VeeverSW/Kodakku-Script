@@ -26,13 +26,13 @@ namespace Veever.Shadowbringers.Edens_Verse_Iconoclasm;
 //^(?!.*((武僧|机工士|龙骑士|学者|舞者|蝰蛇剑士|暗黑骑士|(朝日|夕月)小仙女|炽天使|白魔法师|战士|骑士|召唤师|宝石兽|亚灵神巴哈姆特|亚灵神不死鸟|迦楼罗之灵|泰坦之灵|伊弗利特之灵|后式自走人偶)\] (Used|Cast|Cancel|Add))).*$
 
 [ScriptType(name: "LV.80 伊甸希望乐园 共鸣之章3", territorys: [904], guid: "7732767d-bfb3-4c96-9719-962ba10cec08",
-    version: "0.0.0.1", author: "Veever", note: noteStr)]
+    version: "0.0.0.2", author: "Veever", note: noteStr)]
 
 public class Edens_Verse_Iconoclasm
 {
     const string noteStr =
     """
-    v0.0.0.1:
+    v0.0.0.2:
     1. 此脚本只用了一个arr回放进行测试，如果出现错画的问题，请dc@我并提供arr回放
     鸭门。
     """;
@@ -42,9 +42,6 @@ public class Edens_Verse_Iconoclasm
 
     [UserSetting("TTS开关")]
     public bool isTTS { get; set; } = false;
-
-    [UserSetting("DR TTS开关")]
-    public bool isDRTTS { get; set; } = true;
 
     [UserSetting("Debug开关, 非开发用请关闭")]
     public bool isDebug { get; set; } = false;
@@ -121,11 +118,9 @@ public class Edens_Verse_Iconoclasm
         if (@event.ActionId() == 19538) 
         {
             if (isText) accessory.Method.TextInfo("AOE", duration: 3500, true);
-            accessory.TTS("AOE", isTTS, isDRTTS);
         } else
         {
             if (isText) accessory.Method.TextInfo("大AOE", duration: 3500, true);
-            accessory.TTS("大AOE", isTTS, isDRTTS);
         }
 
     }
@@ -136,11 +131,9 @@ public class Edens_Verse_Iconoclasm
         if (@event.TargetId() == accessory.Data.Me)
         {
             if (isText) accessory.Method.TextInfo($"引导激光至场外", duration: 4500, true);
-            accessory.TTS("引导激光至场外", isTTS, isDRTTS);
         } else
         {
             if (isText) accessory.Method.TextInfo($"远离连线点名", duration: 4500, true);
-            accessory.TTS("远离连线点名", isTTS, isDRTTS);
         }
 
         var dp = accessory.Data.GetDefaultDrawProperties();
@@ -229,7 +222,6 @@ public class Edens_Verse_Iconoclasm
                 if (LightsCourseCount == 11)
                 {
                     accessory.Method.TextInfo("优先躲避红色", duration: 4700, true);
-                    accessory.TTS("优先躲避红色", isTTS, isDRTTS);
                 }
                 if (@event["ActionId"] == "19518") 
                 {
@@ -483,7 +475,7 @@ public class Edens_Verse_Iconoclasm
         if (StackCount == 0) 
         {
             accessory.Method.TextInfo("分组分摊", duration: 4700, true);
-            accessory.TTS("分组分摊", isTTS, isDRTTS);
+            accessory.Method.TTS("分组分摊");
         }
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = "Stack";
@@ -718,22 +710,6 @@ public static class EventExtensions
     public static string Operate(this Event @event)
     {
         return @event["Operate"];
-    }
-}
-
-
-public static class Extensions
-{
-    public static void TTS(this ScriptAccessory accessory, string text, bool isTTS, bool isDRTTS)
-    {
-        if (isDRTTS)
-        {
-            accessory.Method.SendChat($"/pdr tts {text}");
-        }
-        else if (isTTS)
-        {
-            accessory.Method.TTS(text);
-        }
     }
 }
 

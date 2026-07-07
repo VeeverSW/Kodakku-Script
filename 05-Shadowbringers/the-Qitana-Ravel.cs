@@ -26,13 +26,13 @@ using static Lumina.Data.Parsing.Layer.LayerCommon;
 namespace Veever.Shadowbringers.the_Qitana_Ravel;
 
 [ScriptType(name: "LV.75 文明古迹奇坦那神影洞", territorys: [823], guid: "50c922c1-1ecd-4750-8b55-24f19793408f",
-    version: "0.0.0.2", author: "Veever", note: noteStr)]
+    version: "0.0.0.3", author: "Veever", note: noteStr)]
 
 public class the_Qitana_Ravel
 {
     const string noteStr =
     """
-    v0.0.0.2:
+    v0.0.0.3:
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     2. 只用了单回放进行测试，不能保证绘图完全准确
     鸭门。
@@ -219,7 +219,7 @@ public class the_Qitana_Ravel
     public void RonkanAbyss(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("注意远离", duration: 2700, true);
-        if (isTTS) accessory.Method.EdgeTTS("注意远离");
+        if (isTTS) accessory.Method.TTS("注意远离");
         DrawHelper.DrawCircle(accessory, @event.EffectPosition(), new Vector2(6f), 2700, $"RonkanAbyss-{@event.SourceId()}", accessory.Data.DefaultDangerColor);
     }
 
@@ -286,14 +286,14 @@ public class the_Qitana_Ravel
     public void Stonefist(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("死刑点名", duration: 3700, true);
-        if (isTTS) accessory.Method.EdgeTTS("死刑点名");
+        if (isTTS) accessory.Method.TTS("死刑点名");
     }
 
     [ScriptMethod(name: "投射石块", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:15498"])]
     public void SunToss(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("注意远离", duration: 3700, true);
-        if (isTTS) accessory.Method.EdgeTTS("注意远离");
+        if (isTTS) accessory.Method.TTS("注意远离");
         DrawHelper.DrawCircle(accessory, @event.EffectPosition(), new Vector2(5f), 2700, $"SunToss-{@event.SourceId()}", accessory.Data.DefaultDangerColor);
     }
 
@@ -301,7 +301,7 @@ public class the_Qitana_Ravel
     public void AOENotify(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("AOE", duration: 2700, true);
-        if (isTTS) accessory.Method.EdgeTTS("AOE");
+        if (isTTS) accessory.Method.TTS("AOE");
     }
 
 
@@ -359,7 +359,7 @@ public class the_Qitana_Ravel
     public void RipperFang(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("死刑点名", duration: 3700, true);
-        if (isTTS) accessory.Method.EdgeTTS("死刑点名");
+        if (isTTS) accessory.Method.TTS("死刑点名");
     }
 
 
@@ -369,11 +369,11 @@ public class the_Qitana_Ravel
         if (@event.ActionId() == 15507)
         {
             if (isText) accessory.Method.TextInfo("多段AOE", duration: 2700, true);
-            if (isTTS) accessory.Method.EdgeTTS("多段AOE");
+            if (isTTS) accessory.Method.TTS("多段AOE");
         } else
         {
             if (isText) accessory.Method.TextInfo("AOE", duration: 2700, true);
-            if (isTTS) accessory.Method.EdgeTTS("AOE");
+            if (isTTS) accessory.Method.TTS("AOE");
         }
         await Task.Delay(3000);
         accessory.Method.RemoveDraw($"BurningBeam-.*");
@@ -417,21 +417,21 @@ public class the_Qitana_Ravel
     public void Rend(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("死刑点名", duration: 3700, true);
-        if (isTTS) accessory.Method.EdgeTTS("死刑点名");
+        if (isTTS) accessory.Method.TTS("死刑点名");
     }
 
     [ScriptMethod(name: "蓄力冲撞提示", eventType: EventTypeEnum.Tether, eventCondition: ["Id:0039"])]
     public void HoundoutofHeaven(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("远离Boss，拉长连线至紫色", duration: 4700, true);
-        if (isTTS) accessory.Method.EdgeTTS("远离Boss，拉长连线至紫色");
+        if (isTTS) accessory.Method.TTS("远离Boss，拉长连线至紫色");
     }
 
     [ScriptMethod(name: "AOE预警", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:15515"])]
     public void AOENotifyBoss3(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("AOE", duration: 2700, true);
-        if (isTTS) accessory.Method.EdgeTTS("AOE");
+        if (isTTS) accessory.Method.TTS("AOE");
     }
 
     [ScriptMethod(name: "吸引", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:17168"])]
@@ -455,7 +455,7 @@ public class the_Qitana_Ravel
         accessory.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Displacement, dp);
 
         if (isText) accessory.Method.TextInfo("躲避毒圈击退", duration: 4700, true);
-        if (isTTS) accessory.Method.EdgeTTS("躲避毒圈击退");
+        if (isTTS) accessory.Method.TTS("躲避毒圈击退");
     }
 
     [ScriptMethod(name: "信仰宣言中间", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:15522"])]
@@ -485,7 +485,7 @@ public class the_Qitana_Ravel
     public void ConfessionofFaithMarkStack(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("中间分摊", duration: 4700, true);
-        if (isTTS) accessory.Method.EdgeTTS("中间分摊");
+        if (isTTS) accessory.Method.TTS("中间分摊");
         DrawHelper.DrawCircleObject(accessory, @event.TargetId(), new Vector2(5f), 5500, $"信仰宣言分摊", accessory.Data.DefaultSafeColor);
     }
 

@@ -11,14 +11,14 @@ using System.Reflection.Metadata;
 namespace Veever.Shadowbringers.DohnMheg;
 
 [ScriptType(name: "LV.73 水妖幻园多恩美格禁园", territorys: [821], guid: "d8fbc4be-b2c3-43a5-93f7-2901b40d0921",
-    version: "0.0.0.7", author: "Veever", note: noteStr)]
+    version: "0.0.0.8", author: "Veever", note: noteStr)]
 
 public class DohnMheg
 {
     const string noteStr =
     """
-    v0.0.0.7:
-    1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
+    v0.0.0.8:
+    1. 现在支持文字横幅/TTS开关
     2. 以前的这几个脚本的底层扩展目前懒得重构（就能加啥随便加了）
     鸭门。
     """;
@@ -26,8 +26,6 @@ public class DohnMheg
     public bool isText { get; set; } = true;
     [UserSetting("TTS开关")]
     public bool isTTS { get; set; } = false;
-    [UserSetting("DR TTS开关")]
-    public bool isDRTTS { get; set; } = true;
 
     public void Init(ScriptAccessory accessory)
     {
@@ -40,7 +38,6 @@ public class DohnMheg
     {
         if (isText) accessory.Method.TextInfo("打断禁园水妖", duration: 5000, true);
         if (isTTS) accessory.Method.TTS("打断禁园水妖");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts 打断禁园水妖");
     }
 
 
@@ -61,7 +58,6 @@ public class DohnMheg
     {
         if (isText) accessory.Method.TextInfo("小死刑", duration: 2700, true);
         if (isTTS) accessory.Method.TTS("小死刑");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts 小死刑");
     }
 
     #endregion
@@ -74,7 +70,6 @@ public class DohnMheg
     {
         if (isText) accessory.Method.TextInfo("死刑准备", duration: 4000, true);
         if (isTTS) accessory.Method.TTS("死刑准备");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts 死刑准备");
     }
 
     [ScriptMethod(name: "Boss1AOE", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:15813"])]
@@ -82,7 +77,6 @@ public class DohnMheg
     {
         if (isText) accessory.Method.TextInfo("AOE", duration: 4000, true);
         if (isTTS) accessory.Method.TTS("AOE");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts AOE");
     }
 
 
@@ -120,7 +114,6 @@ public class DohnMheg
 
         if (isText) accessory.Method.TextInfo($"与{tname}分摊", duration: 4000, true);
         if (isTTS) accessory.Method.TTS($"与{tname}分摊");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts 与{tname}分摊");
     }
     #endregion
 
@@ -130,7 +123,6 @@ public class DohnMheg
     {
         if (isText) accessory.Method.TextInfo("AOE", duration: 4000, true);
         if (isTTS) accessory.Method.TTS("AOE");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts AOE");
     }
 
     [ScriptMethod(name: "Boss2召唤养分", eventType: EventTypeEnum.ActionEffect, eventCondition: ["ActionId:8897"])]
@@ -138,7 +130,6 @@ public class DohnMheg
     {
         if (isText) accessory.Method.TextInfo("接一根连在Boss上的线", duration: 8000, true);
         if (isTTS) accessory.Method.TTS("接一根连在Boss上的线");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts 接一根连在Boss上的线");
     }
 
     #endregion
@@ -149,7 +140,6 @@ public class DohnMheg
     {
         if (isText) accessory.Method.TextInfo("死刑准备", duration: 4000, true);
         if (isTTS) accessory.Method.TTS("死刑准备");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts 死刑准备");
     }
 
     [ScriptMethod(name: "Boss3AOE", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:13708"])]
@@ -157,7 +147,6 @@ public class DohnMheg
     {
         if (isText) accessory.Method.TextInfo("AOE", duration: 4700, true);
         if (isTTS) accessory.Method.TTS("AOE");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts AOE");
     }
 
     [ScriptMethod(name: "Boss3河童歌唱队", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:13552"])]
@@ -165,7 +154,6 @@ public class DohnMheg
     {
         if (isText) accessory.Method.TextInfo("背对Boss", duration: 3700, true);
         if (isTTS) accessory.Method.TTS("背对Boss");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts 背对Boss");
     }
 
     [ScriptMethod(name: "Boss3青蛙歌唱队", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:13551"])]
@@ -173,7 +161,6 @@ public class DohnMheg
     {
         if (isText) accessory.Method.TextInfo("去Boss身后", duration: 3700, true);
         if (isTTS) accessory.Method.TTS("去Boss身后");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts 去Boss身后");
 
         var dp = accessory.Data.GetDefaultDrawProperties();
 
@@ -191,7 +178,6 @@ public class DohnMheg
     {
         if (isText) accessory.Method.TextInfo("过完独木桥后，进入圈内攻击梦幻的弦乐器", duration: 15000, true);
         if (isTTS) accessory.Method.TTS("过完独木桥后，进入圈内攻击乐器");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts 过完独木桥后，进入圈内攻击乐器");
     }
 
     [ScriptMethod(name: "Boss3腐蚀咬", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:13547"])]
@@ -199,7 +185,6 @@ public class DohnMheg
     {
         if (isText) accessory.Method.TextInfo("远离Boss正面", duration: 3700, true);
         if (isTTS) accessory.Method.TTS("远离Boss正面");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts 远离Boss正面");
 
         var dp = accessory.Data.GetDefaultDrawProperties();
 
@@ -217,7 +202,6 @@ public class DohnMheg
     {
         if (isText) accessory.Method.TextInfo("远离Boss四角", duration: 4700, true);
         if (isTTS) accessory.Method.TTS("远离Boss四角");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts 远离Boss四角");
 
         float iAng = 45;
         float aIncrement = 90;

@@ -37,17 +37,17 @@ using KodaMarkType = KodakkuAssist.Module.GameOperate.MarkType;
 namespace Veever.Shadowbringers.theSeatofSacrifice;
 
 [ScriptType(name: "LV.80 光之战士歼灭战 [the Seat of Sacrifice]", territorys: [922], guid: "864c6d7e-20bd-49b6-93ec-31b4d70e1afd",
-    version: "0.0.0.8", author: "Veever", note: noteStr)]
+    version: "0.0.0.9", author: "Veever", note: noteStr)]
 
 public class theSeatofSacrifice
 {
     const string noteStr =
     """
-    v0.0.0.8:
+    v0.0.0.9:
     1. 现已支持几乎所有机制播报及绘图
     2. 支持DR 自动动态演练开关（默认为打开状态）
     3. 目前光明剑不确定是否只有两个情况，如果有更多的情况没有画出来的话请带arr回放在dc向我反馈
-    4. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
+    4. 现在支持文字横幅/TTS开关
     5. v0.0.0.3，删除自动动态演练开关 关闭后会offload的方法
     6. 更新光之剑出现在东西侧的情况
     7. v0.0.0.4, 可能解决了光之剑东西侧画反的问题（回放太少所以不清楚是否解决，如果还是画错请dc@我）
@@ -104,7 +104,7 @@ public class theSeatofSacrifice
     {
         string msg = language == Language.Chinese ? "全员1血，奶妈注意回复至满血" : "Everyone at 1 HP, healers top everyone off";
         if (isText) accessory.Method.TextInfo($"{msg}", duration: 4700, true);
-        if (isTTS) accessory.Method.EdgeTTS($"{msg}");
+        if (isTTS) accessory.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "绝对爆炎", eventType: EventTypeEnum.TargetIcon, eventCondition: ["Id:00E3"])]
@@ -114,11 +114,11 @@ public class theSeatofSacrifice
         {
             string msg = language == Language.Chinese ? "准备停止移动" : "Be ready to STOP";
             if (isText) accessory.Method.TextInfo($"{msg}", duration: 2000, true);
-            if (isTTS) accessory.Method.EdgeTTS($"{msg}");
+            if (isTTS) accessory.Method.TTS($"{msg}");
             await Task.Delay(4700);
             string msg1 = language == Language.Chinese ? "停止移动" : "STOP";
             if (isText) accessory.Method.TextInfo($"{msg1}", duration: 4000, true);
-            if (isTTS) accessory.Method.EdgeTTS($"{msg1}");
+            if (isTTS) accessory.Method.TTS($"{msg1}");
         }
     }
 
@@ -129,13 +129,13 @@ public class theSeatofSacrifice
         {
             string msg = language == Language.Chinese ? "准备持续移动" : "Get ready to keep moving";
             if (isText) accessory.Method.TextInfo($"{msg}", duration: 2000, true);
-            if (isTTS) accessory.Method.EdgeTTS($"{msg}");
+            if (isTTS) accessory.Method.TTS($"{msg}");
 
             await Task.Delay(4700);
 
             string msg1 = language == Language.Chinese ? "持续移动，不要停" : "Keep moving";
             if (isText) accessory.Method.TextInfo($"{msg1}", duration: 2500, true);
-            if (isTTS) accessory.Method.EdgeTTS($"{msg1}");
+            if (isTTS) accessory.Method.TTS($"{msg1}");
         }
     }
 
@@ -144,7 +144,7 @@ public class theSeatofSacrifice
     {
         string msg = language == Language.Chinese ? "一会儿准备停止移动" : "Get ready to stop moving";
         if (isText) accessory.Method.TextInfo($"{msg}", duration: 3000, true);
-        if (isTTS) accessory.Method.EdgeTTS($"{msg}");
+        if (isTTS) accessory.Method.TTS($"{msg}");
         fireRecord = true;
     }
 
@@ -153,7 +153,7 @@ public class theSeatofSacrifice
     {
         string msg = language == Language.Chinese ? "一会儿准备持续移动" : "Get ready to keep moving";
         if (isText) accessory.Method.TextInfo($"{msg}", duration: 3000, true);
-        if (isTTS) accessory.Method.EdgeTTS($"{msg}");
+        if (isTTS) accessory.Method.TTS($"{msg}");
         iceRecord = true;
     }
 
@@ -165,13 +165,13 @@ public class theSeatofSacrifice
             string msg = language == Language.Chinese ? $"钢铁，远离Boss，准备{(fireRecord ? "停止移动" : "持续移动")}" : 
                                                         $"Chariot — move away from boss, get ready to {(fireRecord ? "stop moving" : "keep moving")}.";
             if (isText) accessory.Method.TextInfo($"{msg}", duration: 5500, true);
-            if (isTTS) accessory.Method.EdgeTTS($"{msg}");
+            if (isTTS) accessory.Method.TTS($"{msg}");
         }
         else
         {
             string msg = language == Language.Chinese ? "钢铁，远离Boss" : "Chariot — move away from boss";
             if (isText) accessory.Method.TextInfo($"{msg}", duration: 6700, true);
-            if (isTTS) accessory.Method.EdgeTTS($"{msg}");
+            if (isTTS) accessory.Method.TTS($"{msg}");
         }
 
         var dp = accessory.Data.GetDefaultDrawProperties();
@@ -188,7 +188,7 @@ public class theSeatofSacrifice
             await Task.Delay(7000);
             string msg = language == Language.Chinese ? "停止移动" : "stop moving";
             if (isText) accessory.Method.TextInfo($"{msg}", duration: 3000, true);
-            if (isTTS) accessory.Method.EdgeTTS($"{msg}");
+            if (isTTS) accessory.Method.TTS($"{msg}");
             fireRecord = false;
         }
         if (iceRecord)
@@ -196,7 +196,7 @@ public class theSeatofSacrifice
             await Task.Delay(7000);
             string msg = language == Language.Chinese ? "持续移动" : "keep moving";
             if (isText) accessory.Method.TextInfo($"{msg}", duration: 2500, true);
-            if (isTTS) accessory.Method.EdgeTTS($"{msg}");
+            if (isTTS) accessory.Method.TTS($"{msg}");
             iceRecord = false;
         }
     }
@@ -209,12 +209,12 @@ public class theSeatofSacrifice
                                                         $"Dynamo — go under the boss, get ready to {(fireRecord ? "stop moving" : "keep moving")}."
 ;
             if (isText) accessory.Method.TextInfo($"{msg}", duration: 5500, true);
-            if (isTTS) accessory.Method.EdgeTTS($"{msg}");
+            if (isTTS) accessory.Method.TTS($"{msg}");
         } else
         {
             string msg = language == Language.Chinese ? "月环，去Boss脚下" : "Dynamo — go under the boss";
             if (isText) accessory.Method.TextInfo($"{msg}", duration: 6500, true);
-            if (isTTS) accessory.Method.EdgeTTS($"{msg}");
+            if (isTTS) accessory.Method.TTS($"{msg}");
         }
 
 
@@ -242,7 +242,7 @@ public class theSeatofSacrifice
             await Task.Delay(7000);
             string msg = language == Language.Chinese ? "停止移动" : "stop moving";
             if (isText) accessory.Method.TextInfo($"{msg}", duration: 2500, true);
-            if (isTTS) accessory.Method.EdgeTTS($"{msg}");
+            if (isTTS) accessory.Method.TTS($"{msg}");
             fireRecord = false;
         }
         if (iceRecord)
@@ -250,7 +250,7 @@ public class theSeatofSacrifice
             await Task.Delay(7000);
             string msg = language == Language.Chinese ? "一会儿准备持续移动" : "Prepare keep moving";
             if (isText) accessory.Method.TextInfo($"{msg}", duration: 2500, true);
-            if (isTTS) accessory.Method.EdgeTTS($"{msg}");
+            if (isTTS) accessory.Method.TTS($"{msg}");
             iceRecord = false;
         }
     }
@@ -329,7 +329,7 @@ public class theSeatofSacrifice
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) accessory.Method.TextInfo($"{msg}", duration: 4700, true);
-        if (isTTS) accessory.Method.EdgeTTS($"{msg}");
+        if (isTTS) accessory.Method.TTS($"{msg}");
         if (isDRQTE) accessory.Method.SendChat("/pdr load autoQTE");
     }
 
@@ -339,7 +339,7 @@ public class theSeatofSacrifice
         await Task.Delay(3400);
         string msg = language == Language.Chinese ? "坦克LB" : "Tank LB";
         if (isText) accessory.Method.TextInfo($"{msg}", duration: 6000, true);
-        if (isTTS) accessory.Method.EdgeTTS($"{msg}");
+        if (isTTS) accessory.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "踩塔提示", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:20284"])]
@@ -348,14 +348,14 @@ public class theSeatofSacrifice
         await Task.Delay(10000);
         string msg = language == Language.Chinese ? "踩塔，每个塔至少两人" : "Soak the towers, two each";
         if (isText) accessory.Method.TextInfo($"{msg}", duration: 6000, true);
-        if (isTTS) accessory.Method.EdgeTTS($"{msg}");
+        if (isTTS) accessory.Method.TTS($"{msg}");
     }
     [ScriptMethod(name: "忍者击退提示", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:20252"])]
     public async void SuitonSan(Event @event, ScriptAccessory accessory)
     {
         string msg = language == Language.Chinese ? "击退" : "Knockback";
         if (isText) accessory.Method.TextInfo($"{msg}", duration: 5700, true);
-        if (isTTS) accessory.Method.EdgeTTS($"{msg}");
+        if (isTTS) accessory.Method.TTS($"{msg}");
 
         var dp1 = accessory.Data.GetDefaultDrawProperties();
         dp1.Name = $"忍者击退提示";
@@ -373,7 +373,7 @@ public class theSeatofSacrifice
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) accessory.Method.TextInfo($"{msg}", duration: 4700, true);
-        if (isTTS) accessory.Method.EdgeTTS($"{msg}");
+        if (isTTS) accessory.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "狱火大地", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:20254"])]
@@ -410,12 +410,12 @@ public class theSeatofSacrifice
         {
             string msg = language == Language.Chinese ? $"与{tname}分摊, 核爆{DelugeofDeathName}远离" : $"Stack with {tname}, avoid {DelugeofDeathName} flare";
             if (isText) accessory.Method.TextInfo($"{msg}", duration: 4700, true);
-            if (isTTS) accessory.Method.EdgeTTS($"{msg}");
+            if (isTTS) accessory.Method.TTS($"{msg}");
         } else
         {
             string msg = language == Language.Chinese ? $"与{tname}分摊" : $"Stack with {tname}";
             if (isText) accessory.Method.TextInfo($"{msg}", duration: 4700, true);
-            if (isTTS) accessory.Method.EdgeTTS($"{msg}");
+            if (isTTS) accessory.Method.TTS($"{msg}");
         }
         To00A1TTS = true;
 
@@ -434,7 +434,7 @@ public class theSeatofSacrifice
     {
         string msg = language == Language.Chinese ? "死刑准备" : "Tankbuster";
         if (isText) accessory.Method.TextInfo($"{msg}", duration: 4700, true);
-        if (isTTS) accessory.Method.EdgeTTS($"{msg}");
+        if (isTTS) accessory.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "LB1顺劈", eventType: EventTypeEnum.TargetIcon, eventCondition: ["Id:00EA"])]
@@ -446,7 +446,7 @@ public class theSeatofSacrifice
             {
                 string msg = language == Language.Chinese ? "扇形顺劈, 不要重叠" : "Conal cleaves, don’t stack";
                 if (isText) accessory.Method.TextInfo($"{msg}", duration: 4700, true);
-                if (isTTS) accessory.Method.EdgeTTS($"{msg}");
+                if (isTTS) accessory.Method.TTS($"{msg}");
             }
             RadiantBraverTTS++;
 
@@ -471,7 +471,7 @@ public class theSeatofSacrifice
             {
                 string msg = language == Language.Chinese ? "分组44分摊，不要重叠" : "Group stacks, 4 each side";
                 if (isText) accessory.Method.TextInfo($"{msg}", duration: 8000, true);
-                if (isTTS) accessory.Method.EdgeTTS($"{msg}");
+                if (isTTS) accessory.Method.TTS($"{msg}");
             }
             RadiantDesperadoTTS++;
 
@@ -495,7 +495,7 @@ public class theSeatofSacrifice
             {
                 string msg = language == Language.Chinese ? "陨石点名, 让出中间位置 非点名玩家去中间" : "Meteors out, rest in";
                 if (isText) accessory.Method.TextInfo($"{msg}", duration: 8000, true);
-                if (isTTS) accessory.Method.EdgeTTS($"{msg}");
+                if (isTTS) accessory.Method.TTS($"{msg}");
             }
             RadiantMeteorTTS++;
             var dp = accessory.Data.GetDefaultDrawProperties();
@@ -526,7 +526,7 @@ public class theSeatofSacrifice
             {
                 string msg = language == Language.Chinese ? "将线拉到对应的小怪的角落安全范围" : "Take your tether to your add’s corner";
                 if (isText) accessory.Method.TextInfo($"{msg}", duration: 4700, true);
-                if (isTTS) accessory.Method.EdgeTTS($"{msg}");
+                if (isTTS) accessory.Method.TTS($"{msg}");
                 for (int i = 0; i < 4; i++)
                 {
                     var dp = accessory.Data.GetDefaultDrawProperties();

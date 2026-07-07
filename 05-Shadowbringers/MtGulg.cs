@@ -42,7 +42,7 @@ public class MtGulg
 {
     const string NoteStr =
     """
-    v0.0.0.2
+    v0.0.0.3
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     鸭门
     ------------------------------
@@ -51,12 +51,17 @@ public class MtGulg
     """;
 
     const string UpdateInfo =
-    """
-        v0.0.0.2
+    $"""
+    v{Version}
+    修复了TTS
+    鸭门
+    ----------------------------------
+    Fixed TTS
+    Duckmen.
     """;
 
     private const string Name = "LV.79 伪造天界格鲁格火山 [Mt. Gulg]";
-    private const string Version = "0.0.0.2";
+    private const string Version = "0.0.0.3";
     private const string DebugVersion = "a";
 
     private const bool Debugging = true;
@@ -200,7 +205,7 @@ public class MtGulg
         }
 
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
         if (isMark) sa.Method.Mark((uint)ev.TargetId, KodaMarkType.Bind1, LocalMark);
     }
 
@@ -236,7 +241,7 @@ public class MtGulg
         {
             string msg = language == Language.Chinese ? "死刑点名, 注意减伤" : "Targeted Buster";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 2500, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
     }
 
@@ -264,7 +269,7 @@ public class MtGulg
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 3700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
     #endregion
 
@@ -281,7 +286,7 @@ public class MtGulg
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 3500, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "死刑提示 - Tankbuster Notify", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:15595"])]
@@ -291,7 +296,7 @@ public class MtGulg
         {
             string msg = language == Language.Chinese ? "死刑点名, 注意减伤" : "Targeted Buster";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4200, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
     }
 
@@ -378,7 +383,7 @@ public class MtGulg
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 3500, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "渐弱神音 - Divine Diminuendo", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(15638|15640|15649)$"])]

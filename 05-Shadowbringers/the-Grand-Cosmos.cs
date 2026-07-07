@@ -24,21 +24,20 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 namespace Veever.Shadowbringers.theGrandCosmos;
 
 [ScriptType(name: "LV.80 魔法宫殿宇宙宫", territorys: [884], guid: "b3a2febd-73ff-44a9-a897-22fa50c74ff3",
-    version: "0.0.0.3", author: "Veever", note: noteStr)]
+    version: "0.0.0.4", author: "Veever", note: noteStr)]
 
 public class the_Grand_Cosmos
 {
     const string noteStr =
     """
-    v0.0.0.3:
-    1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
+    v0.0.0.4:
+    1. 现在支持文字横幅/TTS开关
     2. 标点开关以及本地开关都在用户设置里面，可自行选择关闭或者开启（默认本地开启）
     3. 有生之年!可能会!添加新的扫帚紫圈的判定方式
     4. 有生之年!可能会!添加新的Boss2种子的判定方式
     5. Boss3标记物品水晶灯没标, 目标太大了都能看得见
     6. 支持副本点位指路，红线为引战范围
     7. 如果感觉指路点位不够的话请在dc频道说一下或者dc私聊我(24个点位总能够了吧（x）)
-    8. 不要秒退本，有概率有残留
     鸭门。
     """;
 
@@ -47,9 +46,6 @@ public class the_Grand_Cosmos
 
     [UserSetting("TTS开关")]
     public bool isTTS { get; set; } = false;
-
-    [UserSetting("DR TTS开关")]
-    public bool isDRTTS { get; set; } = true;
 
     [UserSetting("标点开关")]
     public bool isMark { get; set; } = true;
@@ -68,6 +64,7 @@ public class the_Grand_Cosmos
 
     private readonly object DarkShockTTSLock = new object();
     private readonly object magicBroomPosLock = new object();
+    private bool isDRTTS = false;
 
     public void Init(ScriptAccessory accessory)
     {
@@ -1048,14 +1045,7 @@ public static class Extensions
 {
     public static void TTS(this ScriptAccessory accessory, string text, bool isTTS, bool isDRTTS)
     {
-        if (isDRTTS)
-        {
-            accessory.Method.SendChat($"/pdr tts {text}");
-        }
-        else if (isTTS)
-        {
-            accessory.Method.TTS(text);
-        }
+        accessory.Method.TTS(text);
     }
 }
 

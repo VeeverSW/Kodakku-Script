@@ -2,12 +2,12 @@
   {
     "Name": "LV.71 遇袭集落水滩村",
     "Guid": "a407d364-b2bd-4e12-9332-70ca3829ece7",
-    "Version": "0.0.0.9",
+    "Version": "0.0.1.0",
     "Author": "Veever",
     "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/HolminsterSwitch.cs",
-    "Note": "v0.0.0.9:\r\n1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）\r\n2. 以前的这几个脚本的底层扩展目前懒得重构（就能加啥随便加了）\r\n鸭门。",
-    "UpdateInfo": "",
+    "Note": "v0.0.1.0:\r\n1. 现在支持文字横幅/TTS开关\r\n2. 以前的这几个脚本的底层扩展目前懒得重构（就能加啥随便加了）\r\n鸭门。",
+    "UpdateInfo": "修复了TTS",
     "TerritoryIds": [
       837
     ]
@@ -15,12 +15,12 @@
   {
     "Name": "LV.73 水妖幻园多恩美格禁园",
     "Guid": "d8fbc4be-b2c3-43a5-93f7-2901b40d0921",
-    "Version": "0.0.0.7",
+    "Version": "0.0.0.8",
     "Author": "Veever",
     "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/DohnMheg.cs",
-    "Note": "v0.0.0.7:\r\n1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）\r\n2. 以前的这几个脚本的底层扩展目前懒得重构（就能加啥随便加了）\r\n鸭门。",
-    "UpdateInfo": "",
+    "Note": "v0.0.0.8:\r\n1. 现在支持文字横幅/TTS开关\r\n2. 以前的这几个脚本的底层扩展目前懒得重构（就能加啥随便加了）\r\n鸭门。",
+    "UpdateInfo": "修复了TTS",
     "TerritoryIds": [
       821
     ]
@@ -67,12 +67,12 @@
   {
     "Name": "LV.80 光之战士歼灭战 [the Seat of Sacrifice]",
     "Guid": "864c6d7e-20bd-49b6-93ec-31b4d70e1afd",
-    "Version": "0.0.0.7",
+    "Version": "0.0.0.9",
     "Author": "Veever",
     "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/the-Seat-of-Sacrifice.cs",
-    "Note": "v0.0.0.7:\r\n1. 现已支持几乎所有机制播报及绘图\r\n2. 支持DR 自动动态演练开关（默认为打开状态）\r\n3. 目前光明剑不确定是否只有两个情况，如果有更多的情况没有画出来的话请带arr回放在dc向我反馈\r\n4. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）\r\n5. v0.0.0.3，删除自动动态演练开关 关闭后会offload的方法\r\n6. 更新光之剑出现在东西侧的情况\r\n7. v0.0.0.4, 可能解决了光之剑东西侧画反的问题（回放太少所以不清楚是否解决，如果还是画错请dc@我）\r\n鸭门。",
-    "UpdateInfo": "",
+    "Note": "v0.0.0.9:\r\n1. 现已支持几乎所有机制播报及绘图\r\n2. 支持DR 自动动态演练开关（默认为打开状态）\r\n3. 目前光明剑不确定是否只有两个情况，如果有更多的情况没有画出来的话请带arr回放在dc向我反馈\r\n4. 现在支持文字横幅/TTS开关\r\n5. v0.0.0.3，删除自动动态演练开关 关闭后会offload的方法\r\n6. 更新光之剑出现在东西侧的情况\r\n7. v0.0.0.4, 可能解决了光之剑东西侧画反的问题（回放太少所以不清楚是否解决，如果还是画错请dc@我）\r\n鸭门。",
+    "UpdateInfo": "修复了TTS",
     "TerritoryIds": [
       922
     ]
@@ -119,12 +119,12 @@
   {
     "Name": "LV.80 魔法宫殿宇宙宫",
     "Guid": "b3a2febd-73ff-44a9-a897-22fa50c74ff3",
-    "Version": "0.0.0.3",
+    "Version": "0.0.0.4",
     "Author": "Veever",
     "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/the-Grand-Cosmos.cs",
-    "Note": "v0.0.0.3:\r\n1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）\r\n2. 标点开关以及本地开关都在用户设置里面，可自行选择关闭或者开启（默认本地开启）\r\n3. 有生之年!可能会!添加新的扫帚紫圈的判定方式\r\n4. 有生之年!可能会!添加新的Boss2种子的判定方式\r\n5. Boss3标记物品水晶灯没标, 目标太大了都能看得见\r\n6. 支持副本点位指路，红线为引战范围\r\n7. 如果感觉指路点位不够的话请在dc频道说一下或者dc私聊我(24个点位总能够了吧（x）)\r\n8. 不要秒退本，有概率有残留\r\n鸭门。",
-    "UpdateInfo": "",
+    "Note": "v0.0.0.4:\r\n1. 现在支持文字横幅/TTS开关\r\n2. 标点开关以及本地开关都在用户设置里面，可自行选择关闭或者开启（默认本地开启）\r\n3. 有生之年!可能会!添加新的扫帚紫圈的判定方式\r\n4. 有生之年!可能会!添加新的Boss2种子的判定方式\r\n5. Boss3标记物品水晶灯没标, 目标太大了都能看得见\r\n6. 支持副本点位指路，红线为引战范围\r\n7. 如果感觉指路点位不够的话请在dc频道说一下或者dc私聊我(24个点位总能够了吧（x）)\r\n鸭门。",
+    "UpdateInfo": "修复了TTS",
     "TerritoryIds": [
       884
     ]
@@ -210,12 +210,12 @@
   {
     "Name": "LV.80 伊甸希望乐园 共鸣之章3",
     "Guid": "7732767d-bfb3-4c96-9719-962ba10cec08",
-    "Version": "0.0.0.1",
+    "Version": "0.0.0.2",
     "Author": "Veever",
     "Repo": "https://github.com/VeeverSW/Kodakku-Script",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/Edens-Verse-Iconoclasm.cs",
-    "Note": "v0.0.0.1:\r\n1. 此脚本只用了一个arr回放进行测试，如果出现错画的问题，请dc@我并提供arr回放\r\n鸭门。",
-    "UpdateInfo": "",
+    "Note": "v0.0.0.2:\r\n1. 此脚本只用了一个arr回放进行测试，如果出现错画的问题，请dc@我并提供arr回放\r\n鸭门。",
+    "UpdateInfo": "修复了TTS",
     "TerritoryIds": [
       904
     ]
@@ -249,12 +249,12 @@
   {
     "Name": "LV.75 文明古迹奇坦那神影洞",
     "Guid": "50c922c1-1ecd-4750-8b55-24f19793408f",
-    "Version": "0.0.0.2",
+    "Version": "0.0.0.3",
     "Author": "Veever",
     "Repo": "https://github.com/VeeverSW/Kodakku-Script",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/the-Qitana-Ravel.cs",
-    "Note": "v0.0.0.2:\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n2. 只用了单回放进行测试，不能保证绘图完全准确\r\n鸭门。",
-    "UpdateInfo": "",
+    "Note": "v0.0.0.3:\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n2. 只用了单回放进行测试，不能保证绘图完全准确\r\n鸭门。",
+    "UpdateInfo": "修复了TTS",
     "TerritoryIds": [
       823
     ]
@@ -365,12 +365,12 @@
   {
     "Name": "LV.77 避暑离宫马利卡大井 [Malikahs Well]",
     "Guid": "41547ef2-b54c-4296-9ca4-8e54992ea6fb",
-    "Version": "0.0.0.1",
+    "Version": "0.0.0.2",
     "Author": "Veever",
     "Repo": "https://github.com/VeeverSW/Kodakku-Script",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/Malikah-s-Well.cs",
-    "Note": "v0.0.0.1\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n鸭门\r\n------------------------------\r\n1. If you need a draw for a mechanic or notice any issues, @ me on DC or DM me.\r\nDuckmen",
-    "UpdateInfo": "    v0.0.0.1",
+    "Note": "v0.0.0.2\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n鸭门\r\n------------------------------\r\n1. If you need a draw for a mechanic or notice any issues, @ me on DC or DM me.\r\nDuckmen",
+    "UpdateInfo": "v0.0.0.2\r\n修复了TTS\r\n鸭门\r\n----------------------------------\r\nFixed TTS\r\nDuckmen.",
     "TerritoryIds": [
       836
     ]
@@ -378,12 +378,12 @@
   {
     "Name": "LV.79 伪造天界格鲁格火山 [Mt. Gulg]",
     "Guid": "e67816ed-08b7-4df6-857a-2b71e9426d1c",
-    "Version": "0.0.0.1",
+    "Version": "0.0.0.3",
     "Author": "Veever",
     "Repo": "https://github.com/VeeverSW/Kodakku-Script",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/05-Shadowbringers/MtGulg.cs",
-    "Note": "v0.0.0.1\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n鸭门\r\n------------------------------\r\n1. If you need a draw for a mechanic or notice any issues, @ me on DC or DM me.\r\nDuckmen",
-    "UpdateInfo": "    v0.0.0.1",
+    "Note": "v0.0.0.3\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n鸭门\r\n------------------------------\r\n1. If you need a draw for a mechanic or notice any issues, @ me on DC or DM me.\r\nDuckmen",
+    "UpdateInfo": "v0.0.0.3\r\n修复了TTS\r\n鸭门\r\n----------------------------------\r\nFixed TTS\r\nDuckmen.",
     "TerritoryIds": [
       822
     ]

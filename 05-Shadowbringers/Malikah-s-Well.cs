@@ -38,7 +38,7 @@ public class Malikah_s_Well
 {
     const string NoteStr =
     """
-    v0.0.0.1
+    v0.0.0.2
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     鸭门
     ------------------------------
@@ -47,12 +47,17 @@ public class Malikah_s_Well
     """;
 
     const string UpdateInfo =
-    """
-        v0.0.0.1
+    $"""
+    v{Version}
+    修复了TTS
+    鸭门
+    ----------------------------------
+    Fixed TTS
+    Duckmen.
     """;
 
     private const string Name = "LV.77 避暑离宫马利卡大井 [Malikahs Well]";
-    private const string Version = "0.0.0.1";
+    private const string Version = "0.0.0.2";
     private const string DebugVersion = "a";
 
     private const bool Debugging = true;
@@ -227,7 +232,7 @@ public class Malikah_s_Well
         {
             string msg = language == Language.Chinese ? "死刑点名, 注意减伤" : "Targeted Buster";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4200, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
     }
 
@@ -250,7 +255,7 @@ public class Malikah_s_Well
         }
 
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
 
         DrawHelper.DrawCircleObject(sa, ev.TargetId, new Vector2(5f), 4700, $"HeadToss-{ev.SourceId}", color: sa.Data.DefaultSafeColor, scaleByTime: false);
     }
@@ -262,7 +267,7 @@ public class Malikah_s_Well
         string msg = language == Language.Chinese ? $"钢铁远离" : $"Chariot (Out) ";
 
         if (isText) sa.Method.TextInfo($"{msg}", duration: 7200, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
 
         DrawHelper.DrawCircleObject(sa, ev.SourceId, new Vector2(8.5f), 2200, $"RightRound-{ev.SourceId}", new Vector4(1, 0, 0, ColorAlpha), scaleByTime: true);
     }
@@ -287,7 +292,7 @@ public class Malikah_s_Well
     //{
     //    string msg = language == Language.Chinese ? "AOE" : "AOE";
     //    if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-    //    if (isTTS) sa.Method.EdgeTTS($"{msg}");
+    //    if (isTTS) sa.Method.TTS($"{msg}");
     //}
 
     [ScriptMethod(name: "死刑提示 - Tankbuster Notify", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:15595"])]
@@ -297,7 +302,7 @@ public class Malikah_s_Well
         {
             string msg = language == Language.Chinese ? "死刑点名, 注意减伤" : "Targeted Buster";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4200, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
     }
 
@@ -332,7 +337,7 @@ public class Malikah_s_Well
     {
         string msg = language == Language.Chinese ? "远离钻井击退" : "Knockback away from Danger Zone";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 2000, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
          
         var dp = sa.Data.GetDefaultDrawProperties();
         dp.Name = "HighPressure";
@@ -347,7 +352,7 @@ public class Malikah_s_Well
         await Task.Delay(4200);
         string msg1 = language == Language.Chinese ? "前往Boss身后" : "Move behind boss";
         if (isText) sa.Method.TextInfo($"{msg1}", duration: 3700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg1}");
+        if (isTTS) sa.Method.TTS($"{msg1}");
     }
 
     [ScriptMethod(name: "强制放水 - Swift Spill", eventType: EventTypeEnum.TargetIcon, eventCondition: ["Id:regex:^(009C|009D)$"])]
@@ -398,7 +403,7 @@ public class Malikah_s_Well
         string msg = language == Language.Chinese ? "AOE" : "AOE";
 
         if (isText) sa.Method.TextInfo($"{msg}", duration: 3500, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
         HereticsForkcount = 0;
         BreakingWheelCount = 0;
     }
