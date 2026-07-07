@@ -65,19 +65,6 @@
     ]
   },
   {
-    "Name": "LV.10 讨伐彷徨死灵",
-    "Guid": "8b28e087-549e-4a88-96db-50e1e7cc5214",
-    "Version": "0.0.0.5",
-    "Author": "Veever",
-    "Repo": "",
-    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Under-the-Armor.cs",
-    "Note": "v0.0.0.5:\r\n1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）\r\n2. 加了个开关，这本也没有TTS，不要看了.jpg\r\n鸭门。",
-    "UpdateInfo": "",
-    "TerritoryIds": [
-      190
-    ]
-  },
-  {
     "Name": "LV.80 光之战士歼灭战 [the Seat of Sacrifice]",
     "Guid": "864c6d7e-20bd-49b6-93ec-31b4d70e1afd",
     "Version": "0.0.0.7",
@@ -101,175 +88,6 @@
     "UpdateInfo": "",
     "TerritoryIds": [
       1200
-    ]
-  },
-  {
-    "Name": "LV.10 完成集团战训练！",
-    "Guid": "6747a004-9234-4b32-9daf-75f6e384061c",
-    "Version": "0.0.0.3",
-    "Author": "Veever",
-    "Repo": "",
-    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Basic-Training-Enemy-Parties.cs",
-    "Note": "v0.0.0.3:\r\n1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）\r\n鸭门。",
-    "UpdateInfo": "",
-    "TerritoryIds": [
-      214
-    ]
-  },
-  {
-    "Name": "LV.15 突破所有关门，讨伐最深处的敌人！",
-    "Guid": "72889f91-2654-400c-9112-69d4a063557c",
-    "Version": "0.0.0.3",
-    "Author": "Veever",
-    "Repo": "",
-    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Basic-Training-Enemy-Strongholds.cs",
-    "Note": "v0.0.0.3:\r\n1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）\r\n鸭门。",
-    "UpdateInfo": "",
-    "TerritoryIds": [
-      215
-    ]
-  },
-  {
-    "Name": "LV.15 捕获金币龟！",
-    "Guid": "8513e0c9-5a1e-4748-a852-c6150d1c80e4",
-    "Version": "0.0.0.3",
-    "Author": "Veever",
-    "Repo": "",
-    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Hero-on-the-Half-Shell.cs",
-    "Note": "v0.0.0.3:\r\n1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）\r\n鸭门。",
-    "UpdateInfo": "",
-    "TerritoryIds": [
-      216
-    ]
-  },
-  {
-    "Name": "LV.20 驱除剧毒妖花！",
-    "Guid": "ffdb31c2-0517-430e-924e-159766aea93d",
-    "Version": "0.0.0.3",
-    "Author": "Veever",
-    "Repo": "",
-    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Pulling-Poison-Posies.cs",
-    "Note": "v0.0.0.3:\r\n1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）\r\n鸭门。",
-    "UpdateInfo": "",
-    "TerritoryIds": [
-      191
-    ]
-  },
-  {
-    "Name": "LV.20 消灭恶徒团伙寄生蜂团！",
-    "Guid": "69177d90-6983-4af4-a3e2-ad1e6ab28635",
-    "Version": "0.0.0.3",
-    "Author": "Veever",
-    "Repo": "",
-    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Stinging-Back.cs",
-    "Note": "v0.0.0.3:\r\n1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）\r\n2. 标点开关以及本地开关都在用户设置里面，可自行选择关闭或者开启（默认本地开启）\r\n鸭门。",
-    "UpdateInfo": "",
-    "TerritoryIds": [
-      192
-    ]
-  },
-  {
-    "Name": "LV.25 讨伐梦幻之布拉奇希奥！",
-    "Guid": "862174b8-ed10-4981-bd86-9538a019ef74",
-    "Version": "0.0.0.3",
-    "Author": "Veever",
-    "Repo": "",
-    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/All-s-Well-that-Ends-in-the-Well.cs",
-    "Note": "v0.0.0.3:\r\n1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）\r\n鸭门。",
-    "UpdateInfo": "",
-    "TerritoryIds": [
-      220
-    ]
-  },
-  {
-    "Name": "LV.25 击溃哥布林炸弹军团！",
-    "Guid": "f63ef61a-5fe6-437a-afb4-513dafecbb54",
-    "Version": "0.0.0.3",
-    "Author": "Veever",
-    "Repo": "",
-    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Flicking-Sticks-and-Taking-Names.cs",
-    "Note": "v0.0.0.3:\r\n1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）\r\n鸭门。",
-    "UpdateInfo": "",
-    "TerritoryIds": [
-      219
-    ]
-  },
-  {
-    "Name": "LV.30 讨伐污染源头魔界花！",
-    "Guid": "3113eeb5-96d8-48a8-9069-e1e3e5232ee1",
-    "Version": "0.0.0.3",
-    "Author": "Veever",
-    "Repo": "",
-    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/More-than-a-Feeler.cs",
-    "Note": "v0.0.0.3:\r\n1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）\r\n2. 标点开关以及本地开关都在用户设置里面，可自行选择关闭或者开启（默认本地开启）\r\n鸭门。",
-    "UpdateInfo": "",
-    "TerritoryIds": [
-      221
-    ]
-  },
-  {
-    "Name": "LV.30 讨伐坑道中出现的妖异！",
-    "Guid": "9106a502-2bcb-41ac-8598-6c76bd1061ae",
-    "Version": "0.0.0.3",
-    "Author": "Veever",
-    "Repo": "",
-    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Annoy-the-Void.cs",
-    "Note": "v0.0.0.3:\r\n1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）\r\n2. 标点开关以及本地开关都在用户设置里面，可自行选择关闭或者开启（默认本地开启）\r\n鸭门。",
-    "UpdateInfo": "",
-    "TerritoryIds": [
-      222
-    ]
-  },
-  {
-    "Name": "LV.35 注意无敌的眷属，讨伐大型妖异！",
-    "Guid": "70cf9a76-fc90-4f2b-9471-504472fb1b1e",
-    "Version": "0.0.0.4",
-    "Author": "Veever",
-    "Repo": "https://github.com/VeeverSW/Kodakku-Script",
-    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Shadow-and-Claw.cs",
-    "Note": "v0.0.0.4:\r\n1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）\r\n2. 标点开关以及本地开关都在用户设置里面，可自行选择关闭或者开启（默认本地开启）\r\n鸭门。",
-    "UpdateInfo": "",
-    "TerritoryIds": [
-      223
-    ]
-  },
-  {
-    "Name": "LV.35 讨伐爆弹怪的女王！",
-    "Guid": "2279725d-b2c4-4624-b7c6-3ae514c19fa5",
-    "Version": "0.0.0.3",
-    "Author": "Veever",
-    "Repo": "",
-    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Long-Live-the-Queen.cs",
-    "Note": "v0.0.0.3:\r\n1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）\r\n2. 标点开关以及本地开关都在用户设置里面，可自行选择关闭或者开启（默认本地开启）\r\n鸭门。",
-    "UpdateInfo": "",
-    "TerritoryIds": [
-      298
-    ]
-  },
-  {
-    "Name": "LV.40 歼灭特殊阵型的妖异！",
-    "Guid": "35d901f8-4861-4d5b-b279-59affb7a740f",
-    "Version": "0.0.0.4",
-    "Author": "Veever",
-    "Repo": "",
-    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Ward-Up.cs",
-    "Note": "v0.0.0.4:\r\n1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）\r\n2. 标点开关以及本地开关都在用户设置里面，可自行选择关闭或者开启（默认本地开启）\r\n鸭门。",
-    "UpdateInfo": "",
-    "TerritoryIds": [
-      299
-    ]
-  },
-  {
-    "Name": "LV.40 制止三方混战的巨人族，守住遗物！",
-    "Guid": "32e7ed24-f55c-48b0-8a40-3fa7442dd6df",
-    "Version": "0.0.0.3",
-    "Author": "Veever",
-    "Repo": "",
-    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Solemn-Trinity.cs",
-    "Note": "v0.0.0.3:\r\n1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）\r\n2. 标点开关以及本地开关都在用户设置里面，可自行选择关闭或者开启（默认本地开启）\r\n鸭门。",
-    "UpdateInfo": "",
-    "TerritoryIds": [
-      300
     ]
   },
   {
@@ -379,12 +197,12 @@
   {
     "Name": "LV.28 名门府邸静语庄园",
     "Guid": "964f1a0a-5b2a-4473-b41b-a170bc823f67",
-    "Version": "0.0.0.4",
+    "Version": "0.0.0.5",
     "Author": "Veever",
     "Repo": "https://github.com/VeeverSW/Kodakku-Script",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Haukke-Manor.cs",
-    "Note": "v0.0.0.4:\r\n1. 绿色标记为需要捡的钥匙，红色代表不捡\r\n2. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n3. 如果想要鲶鱼精标记请确保你打开了ACT并且安装了鲶鱼精插件\r\n鸭门。",
-    "UpdateInfo": "",
+    "Note": "v0.0.0.5:\r\n1. 绿色标记为需要捡的钥匙，红色代表不捡\r\n2. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n3. 如果想要鲶鱼精标记请确保你打开了ACT并且安装了鲶鱼精插件\r\n鸭门。",
+    "UpdateInfo": "更新了TTS方法",
     "TerritoryIds": [
       1040
     ]
@@ -633,6 +451,32 @@
     "UpdateInfo": "v0.0.0.5\r\n删除了更新提醒的网络报错提示，为版本更新提示加上了脚本名字和作者名字\r\n鸭门\r\n----------------------------------\r\nDeleted the network error message for update checking, added script name and author to update notification.\r\nDuckmen.",
     "TerritoryIds": [
       1345
+    ]
+  },
+  {
+    "Name": "行会令合集 [Guildhests]",
+    "Guid": "3797d75b-cf0b-4de8-ad06-71f343af697b",
+    "Version": "0.0.0.1",
+    "Author": "Veever",
+    "Repo": "https://github.com/VeeverSW/Kodakku-Script",
+    "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Guildhests.cs",
+    "Note": "v0.0.0.1\n----- 请在使用前阅读注意事项 以及根据情况修改用户设置 -----\n1. 本脚本为全部行会令的合集，通过当前所在副本ID(CurrentTerritoryId)区分各行会令的机制。\n2. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\n3. 标点开关以及本地开关在用户设置里可自行选择\n鸭门\n----------------------------------\n----- Please read the notes before use and adjust user settings as needed. -----\n1. This single script covers every guildhest; each encounter's mechanics are gated by the current territory ID (CurrentTerritoryId).\n2. If you need a draw or notice any issues, @ me on DC or DM me.\n3. The toggle for marking and local marking can be adjusted in the user settings.\n4. TTS not support English, you can turn off TTS in user settings.\nDuckmen.",
+    "UpdateInfo": "v0.0.0.1\n\n鸭门\n----------------------------------\n\nDuckmen.",
+    "TerritoryIds": [
+      190,
+      191,
+      192,
+      214,
+      215,
+      216,
+      219,
+      220,
+      221,
+      222,
+      223,
+      298,
+      299,
+      300
     ]
   }
 ]

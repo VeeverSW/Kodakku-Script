@@ -24,13 +24,13 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 namespace Veever.A_Realm_Reborn.Haukke_Manor;
 
 [ScriptType(name: "LV.28 名门府邸静语庄园", territorys: [1040], guid: "964f1a0a-5b2a-4473-b41b-a170bc823f67",
-    version: "0.0.0.4", author: "Veever", note: noteStr)]
+    version: "0.0.0.5", author: "Veever", note: noteStr)]
 
 public class Haukke_Manor
 {
     const string noteStr =
     """
-    v0.0.0.4:
+    v0.0.0.5:
     1. 绿色标记为需要捡的钥匙，红色代表不捡
     2. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     3. 如果想要鲶鱼精标记请确保你打开了ACT并且安装了鲶鱼精插件
@@ -69,7 +69,7 @@ public class Haukke_Manor
     public void Init(ScriptAccessory accessory)
     {
         accessory.Method.RemoveDraw(".*");
-        PostWaymark(accessory);
+        if (PostNamazuPrint) PostWaymark(accessory);
     }
 
     public void DebugMsg(string str, ScriptAccessory accessory)
@@ -233,7 +233,7 @@ public class Haukke_Manor
     public void DarkMist(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("注意远离或打断", duration: 3700, true);
-        if (isTTS) accessory.Method.EdgeTTS("注意远离或打断");
+        if (isTTS) accessory.Method.TTS("注意远离或打断");
         if (isMark) accessory.Method.Mark(@event.SourceId(), KodakkuAssist.Module.GameOperate.MarkType.Attack1, LocalMark);
         DrawHelper.DrawCircleObject(accessory, @event.SourceId(), new Vector2(8f), 3700, $"DarkMist-{@event.SourceId()}", accessory.Data.DefaultDangerColor);
     }
@@ -265,7 +265,7 @@ public class Haukke_Manor
     public void VoidFireII(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("注意远离或打断", duration: 3700, true);
-        if (isTTS) accessory.Method.EdgeTTS("注意远离或打断");
+        if (isTTS) accessory.Method.TTS("注意远离或打断");
         if (isMark) accessory.Method.Mark(@event.SourceId(), KodakkuAssist.Module.GameOperate.MarkType.Attack1, LocalMark);
         DrawHelper.DrawCircle(accessory, @event.EffectPosition(), new Vector2(5f), 2700, $"VoidFireII-{@event.SourceId()}", accessory.Data.DefaultDangerColor);
     }
@@ -280,7 +280,7 @@ public class Haukke_Manor
     public void DarkMist1(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("注意远离", duration: 3700, true);
-        if (isTTS) accessory.Method.EdgeTTS("注意远离");
+        if (isTTS) accessory.Method.TTS("注意远离");
         if (isMark) accessory.Method.Mark(@event.SourceId(), KodakkuAssist.Module.GameOperate.MarkType.Attack1, LocalMark);
         DrawHelper.DrawCircle(accessory, @event.EffectPosition(), new Vector2(9.4f), 3700, $"DarkMist1-{@event.SourceId()}", accessory.Data.DefaultDangerColor);
     }
@@ -303,7 +303,7 @@ public class Haukke_Manor
     public async void IceSpikes(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("打断庄园的小丑", duration: 3000, true);
-        if (isTTS) accessory.Method.EdgeTTS("打断庄园的小丑");
+        if (isTTS) accessory.Method.TTS("打断庄园的小丑");
         if (isMark) accessory.Method.Mark(@event.SourceId(), KodakkuAssist.Module.GameOperate.MarkType.Bind1, LocalMark);
         await Task.Delay(4000);
         accessory.Method.MarkClear();
@@ -313,7 +313,7 @@ public class Haukke_Manor
     public async void SoulDrain(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("眩晕庄园的总管", duration: 3700, true);
-        if (isTTS) accessory.Method.EdgeTTS("眩晕庄园的总管");
+        if (isTTS) accessory.Method.TTS("眩晕庄园的总管");
         if (isMark) accessory.Method.Mark(@event.SourceId(), KodakkuAssist.Module.GameOperate.MarkType.Bind1, LocalMark);
         await Task.Delay(4000);
         accessory.Method.MarkClear();
@@ -327,14 +327,14 @@ public class Haukke_Manor
     {
         accessory.Method.RemoveDraw(".*");
         if (isText) accessory.Method.TextInfo("背对眼睛", duration: 4700, true);
-        if (isTTS) accessory.Method.EdgeTTS("背对眼睛");
+        if (isTTS) accessory.Method.TTS("背对眼睛");
     }
 
     [ScriptMethod(name: "女仆标记", eventType: EventTypeEnum.Targetable, eventCondition: ["DataId:14506", "Targetable:True"])]
     public void TargetMark(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("优先攻击随从女仆", duration: 4700, true);
-        if (isTTS) accessory.Method.EdgeTTS("优先攻击随从女仆");
+        if (isTTS) accessory.Method.TTS("优先攻击随从女仆");
         if (isMark) accessory.Method.Mark(@event.SourceId(), KodakkuAssist.Module.GameOperate.MarkType.Attack1, LocalMark);
 
     }
@@ -343,7 +343,7 @@ public class Haukke_Manor
     public void Boss3DarkMist(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("注意远离或下踢打断", duration: 3700, true);
-        if (isTTS) accessory.Method.EdgeTTS("注意远离或下踢打断");
+        if (isTTS) accessory.Method.TTS("注意远离或下踢打断");
         DrawHelper.DrawCircle(accessory, @event.EffectPosition(), new Vector2(9f), 3700, $"DarkMist-{@event.SourceId()}", accessory.Data.DefaultDangerColor);
     }
 
