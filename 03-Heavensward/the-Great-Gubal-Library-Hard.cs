@@ -38,7 +38,7 @@ public class the_Great_Gubal_Library_Hard
 {
     const string NoteStr =
     """
-    v0.0.0.1
+    v0.0.0.2
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     2. Boss1的击退感觉没有必要画所以没有画
     鸭门
@@ -49,12 +49,17 @@ public class the_Great_Gubal_Library_Hard
     """;
 
     const string UpdateInfo =
-    """
-        v0.0.0.1
+    $"""
+    v{Version}
+    修复了TTS
+    鸭门
+    ----------------------------------
+    Fixed TTS
+    Duckmen.
     """;
 
     private const string Name = "LV.60 秘本宝库迦巴勒幻想图书馆 [The Great Gubal Library (Hard)]";
-    private const string Version = "0.0.0.1";
+    private const string Version = "0.0.0.2";
     private const string DebugVersion = "a";
 
     private const bool Debugging = true;
@@ -292,7 +297,7 @@ public class the_Great_Gubal_Library_Hard
         sa.Method.RemoveDraw($"Navi.*");
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 2700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "火海 - Sea of Flames", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:6504"])]
@@ -308,7 +313,7 @@ public class the_Great_Gubal_Library_Hard
         {
             string msg = language == Language.Chinese ? "连线远离" : "Tether Away";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 3000, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
 
         }
     }
@@ -330,7 +335,7 @@ public class the_Great_Gubal_Library_Hard
             }
 
             if (isText) sa.Method.TextInfo($"{msg}", duration: 5700, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
 
         }
     }
@@ -415,7 +420,7 @@ public class the_Great_Gubal_Library_Hard
         string msg = language == Language.Chinese ? "站在白圈上" : "Stand on White tile";
 
         if (isText) sa.Method.TextInfo($"{msg}", duration: 6700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
 
         foreach (var tile in tileData)
         {
@@ -432,7 +437,7 @@ public class the_Great_Gubal_Library_Hard
         string msg = language == Language.Chinese ? "站在黑圈上" : "Stand on Black tile";
 
         if (isText) sa.Method.TextInfo($"{msg}", duration: 6700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
 
         foreach (var tile in tileData)
         {
@@ -449,7 +454,7 @@ public class the_Great_Gubal_Library_Hard
         string msg = language == Language.Chinese ? "站在绿圈上" : "Stand on Green tile";
 
         if (isText) sa.Method.TextInfo($"{msg}", duration: 6700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
 
         foreach (var tile in tileData)
         {
@@ -480,7 +485,7 @@ public class the_Great_Gubal_Library_Hard
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 2500, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     #endregion

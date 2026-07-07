@@ -8,22 +8,20 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Meva.Heavensward.KodakkuAssist.Alexander;
+namespace Meva.Heavensward.KodakkuAssist.Alexander9;
 
-[ScriptType(name: "LV.60 亚历山大机神城 天动之章1", territorys: [580], guid: "7cb80e0d-e693-6ca9-c46e-c96b0ec5d109", version: "0.0.0.3", author: "Meva", note: noteStr)]
+[ScriptType(name: "LV.60 亚历山大机神城 天动之章1", territorys: [580], guid: "7cb80e0d-e693-6ca9-c46e-c96b0ec5d109", version: "0.0.0.6", author: "Meva & Veever", note: noteStr)]
 public class A9N
 {
     const string noteStr =
         """
-        v0.0.0.3
+        v0.0.0.6
         """;
     
     [UserSetting("文字横幅提示开关")]
     public bool isText { get; set; } = true;
     [UserSetting("TTS开关")]
     public bool isTTS { get; set; } = false;
-    [UserSetting("DR TTS开关")]
-    public bool isDRTTS { get; set; } = true;
 
     public void Init(ScriptAccessory accessory)
     {
@@ -35,7 +33,7 @@ public class A9N
     public void 废料爆发(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("躲在石头后！", duration: 2000);
-        accessory.TTS("躲在石头后", isTTS, isDRTTS);
+        if (isTTS) accessory.Method.TTS("躲在石头后");
     }
     
 
@@ -43,15 +41,15 @@ public class A9N
     [ScriptMethod(name: "击杀小怪提示", eventType: EventTypeEnum.ActionEffect, eventCondition: ["DataId:6922"])]
     public void 击杀小怪提示(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("拉进发光地板击杀", duration: 2000);
+        if (isText) accessory.Method.TextInfo("拉进发光地板击杀", duration: 2000);
     }
 
     // 击杀大怪提醒（对角击杀）
     [ScriptMethod(name: "大怪击杀提示", eventType: EventTypeEnum.AddCombatant, eventCondition: ["DataId:6354"])]
     public void 大怪击杀提示(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("在发光地板对角击杀", duration: 4000);
-        accessory.TTS("在发光地板对角击杀", isTTS, isDRTTS);
+        if (isText) accessory.Method.TextInfo("在发光地板对角击杀", duration: 4000);
+        if (isTTS) accessory.Method.TTS("在发光地板对角击杀");
     }
 }
 
@@ -131,18 +129,3 @@ public static class EventExtensions
     }
 }
 
-
-public static class Extensions
-{
-    public static void TTS(this ScriptAccessory accessory, string text, bool isTTS, bool isDRTTS)
-    {
-        if (isDRTTS)
-        {
-            accessory.Method.SendChat($"/pdr tts {text}");
-        }
-        else if (isTTS)
-        {
-            accessory.Method.TTS(text);
-        }
-    }
-}

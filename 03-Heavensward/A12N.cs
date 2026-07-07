@@ -8,23 +8,20 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Meva.Heavensward.KodakkuAssist.Alexander;
+namespace Meva.Heavensward.KodakkuAssist.Alexander12;
 
-[ScriptType(name: "LV.60 亚历山大机神城 天动之章4", territorys: [583], guid: "c77e794f-f3bc-37fc-810b-bb153ba399c1", version: "0.0.0.4", author: "Meva", note:noteStr)]
+[ScriptType(name: "LV.60 亚历山大机神城 天动之章4", territorys: [583], guid: "c77e794f-f3bc-37fc-810b-bb153ba399c1", version: "0.0.0.6", author: "Meva & Veever", note:noteStr)]
 public class A12N
 {
     const string noteStr =
         """
-        v0.0.0.4:
-        1. 现在支持文字横幅/TTS开关/DR TTS开关（在用户设置里面）（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
+        v0.0.0.6:
         """;
     
     [UserSetting("文字横幅提示开关")]
     public bool isText { get; set; } = true;
     [UserSetting("TTS开关")]
     public bool isTTS { get; set; } = false;
-    [UserSetting("DR TTS开关")]
-    public bool isDRTTS { get; set; } = true;
 
     public void Init(ScriptAccessory accessory)
     {
@@ -35,7 +32,7 @@ public class A12N
     public void 百万神圣(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("AOE", duration: 2000, true);
-        accessory.TTS("AOE", isTTS, isDRTTS);
+        if (isTTS) accessory.Method.TTS("AOE");
     }
     
     // 十字圣礼1（十字激光1）
@@ -43,7 +40,7 @@ public class A12N
     public void 十字圣礼1(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("躲避十字激光", duration: 2000, true);
-        accessory.TTS("躲避十字激光", isTTS, isDRTTS);
+        if (isTTS) accessory.Method.TTS("躲避十字激光");
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = "十字圣礼1";
         dp.Owner = @event.SourceId();
@@ -72,7 +69,7 @@ public class A12N
     public void 重力异常(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("远离扩大黑圈", duration: 2000, true);
-        accessory.TTS("远离扩大黑圈", isTTS, isDRTTS);
+        if (isTTS) accessory.Method.TTS("远离扩大黑圈");
     }
 
     // 白光之鞭（点名AOE，Buff 562触发）
@@ -80,7 +77,7 @@ public class A12N
     public void 白光之鞭(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("分散", duration: 2000, true);
-        accessory.TTS("分散", isTTS, isDRTTS);
+        if (isTTS) accessory.Method.TTS("分散");
         
         var circleDp = accessory.Data.GetDefaultDrawProperties();
         circleDp.Name = "白光之鞭区域";
@@ -97,7 +94,7 @@ public class A12N
     {
         string tname = @event["TargetName"]?.ToString() ?? "未知目标";
         
-        accessory.Method.TextInfo($"靠近{tname}分摊", 2000);
+        if (isText) accessory.Method.TextInfo($"靠近{tname}分摊", 2000);
         
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = "分摊区域";
@@ -112,7 +109,7 @@ public class A12N
     [ScriptMethod(name: "加重罪", eventType: EventTypeEnum.StatusAdd, eventCondition: ["StatusID:1121"])]
     public void 加重罪(Event @event, ScriptAccessory accessory)
     {
-        accessory.Method.TextInfo("分散", 2000);
+        if (isText) accessory.Method.TextInfo("分散", 2000);
         
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = "加重罪区域";
@@ -127,9 +124,10 @@ public class A12N
     public void 圣餐(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("放圈连线点名", duration: 4000, true);
-        accessory.TTS("放圈连线点名", isTTS, isDRTTS);
+        if (isTTS) accessory.Method.TTS("放圈连线点名");
     }
 }
+
 
 public static class EventExtensions
 {
@@ -207,17 +205,3 @@ public static class EventExtensions
 }
 
 
-public static class Extensions
-{
-    public static void TTS(this ScriptAccessory accessory, string text, bool isTTS, bool isDRTTS)
-    {
-        if (isDRTTS)
-        {
-            accessory.Method.SendChat($"/pdr tts {text}");
-        }
-        else if (isTTS)
-        {
-            accessory.Method.TTS(text);
-        }
-    }
-}

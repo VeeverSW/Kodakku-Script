@@ -9,23 +9,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Intrinsics.Arm;
 
-namespace Meva.Heavensward.KodakkuAssist.Alexander;
+namespace Meva.Heavensward.KodakkuAssist.Alexander11;
 
-[ScriptType(name: "LV.60 亚历山大机神城 天动之章3", territorys: [582], guid: "c9446d8e-118d-ec98-fcbc-732213b0a265", version: "0.0.0.4", author: "Meva", note:noteStr)]
+[ScriptType(name: "LV.60 亚历山大机神城 天动之章3", territorys: [582], guid: "c9446d8e-118d-ec98-fcbc-732213b0a265", version: "0.0.0.6", author: "Meva & Veever", note:noteStr)]
 public class A11N
 {
     const string noteStr =
         """
-        v0.0.0.4:
-        1. 现在支持文字横幅/TTS开关/DR TTS开关（在用户设置里面）（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
+        v0.0.0.6:
         """;
     
     [UserSetting("文字横幅提示开关")]
     public bool isText { get; set; } = true;
     [UserSetting("TTS开关")]
     public bool isTTS { get; set; } = false;
-    [UserSetting("DR TTS开关")]
-    public bool isDRTTS { get; set; } = true;
 
     public void Init(ScriptAccessory accessory)
     {
@@ -37,7 +34,7 @@ public class A11N
     public void 汽油弹钢铁(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("钢铁", duration: 2000, true);
-        accessory.TTS("钢铁", isTTS, isDRTTS);
+        if (isTTS) accessory.Method.TTS("钢铁");
         
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = "汽油弹钢铁区域";
@@ -52,7 +49,7 @@ public class A11N
     public void 汽油弹月环(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("月环", duration: 2000, true);
-        accessory.TTS("月环", isTTS, isDRTTS);
+        if (isTTS) accessory.Method.TTS("月环");
         
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = "汽油弹月环";
@@ -72,7 +69,7 @@ public class A11N
     public void 百式聚能炮(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("核爆点名", duration: 4000, true);
-        accessory.TTS("核爆点名", isTTS, isDRTTS);
+        if (isTTS) accessory.Method.TTS("核爆点名");
         
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = "百式聚能炮";
@@ -83,7 +80,7 @@ public class A11N
     public void 黑暗命运(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("流血AOE", duration: 4000, true);
-        accessory.TTS("流血AOE", isTTS, isDRTTS);
+        if (isTTS) accessory.Method.TTS("流血AOE");
     }
     
     // 摧毁者冲击（直线AOE，Action 6751/6787）
@@ -91,7 +88,7 @@ public class A11N
     public void 摧毁者冲击(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("远离直线点名", duration: 2000, true);
-        accessory.TTS("远离直线点名", isTTS, isDRTTS);
+        if (isTTS) accessory.Method.TTS("远离直线点名");
         
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = "摧毁者冲击";
@@ -108,7 +105,7 @@ public class A11N
     public void 螺旋桨强风(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("躲在装置后", duration: 3000);
-        accessory.TTS("躲在装置后", isTTS, isDRTTS);
+        if (isTTS) accessory.Method.TTS("躲在装置后");
     }
     
     // 等离子护盾提示（NPC 3647）
@@ -116,13 +113,13 @@ public class A11N
     public void 护盾提示(Event @event, ScriptAccessory accessory)
     {
         accessory.Method.TextInfo("从护盾正面击杀护盾", duration: 4000);
-        accessory.TTS("从护盾正面击杀护盾", isTTS, isDRTTS);
+        if (isTTS) accessory.Method.TTS("从护盾正面击杀护盾");
     }
 
     #endregion
-    
-    
 }
+
+
 public static class EventExtensions
 {
     private static bool ParseHexId(string? idStr, out uint id)
@@ -198,18 +195,3 @@ public static class EventExtensions
     }
 }
 
-
-public static class Extensions
-{
-    public static void TTS(this ScriptAccessory accessory, string text, bool isTTS, bool isDRTTS)
-    {
-        if (isDRTTS)
-        {
-            accessory.Method.SendChat($"/pdr tts {text}");
-        }
-        else if (isTTS)
-        {
-            accessory.Method.TTS(text);
-        }
-    }
-}

@@ -1,12 +1,8 @@
 ﻿using Dalamud.Utility.Numerics;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
-using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
-using FFXIVClientStructs.FFXIV.Client.Game.Object;
-using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Vfx;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
@@ -14,8 +10,6 @@ using FFXIVClientStructs.FFXIV.Common.Lua;
 using KodakkuAssist.Data;
 using KodakkuAssist.Extensions;
 using KodakkuAssist.Module.Draw;
-using KodakkuAssist.Module.Draw;
-using KodakkuAssist.Module.Draw.Manager;
 using KodakkuAssist.Module.Draw.Manager;
 using KodakkuAssist.Module.GameEvent;
 using KodakkuAssist.Module.GameEvent.Struct;
@@ -66,15 +60,15 @@ public class Snowcloak
     const string UpdateStr =
     $"""
     v{Version}
-    删除了更新提醒的网络报错提示，为版本更新提示加上了脚本名字和作者名字
+    修复了TTS
     鸭门
     ----------------------------------
-    Deleted the network error message for update checking, added script name and author to update notification.
+    Fixed TTS
     Duckmen.
     """;
 
     private const string Name = "LV.50 凛冽洞天披雪大冰壁 [Snowcloak]";
-    private const string Version = "0.0.0.2";
+    private const string Version = "0.0.0.3";
     private const string DebugVersion = "a";
 
     private const bool Debugging = false;
@@ -91,9 +85,6 @@ public class Snowcloak
 
     [UserSetting("TTS开关(TTS toggle)")]
     public bool isTTS { get; set; } = true;
-
-    [UserSetting("EdgeTTS开关(EdgeTTS toggle)")]
-    public bool isEdgeTTS { get; set; } = true;
 
     //[UserSetting("是否自动使用防击退(Auto anti-knockback)")]
     //public bool useAntiKnockBack { get; set; } = false;
@@ -118,7 +109,7 @@ public class Snowcloak
 
 
     private readonly object CountLock = new object();
-
+    private bool isEdgeTTS = false;
 
     public void DebugMsg(string str, ScriptAccessory sa)
     {
@@ -252,7 +243,7 @@ public class Snowcloak
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-        sa.TTS($"{msg}", isEdgeTTS);
+        if(isTTS) sa.TTS($"{msg}", isEdgeTTS);
     }
 
 
@@ -288,7 +279,7 @@ public class Snowcloak
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-        sa.TTS($"{msg}", isEdgeTTS);
+        if (isTTS) sa.TTS($"{msg}", isEdgeTTS);
     }
 
     [ScriptMethod(name: "大雪球 - Heavy Snow", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:29589"])]
@@ -351,7 +342,7 @@ public class Snowcloak
         }
         string msg = language == Language.Chinese ? "躲在完整的冰柱后面随后准备远离" : "Get behind a full ice pillar, then move out";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 5000, true);
-        sa.TTS($"{msg}", isEdgeTTS);
+        if (isTTS) sa.TTS($"{msg}", isEdgeTTS);
     }
 
     [ScriptMethod(name: "Pillar Remove", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:29648"], userControl:false)]
@@ -385,7 +376,7 @@ public class Snowcloak
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-        sa.TTS($"{msg}", isEdgeTTS);
+        if (isTTS) sa.TTS($"{msg}", isEdgeTTS);
     }
     #endregion
 }
@@ -1905,14 +1896,7 @@ public static class Extensions
 {
     public static void TTS(this ScriptAccessory accessory, string text, bool isEdgeTTS)
     {
-        if (isEdgeTTS)
-        {
-            accessory.Method.EdgeTTS(text);
-        }
-        else
-        {
-            accessory.Method.TTS(text);
-        }
+        accessory.Method.TTS(text);
     }
 }
 

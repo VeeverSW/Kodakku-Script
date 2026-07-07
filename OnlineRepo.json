@@ -28,11 +28,11 @@
   {
     "Name": "LV.60 血战苍穹魔科学研究所",
     "Guid": "dd08165c-b709-4100-a96e-65f2c7ae4f3b",
-    "Version": "0.0.0.7",
+    "Version": "0.0.0.8",
     "Author": "Veever",
     "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/03-Heavensward/the-Aetherochemical-Research-Facility.cs",
-    "Note": "v0.0.0.7:\r\n1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）\r\n2. 以前的这几个脚本的底层扩展目前懒得重构（就能加啥随便加了）\r\n鸭门。",
+    "Note": "v0.0.0.8:\r\n1. 现在支持文字横幅/TTS开关\r\n2. 以前的这几个脚本的底层扩展目前懒得重构（就能加啥随便加了）\r\n鸭门。",
     "UpdateInfo": "",
     "TerritoryIds": [
       1110
@@ -132,11 +132,11 @@
   {
     "Name": "LV.60 亚历山大机神城 天动之章1",
     "Guid": "7cb80e0d-e693-6ca9-c46e-c96b0ec5d109",
-    "Version": "0.0.0.3",
-    "Author": "Meva",
+    "Version": "0.0.0.6",
+    "Author": "Meva & Veever",
     "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/03-Heavensward/A9N.cs",
-    "Note": "v0.0.0.3",
+    "Note": "v0.0.0.6",
     "UpdateInfo": "",
     "TerritoryIds": [
       580
@@ -145,11 +145,11 @@
   {
     "Name": "LV.60 亚历山大机神城 天动之章3",
     "Guid": "c9446d8e-118d-ec98-fcbc-732213b0a265",
-    "Version": "0.0.0.4",
-    "Author": "Meva",
+    "Version": "0.0.0.6",
+    "Author": "Meva & Veever",
     "Repo": "https://github.com/VeeverSW/Kodakku-Script",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/03-Heavensward/A11N.cs",
-    "Note": "v0.0.0.4:\r\n1. 现在支持文字横幅/TTS开关/DR TTS开关（在用户设置里面）（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）",
+    "Note": "v0.0.0.6:",
     "UpdateInfo": "",
     "TerritoryIds": [
       582
@@ -158,11 +158,11 @@
   {
     "Name": "LV.60 亚历山大机神城 天动之章4",
     "Guid": "c77e794f-f3bc-37fc-810b-bb153ba399c1",
-    "Version": "0.0.0.4",
-    "Author": "Meva",
+    "Version": "0.0.0.6",
+    "Author": "Meva & Veever",
     "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/03-Heavensward/A12N.cs",
-    "Note": "v0.0.0.4:\r\n1. 现在支持文字横幅/TTS开关/DR TTS开关（在用户设置里面）（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）",
+    "Note": "v0.0.0.6:",
     "UpdateInfo": "",
     "TerritoryIds": [
       583
@@ -315,12 +315,12 @@
   {
     "Name": "LV.60 秘本宝库迦巴勒幻想图书馆 [The Great Gubal Library (Hard)]",
     "Guid": "d376d381-8bd0-4a3b-9a87-d3e06e5afab8",
-    "Version": "0.0.0.1",
+    "Version": "0.0.0.2",
     "Author": "Veever",
     "Repo": "https://github.com/VeeverSW/Kodakku-Script",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/03-Heavensward/the-Great-Gubal-Library-Hard.cs",
-    "Note": "v0.0.0.1\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n2. Boss1的击退感觉没有必要画所以没有画\r\n鸭门\r\n------------------------------\r\n1. If you need a draw for a mechanic or notice any issues, @ me on DC or DM me.\r\n2. Boss 1 knockback felt unnecessary to draw, so I just skipped it.\r\nDuckmen",
-    "UpdateInfo": "    v0.0.0.1",
+    "Note": "v0.0.0.2\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n2. Boss1的击退感觉没有必要画所以没有画\r\n鸭门\r\n------------------------------\r\n1. If you need a draw for a mechanic or notice any issues, @ me on DC or DM me.\r\n2. Boss 1 knockback felt unnecessary to draw, so I just skipped it.\r\nDuckmen",
+    "UpdateInfo": "v0.0.0.2\r\n修复了TTS\r\n鸭门\r\n----------------------------------\r\nFixed TTS\r\nDuckmen.",
     "TerritoryIds": [
       578
     ]
@@ -430,12 +430,12 @@
   {
     "Name": "LV.50 凛冽洞天披雪大冰壁 [Snowcloak]",
     "Guid": "e64621a3-5ff4-40e2-9070-88e69191a1c0",
-    "Version": "0.0.0.2",
+    "Version": "0.0.0.3",
     "Author": "Veever",
     "Repo": "https://github.com/VeeverSW/Kodakku-Script",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/02-A-Realm-Reborn/Snowcloak.cs",
-    "Note": "v0.0.0.2\r\n----- 请在使用前阅读注意事项 以及根据情况修改用户设置 -----\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n鸭门\r\n----------------------------------\r\n----- Please read the notes before use and adjust user settings as needed. -----\r\n1. If you need a draw or notice any issues, @ me on DC or DM me.\r\nDuckmen.",
-    "UpdateInfo": "v0.0.0.2\r\n删除了更新提醒的网络报错提示，为版本更新提示加上了脚本名字和作者名字\r\n鸭门\r\n----------------------------------\r\nDeleted the network error message for update checking, added script name and author to update notification.\r\nDuckmen.",
+    "Note": "v0.0.0.3\r\n----- 请在使用前阅读注意事项 以及根据情况修改用户设置 -----\r\n1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我\r\n鸭门\r\n----------------------------------\r\n----- Please read the notes before use and adjust user settings as needed. -----\r\n1. If you need a draw or notice any issues, @ me on DC or DM me.\r\nDuckmen.",
+    "UpdateInfo": "v0.0.0.3\r\n修复了TTS\r\n鸭门\r\n----------------------------------\r\nFixed TTS\r\nDuckmen.",
     "TerritoryIds": [
       1062
     ]
