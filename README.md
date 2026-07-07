@@ -1,35 +1,32 @@
-# Kodakku-Script
-此处为本人制作的基于可达鸭(KodakkuAssist)框架的脚本，均为副本机制绘图以及TTS播报等内容
+## 在线库：`https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/OnlineRepo.json`
+## 本地版请在`https://github.com/VeeverSW/Kodakku-Script`下载
 
-目的是脱离act的cactbot进行副本机制播报，不想要tts可以在可达鸭(KodakkuAssist)设置里面关掉
+## 跨版本回放转换器
+https://discord.com/channels/1294535221571751979/1315046398785228880/1517465683657490473
 
-Scripts made by me using the KodakkuAssist framework — mainly for dungeon mechanic drawings and TTS callouts.
+## 解限版ARR (解限开关在设置里面): 
+国内加速链接: ```https://gh-proxy.veever.workers.dev/VeeverSW/DalamudPlugins/main/pluginmaster-cn.json```
+原始链接: ```https://raw.githubusercontent.com/VeeverSW/DalamudPlugins/main/pluginmaster.json```
 
-The purpose of this collection of scripts is to provide users with a TTS service for raidboss alerts and draw the mechanics of the boss without using act's cactbot. 
+目的是脱离act的**cactbot**进行副本机制播报，不想要tts可以在可达鸭设置里面关掉
 
-If you do not want **TTS** , you can turn it off in KodakkuAssist Settings or User settings in each script.
-
-# How-to-install
-```
-在线库：`https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/OnlineRepo.json`
-本地版请在: `https://github.com/VeeverSW/Kodakku-Script/releases`下载
 OnlineRepo: `https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/OnlineRepo.json`
-Local version please download at: `https://github.com/VeeverSW/Kodakku-Script/releases`
-```
+Local version please download at: `https://github.com/VeeverSW/Kodakku-Script`
+The purpose of this collection of scripts is to provide users with a TTS service for raidboss alerts and draw the mechanics of the boss without using act's cactbot. 
+If you do not want **TTS** , you can turn it off in KodakkuAssist Settings or User settings in each script.
 
 
 ## 支持副本列表 (Supported Duties) :
-### 搜索副本名可以跳转查看预览图 - Search the duty name to jump to its preview images.
-```
-Only duties with an English name at the end support English.  
-You can disable TextInfo and TTS if you prefer to use it anyway.
-```
+### 搜索副本名可以跳转查看预览图
+```Only duties with an English name at the end support English.  
+You can disable TextInfo and TTS if you prefer to use it anyway.```
+`Search the duty name to jump to its preview images.`
 
-```
 - 行会令（全部）
 
 - --------2.0--------
 - LV.28 名门府邸静语庄园
+- LV.50 凛冽洞天披雪大冰壁 [Snowcloak]
 
 - --------3.0--------
 - LV.60 血战苍穹魔科学研究所
@@ -42,7 +39,7 @@ You can disable TextInfo and TTS if you prefer to use it anyway.
 - LV.77 避暑离宫马利卡大井 [Malikahs Well]
 - LV.79 伪造天界格鲁格火山 [Mt. Gulg]
 - LV.80 魔法宫殿宇宙宫
-- LV.80 光之战士歼灭战
+- LV.80 光之战士歼灭战 [the Seat of Sacrifice]
 - LV.80 伊甸希望乐园 共鸣之章3
 
 - --------6.0--------
@@ -65,10 +62,10 @@ You can disable TextInfo and TTS if you prefer to use it anyway.
 - LV.100 护锁刃龙狩猎战 [The Windward Wilds]
 - LV.100 护锁刃龙上位狩猎战 [The Windward Wilds (Extreme)]
 - LV.100 遗忘行路雾之迹 [Mistwake]
+- LV.100 军工要地克吕提俄斯魔导工厂 [the Clyteum]
 
 
 - --------其他--------
 - 金碟-小雏鸟的营救者
 - 寻人 NPC 物品小工具
 - ||~~門-DOOR~~||
-```
