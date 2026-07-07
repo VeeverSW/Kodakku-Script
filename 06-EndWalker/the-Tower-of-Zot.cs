@@ -18,14 +18,14 @@ using System.Windows;
 namespace Veever.EndWalker.theTowerofZot;
 
 [ScriptType(name: "LV.81 异形楼阁佐特塔", territorys: [952], guid: "98a97134-f87b-4386-aad9-2a99e81794ab",
-    version: "0.0.0.4", author: "Veever", note: noteStr)]
+    version: "0.0.0.5", author: "Veever", note: noteStr)]
 
 public class the_Tower_of_Zot
 {
     const string noteStr =
     """
-    v0.0.0.4:
-    1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
+    v0.0.0.5:
+    1. 现在支持文字横幅/TTS开关
     2. 标点开关以及本地开关都在用户设置里面，可自行选择关闭或者开启（默认本地开启）
     3. Boss1击杀后会生成门指路，绿圈显示为击杀小怪后会打开的门（防止晕头转向）
     4. Boss2标记目前有bug删除不掉，但是正常dps的话到那里boss也快死了（不正常dps一个攻击1的标点也不影响），所以有缘会修
@@ -38,9 +38,6 @@ public class the_Tower_of_Zot
 
     [UserSetting("TTS开关")]
     public bool isTTS { get; set; } = false;
-
-    [UserSetting("DR TTS开关")]
-    public bool isDRTTS { get; set; } = true;
 
     [UserSetting("标点开关")]
     public bool isMark { get; set; } = true;
@@ -57,6 +54,7 @@ public class the_Tower_of_Zot
 
     private readonly object berserkerSpheresLock = new object();
     private readonly object DeltaFireIIILock = new object();
+    private bool isDRTTS = false;
 
     public void Init(ScriptAccessory accessory)
     {
@@ -596,14 +594,7 @@ public static class Extensions
 {
     public static void TTS(this ScriptAccessory accessory, string text, bool isTTS, bool isDRTTS)
     {
-        if (isDRTTS)
-        {
-            accessory.Method.SendChat($"/pdr tts {text}");
-        }
-        else if (isTTS)
-        {
-            accessory.Method.TTS(text);
-        }
+        accessory.Method.TTS(text);
     }
 }
 

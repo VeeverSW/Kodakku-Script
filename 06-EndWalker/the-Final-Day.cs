@@ -38,7 +38,7 @@ public class the_Final_Day
 {
     const string NoteStr =
     """
-    v0.0.0.1
+    v0.0.0.2
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     鸭门
     ------------------------------
@@ -47,12 +47,17 @@ public class the_Final_Day
     """;
 
     const string UpdateInfo =
-    """
-        v0.0.0.1
+    $"""
+    v{Version}
+    修复了TTS
+    鸭门
+    ----------------------------------
+    Fixed TTS
+    Duckmen.
     """;
 
     private const string Name = "LV.90 终结之战 [the Final Day]";
-    private const string Version = "0.0.0.1";
+    private const string Version = "0.0.0.2";
     private const string DebugVersion = "a";
 
     private const bool Debugging = true;
@@ -135,7 +140,7 @@ public class the_Final_Day
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "终末狂热 - Telomania", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(26207)$"])]
@@ -143,7 +148,7 @@ public class the_Final_Day
     {
         string msg = language == Language.Chinese ? "连续多段AOE" : "Multi AOEs";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "天体撞击 - Stellar Collision", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(26158)$"])]
@@ -157,7 +162,7 @@ public class the_Final_Day
     {
         string msg = language == Language.Chinese ? "靠近中心击退" : "Knockback from Center";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 6700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
 
         var dp = sa.Data.GetDefaultDrawProperties();
         dp.Name = "Galaxie";
@@ -215,13 +220,13 @@ public class the_Final_Day
             {
                 string msg = language == Language.Chinese ? "范围死刑，远离人群" : "AOE tankbuster — Stay away from party";
                 if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-                if (isTTS) sa.Method.EdgeTTS($"{msg}");
+                if (isTTS) sa.Method.TTS($"{msg}");
             }
             else if (HubrisTTSCount == 0)
             {
                 string msg = language == Language.Chinese ? "远离范围死刑" : "Avoid AOE tankbuster";
                 if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-                if (isTTS) sa.Method.EdgeTTS($"{msg}");
+                if (isTTS) sa.Method.TTS($"{msg}");
             }
 
             HubrisTTSCount++;
@@ -288,19 +293,8 @@ public class the_Final_Day
     {
         string msg = language == Language.Chinese ? "坦克LB" : "Tank LB";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
-
-
-
-
-
-
-
-
-
-
-
 
 
     #region 优先级字典 类

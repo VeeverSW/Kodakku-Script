@@ -38,7 +38,7 @@ public class the_Dead_Ends
 {
     const string NoteStr =
     """
-    v0.0.0.1
+    v0.0.0.3
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     2. Boss2击退距离因为缺乏实例所以不确定，如果有未使用防击退的arr可以给我发一份
     鸭门
@@ -50,22 +50,23 @@ public class the_Dead_Ends
     """;
 
     const string UpdateInfo =
-    """
-        v0.0.0.1
-
+    $"""
+    v{Version}
+    修复了TTS
+    鸭门
+    ----------------------------------
+    Fixed TTS
+    Duckmen.
     """;
 
     private const string Name = "LV.90 最终幻想末世终迹 [the Dead Ends]";
-    private const string Version = "0.0.0.1";
+    private const string Version = "0.0.0.3";
     private const string DebugVersion = "a";
 
     private const bool Debugging = true;
 
     private static readonly List<string> Role = ["MT", "ST", "H1", "H2", "D1", "D2", "D3", "D4"];
     private static readonly Vector3 Center = new Vector3(100, 0, 100);
-
-    // TODO 根据第一个AOE的读条调整
-    private static uint BossDataId = 9708;
 
     [UserSetting("播报语言(language)")]
     public Language language { get; set; } = Language.Chinese;
@@ -136,10 +137,10 @@ public class the_Dead_Ends
 
     }
 
-    private static IGameObject? GetBossObject(ScriptAccessory sa)
-    {
-        return sa.GetByDataId(BossDataId).FirstOrDefault();
-    }
+    // private static IGameObject? GetBossObject(ScriptAccessory sa)
+    // {
+    //     return sa.GetByDataId(BossDataId).FirstOrDefault();
+    // }
 
     #region 小怪
     [ScriptMethod(name: "---- 小怪-Mobs ----", eventType: EventTypeEnum.NpcYell, eventCondition: ["HelloayaWorld:asdf"],
@@ -197,7 +198,7 @@ public class the_Dead_Ends
     {
         string msg = language == Language.Chinese ? "大AOE" : "Heavy AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "咳出-Cough Up", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:25918"])]
@@ -214,7 +215,7 @@ public class the_Dead_Ends
         {
             string msg = language == Language.Chinese ? "至少两人站在一起" : "At least 2 players Stack";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
     }
 
@@ -223,7 +224,7 @@ public class the_Dead_Ends
     {
         string msg = language == Language.Chinese ? "月环靠近" : "Dynamo (In)";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
         
         isinRing = true;
         DebugMsg($"isinRing {isinRing}", sa);
@@ -372,7 +373,7 @@ public class the_Dead_Ends
     {
         string msg = language == Language.Chinese ? "死刑点名" : "Tankbuster";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
 
@@ -384,13 +385,13 @@ public class the_Dead_Ends
         {
             string msg = language == Language.Chinese ? "分摊点名" : "Stack";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
         else
         {
             string msg = language == Language.Chinese ? $"与{tname}分摊" : $"Stack with {tname}";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
 
         DrawHelper.DrawCircleObject(sa, ev.TargetId, new Vector2(6), 4900, "BlightedWater", color: sa.Data.DefaultSafeColor, scaleByTime: false);
@@ -413,7 +414,7 @@ public class the_Dead_Ends
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "小口径射线 - Small-bore Laser", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:28352"])]
@@ -429,7 +430,7 @@ public class the_Dead_Ends
         {
             string msg = language == Language.Chinese ? "分散不要重叠" : "Spread";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
 
         DrawHelper.DrawCircleObject(sa, ev.TargetId, new Vector2(6), 4700, "Spread Notify", color: new Vector4(1,0,1,ColorAlpha), scaleByTime: true); 
@@ -476,13 +477,13 @@ public class the_Dead_Ends
         {
             string msg = language == Language.Chinese ? "死刑激光点名" : "Laser buster";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
         else
         {
             string msg = language == Language.Chinese ? $"远离死刑激光" : $"Avoid buster Laser";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
 
         DrawHelper.DrawRectObjectTarget(sa, ev.SourceId, ev.TargetId, new Vector2(10, 46), 5000, "Boss2TankBuster", color: sa.Data.DefaultDangerColor);
@@ -502,7 +503,7 @@ public class the_Dead_Ends
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "慈悲-Pity", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:25949"])]
@@ -510,7 +511,7 @@ public class the_Dead_Ends
     {
         string msg = language == Language.Chinese ? "死刑点名" : "Tankbuster";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "燐光 - Lamellar Light", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(25939)$"])]
@@ -533,13 +534,13 @@ public class the_Dead_Ends
         {
             string msg = language == Language.Chinese ? "分摊点名" : "Stack";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 5100, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
         else
         {
             string msg = language == Language.Chinese ? $"与{tname}分摊" : $"Stack with {tname}";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 5100, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
 
         DrawHelper.DrawCircleObject(sa, ev.TargetId, new Vector2(6), 5100, "Benevolence", color: sa.Data.DefaultSafeColor, scaleByTime: false);
@@ -564,7 +565,7 @@ public class the_Dead_Ends
         {
             string msg = language == Language.Chinese ? "分散不要重叠" : "Spread";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 5100, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
 
         DrawHelper.DrawCircleObject(sa, ev.TargetId, new Vector2(6), 5100, "StillEmbrace Notify", color: new Vector4(1, 0, 1, 1), scaleByTime: true);

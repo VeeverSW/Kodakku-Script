@@ -16,14 +16,14 @@ using System.Collections.Generic;
 namespace Veever.EndWalker.theMinstrelsBalladEndsingersAria;
 
 [ScriptType(name: "LV.90 终极之战(解限版)", territorys: [998], guid: "100df6f8-d8ce-44f7-9fb0-431eca0f2825",
-    version: "0.0.0.6", author: "Veever", note: noteStr)]
+    version: "0.0.0.7", author: "Veever", note: noteStr)]
 
 public class the_Minstrels_Ballad_Endsingers_Aria
 {
     const string noteStr =
     """
-    v0.0.0.6:
-    1. 现在支持文字横幅/TTS开关/DR TTS开关（使用DR TTS开关之前请确保你已正确安装`DailyRoutines`插件）（请确保两个TTS开关不要同时打开）
+    v0.0.0.7:
+    1. 现在支持文字横幅/TTS开关
     2. 以前的这几个脚本的底层扩展目前懒得重构（就能加啥随便加了）
     鸭门。 
     """;
@@ -32,9 +32,6 @@ public class the_Minstrels_Ballad_Endsingers_Aria
 
     [UserSetting("TTS开关")]
     public bool isTTS { get; set; } = false;
-
-    [UserSetting("DR TTS开关")]
-    public bool isDRTTS { get; set; } = true;
 
     public int connectNotify = 0;
 
@@ -76,7 +73,6 @@ public class the_Minstrels_Ballad_Endsingers_Aria
             {
                 accessory.Method.TTS($"场中集合准备向{sideText}拉线");
             }
-            if (isDRTTS) accessory.Method.SendChat($"/pdr tts 场中集合准备向{sideText}拉线");
 
             Vector3 pos = isLeftSide
                 ? new Vector3(81.38f, 0.00f, 102.54f)
@@ -136,7 +132,6 @@ public class the_Minstrels_Ballad_Endsingers_Aria
     {
         if (isText) accessory.Method.TextInfo("双T死刑", duration: 4700, true);
         if (isTTS) accessory.Method.TTS("双T死刑");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts 双T死刑");
     }
 
     [ScriptMethod(name: "AOE", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(28718|28662)$"])]
@@ -144,7 +139,6 @@ public class the_Minstrels_Ballad_Endsingers_Aria
     {
         if (isText) accessory.Method.TextInfo("AOE", duration: 4700, true);
         if (isTTS) accessory.Method.TTS("AOE");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts AOE");
     }
 
     [ScriptMethod(name: "反讽", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:28720"])]
@@ -152,7 +146,6 @@ public class the_Minstrels_Ballad_Endsingers_Aria
     {
         if (isText) accessory.Method.TextInfo($"分组分摊", duration: 4700, true);
         if (isTTS) accessory.Method.TTS($"分组分摊");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts 分组分摊");
 
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = "反讽(分摊)";
@@ -184,7 +177,6 @@ public class the_Minstrels_Ballad_Endsingers_Aria
     {
         if (isText) accessory.Method.TextInfo("击退到安全位置", duration: 4700, true);
         if (isTTS) accessory.Method.TTS("击退到安全位置");
-        if (isDRTTS) accessory.Method.SendChat($"/pdr tts 击退到安全位置");
 
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = "蓝色天体撞击";
