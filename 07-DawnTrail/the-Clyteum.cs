@@ -64,15 +64,15 @@ public class the_Clyteum
     const string UpdateStr =
     $"""
     v{Version}
-    删除了更新提醒的网络报错提示，为版本更新提示加上了脚本名字和作者名字
+    修复了TTS
     鸭门
     ----------------------------------
-    Deleted the network error message for update checking, added script name and author to update notification.
+    Fixed TTS
     Duckmen.
     """;
 
     private const string Name = "LV.100 军工要地克吕提俄斯魔导工厂 [the Clyteum]";
-    private const string Version = "0.0.0.5";
+    private const string Version = "0.0.0.6";
     private const string DebugVersion = "a";
 
     private const bool Debugging = false;
@@ -89,9 +89,6 @@ public class the_Clyteum
 
     [UserSetting("TTS开关(TTS toggle)")]
     public bool isTTS { get; set; } = true;
-
-    [UserSetting("EdgeTTS开关(EdgeTTS toggle)")]
-    public bool isEdgeTTS { get; set; } = true;
 
     [UserSetting("是否自动使用防击退(Auto anti-knockback)")]
     public bool useAntiKnockBack { get; set; } = false;
@@ -116,6 +113,7 @@ public class the_Clyteum
 
 
     private readonly object CountLock = new object();
+    private bool isEdgeTTS = false;
 
 
     public void DebugMsg(string str, ScriptAccessory sa)
@@ -202,7 +200,7 @@ public class the_Clyteum
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-        sa.TTS($"{msg}", isEdgeTTS);
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
 
@@ -221,7 +219,7 @@ public class the_Clyteum
 
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
 
-        sa.TTS($"{msg}", isEdgeTTS);
+        if (isTTS) sa.Method.TTS($"{msg}");
 
         DrawHelper.DrawCircleObject(sa, ev.TargetId, new Vector2(6f), 4700, $"Penetrator Missile-{ev.SourceId}", color: sa.Data.DefaultSafeColor, scaleByTime: false);
     }
@@ -237,7 +235,7 @@ public class the_Clyteum
     {
         string msg = language == Language.Chinese ? "即将被扫描时不要动" : "Don't move when about to be scanned";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 5000, true);
-        sa.TTS($"{msg}", isEdgeTTS);
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
     #endregion
 
@@ -254,7 +252,7 @@ public class the_Clyteum
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-        sa.TTS($"{msg}", isEdgeTTS);
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     
@@ -276,7 +274,7 @@ public class the_Clyteum
     {
         string msg = language == Language.Chinese ? "注意击退" : "Be care of Knockback";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 2800, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
 
         var dp = sa.Data.GetDefaultDrawProperties();
         dp.Name = "Bodyweight Exorcism";
@@ -304,7 +302,7 @@ public class the_Clyteum
         {
             string msg = language == Language.Chinese ? "分散" : "Spread";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 3000, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
     }
 
@@ -317,7 +315,7 @@ public class the_Clyteum
 
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
 
-        sa.TTS($"{msg}", isEdgeTTS);
+        if (isTTS) sa.Method.TTS($"{msg}");
 
         DrawHelper.DrawCircleObject(sa, ev.TargetId, new Vector2(6f), 4700, $"Profane Pressure-{ev.SourceId}", color: sa.Data.DefaultSafeColor, scaleByTime: false);
     }
@@ -336,7 +334,7 @@ public class the_Clyteum
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-        sa.TTS($"{msg}", isEdgeTTS);
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "虚无黑暗 - Void Dark", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^50313$"])]
@@ -369,7 +367,7 @@ public class the_Clyteum
 
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
 
-        sa.TTS($"{msg}", isEdgeTTS);
+        if (isTTS) sa.Method.TTS($"{msg}");
 
         DrawHelper.DrawCircleObject(sa, ev.TargetId, new Vector2(6f), 4700, $"Gluttonous Wire-{ev.SourceId}", color: sa.Data.DefaultSafeColor, scaleByTime: false);
     }
@@ -381,13 +379,13 @@ public class the_Clyteum
         {
             string msg = language == Language.Chinese ? "范围死刑，远离人群" : "AOE tankbuster — Stay away from party";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-            if (isTTS) sa.TTS($"{msg}", isEdgeTTS);
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
         else
         {
             string msg = language == Language.Chinese ? "远离范围死刑" : "Avoid AOE tankbuster";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-            if (isTTS) sa.TTS($"{msg}", isEdgeTTS);
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
     }
 
@@ -398,7 +396,7 @@ public class the_Clyteum
         {
             string msg = language == Language.Chinese ? "分散" : "Spread";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 3000, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
     }
 
@@ -1928,14 +1926,7 @@ public static class Extensions
 {
     public static void TTS(this ScriptAccessory accessory, string text, bool isEdgeTTS)
     {
-        if (isEdgeTTS)
-        {
-            accessory.Method.EdgeTTS(text);
-        }
-        else
-        {
-            accessory.Method.TTS(text);
-        }
+        accessory.Method.TTS(text);
     }
 
     public static void antiKnockBack(this MethodAccessory method, ScriptAccessory sa)

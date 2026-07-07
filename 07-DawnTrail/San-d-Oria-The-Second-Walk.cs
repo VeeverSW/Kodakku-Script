@@ -38,7 +38,7 @@ public class San_d_Oria_The_Second_Walk
 {
     const string NoteStr =
     """
-    v0.0.0.4
+    v0.0.0.5
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     2. Boss1可能会遇到双手直线时间偏长的问题（懒得改了影响不是很大）
     3. Boss3并没有对坦克职业的击退死刑执行自动防击退
@@ -60,14 +60,17 @@ public class San_d_Oria_The_Second_Walk
     """;
 
     const string UpdateInfo =
-    """
-        v0.0.0.4
-        添加了Boss2前面小怪的绘制
-        Add drawing for the mobs before Boss 2
+    $"""
+    v{Version}
+    修复了TTS
+    鸭门
+    ----------------------------------
+    Fixed TTS
+    Duckmen.
     """;
 
     private const string Name = "LV.100 桑多利亚：第二巡行 [San d Oria The Second Walk]";
-    private const string Version = "0.0.0.4";
+    private const string Version = "0.0.0.5";
     private const string DebugVersion = "a";
 
     private const bool Debugging = true;
@@ -231,7 +234,7 @@ public class San_d_Oria_The_Second_Walk
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "强放逐 & 投射 - Banish III & Catapult", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(43562|43568|43567)$"])]
@@ -260,7 +263,7 @@ public class San_d_Oria_The_Second_Walk
         }
 
         if (isText) sa.Method.TextInfo($"{msg}", duration: 3000, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
         if (isMark) sa.Method.Mark((uint)ev.TargetId, KodakkuAssist.Module.GameOperate.MarkType.Bind1, LocalMark);
     }
 
@@ -300,7 +303,7 @@ public class San_d_Oria_The_Second_Walk
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "双手死亡猛击-Synchronized Smite", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(44444|44443)$"])]
@@ -398,14 +401,14 @@ public class San_d_Oria_The_Second_Walk
     {
         string msg = language == Language.Chinese ? "靠近危险区域准备穿进月环" : "Stay near danger zone, then move in";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
 
         DrawHelper.DrawCircle(sa, ev.EffectPosition, new Vector2(12f), 6700, $"MidwinterMarch-{ev.SourceId}", sa.Data.DefaultDangerColor, scaleByTime: false);
         await Task.Delay(7000);
 
         string msg1 = language == Language.Chinese ? "进入月环" : "Move in (Dynamo)";
         if (isText) sa.Method.TextInfo($"{msg1}", duration: 3500, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg1}");
+        if (isTTS) sa.Method.TTS($"{msg1}");
 
         DrawHelper.DrawCircle(sa, ev.EffectPosition, new Vector2(12f), 3500, $"MidwinterMarchDountSafe-{ev.SourceId}", sa.Data.DefaultSafeColor, scaleByTime: false);
         DrawHelper.DrawDount(sa, ev.EffectPosition, new Vector2(60f), new Vector2(12f), 3500, $"MidwinterMarchDount-{ev.SourceId}", sa.Data.DefaultDangerColor, scaleByTime: false);
@@ -416,7 +419,7 @@ public class San_d_Oria_The_Second_Walk
     {
         string msg = language == Language.Chinese ? "进入月环" : "Move in (Dynamo)";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 3500, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
 
         DrawHelper.DrawCircle(sa, ev.EffectPosition, new Vector2(14f), 4700, $"DeadWringerDountSafe-{ev.SourceId}", sa.Data.DefaultSafeColor, scaleByTime: false);
         DrawHelper.DrawDount(sa, ev.EffectPosition, new Vector2(60f), new Vector2(14f), 4700, $"DeadWringerDount-{ev.SourceId}", sa.Data.DefaultDangerColor, scaleByTime: false);
@@ -741,14 +744,14 @@ public class San_d_Oria_The_Second_Walk
             DebugMsg($"isTank: {isTank}", sa);
             string msg = language == Language.Chinese ? "坦克踩塔" : "Tanks take tower";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 8000, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
         else
         {
             DebugMsg($"isTank: {isTank}", sa);
             string msg = language == Language.Chinese ? "攻击手臂" : "Attack Arms";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 8000, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
     }
     #endregion
@@ -792,7 +795,7 @@ public class San_d_Oria_The_Second_Walk
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "死刑提示 - Tankbuster Notify", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:44305"])]
@@ -802,7 +805,7 @@ public class San_d_Oria_The_Second_Walk
         {
             string msg = language == Language.Chinese ? "死刑点名, 注意减伤" : "Targeted Buster";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
     }
 
@@ -920,7 +923,7 @@ public class San_d_Oria_The_Second_Walk
         }
 
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "欧米茄冲击波 - Omega Blaster", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(44329|44330)$"])]
@@ -1120,7 +1123,7 @@ public class San_d_Oria_The_Second_Walk
         }
         
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "决战之地 - Proving Ground", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:45065"])]
@@ -1128,7 +1131,7 @@ public class San_d_Oria_The_Second_Walk
     {
         string msg = language == Language.Chinese ? "远离Boss脚下" : "Don't stand under boss";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 2700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
         DrawHelper.DrawCircle(sa, ev.SourcePosition, new Vector2(5f), 2700, $"ProvingGround-{ev.SourceId}", color: new Vector4(1, 0, 0, ColorAlpha), scaleByTime: false);
     }
 
@@ -1221,7 +1224,7 @@ public class San_d_Oria_The_Second_Walk
                     msg = language == Language.Chinese ? "远离范围AOE死刑" : "AOE Tankbuster — Stay Away";
                 }
                 if (isText) sa.Method.TextInfo($"{msg}", duration: 6900, true);
-                if (isTTS) sa.Method.EdgeTTS($"{msg}");
+                if (isTTS) sa.Method.TTS($"{msg}");
                 boss3TankBusterList.Clear();
             }
         }
@@ -1256,7 +1259,7 @@ public class San_d_Oria_The_Second_Walk
     {
         string msg = language == Language.Chinese ? "钢铁远离" : "Chariot (Out)";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 1000, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
 
         DrawHelper.DrawCircleObject(sa, ev.SourceId, new Vector2(10f), 2700, $"GreatWheel-{ev.SourceId}", color: new Vector4(1, 0, 0, ColorAlpha));
     }
@@ -1285,7 +1288,7 @@ public class San_d_Oria_The_Second_Walk
         isSecondTankBuster = true;
         string msg = language == Language.Chinese ? "击退至安全通道" : "Knockback to safe lane";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 6700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
 
         List<Vector3> safePos = new List<Vector3>
         {
@@ -1323,7 +1326,7 @@ public class San_d_Oria_The_Second_Walk
         }
 
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
 
         DrawHelper.DrawCircleObject(sa, ev.TargetId, new Vector2(5f), 4700, $"EmpyrealBanishIV-{ev.SourceId}", color: sa.Data.DefaultSafeColor, scaleByTime: false);
     }
@@ -1362,7 +1365,7 @@ public class San_d_Oria_The_Second_Walk
                     msg = language == Language.Chinese ? "远离范围AOE死刑" : "AOE Tankbuster — Stay Away";
                 }
                 if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-                if (isTTS) sa.Method.EdgeTTS($"{msg}");
+                if (isTTS) sa.Method.TTS($"{msg}");
                 boss4TankBusterList.Clear();
             }
         }
@@ -1377,7 +1380,7 @@ public class San_d_Oria_The_Second_Walk
         string msg = language == Language.Chinese ? $"月环靠近" : $"Dynamo (In) ";
 
         if (isText) sa.Method.TextInfo($"{msg}", duration: 7200, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
 
         DrawHelper.DrawCircleObject(sa, ev.TargetId, new Vector2(6f), 7200, $"CronosSlingDynamoSafe-{ev.SourceId}", color: sa.Data.DefaultSafeColor, scaleByTime: false);
         DrawHelper.DrawDount(sa, ev.EffectPosition, new Vector2(70f), new Vector2(6f), 7200, $"CronosSlingDynamoSafe-{ev.SourceId}", color: sa.Data.DefaultDangerColor, scaleByTime: false);
@@ -1389,7 +1392,7 @@ public class San_d_Oria_The_Second_Walk
         string msg = language == Language.Chinese ? $"钢铁远离" : $"Chariot (Out) ";
 
         if (isText) sa.Method.TextInfo($"{msg}", duration: 7200, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
 
         DrawHelper.DrawCircleObject(sa, ev.TargetId, new Vector2(9f), 7200, $"CronosSlingDynamoSafe-{ev.SourceId}", color: sa.Data.DefaultDangerColor, scaleByTime: false);   
     }
@@ -1415,7 +1418,7 @@ public class San_d_Oria_The_Second_Walk
         {
             string msg = language == Language.Chinese ? $"分散" : $"Spread";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
 
         DrawHelper.DrawCircleObject(sa, ev.TargetId, new Vector2(5f), 4700, $"EmpyrealVortex-{ev.SourceId}", color: sa.Data.DefaultDangerColor, scaleByTime: true);
@@ -1434,7 +1437,7 @@ public class San_d_Oria_The_Second_Walk
 
         string msg = language == Language.Chinese ? $"前往传送点" : $"Move to the Portal";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 3700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
 
         DrawHelper.DrawDisplacement(sa, tarobj1.Position, new Vector2(2, 4), 5500, $"Warp-{ev.TargetId}", color: sa.Data.DefaultSafeColor);
     }
@@ -1466,7 +1469,7 @@ public class San_d_Oria_The_Second_Walk
     {
         string msg = language == Language.Chinese ? $"远离标枪" : $"Away from Javelin";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4200, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     //0000002C|0000002D|0000002E|0000002F
@@ -1581,7 +1584,7 @@ public class San_d_Oria_The_Second_Walk
         }
          
         if (isText) sa.Method.TextInfo($"{msg}", duration: 6000, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
 
         DrawHelper.DrawCircleObject(sa, ev.TargetId, new Vector2(6f), 12000, $"StellarBurst-{ev.SourceId}", color: sa.Data.DefaultSafeColor, scaleByTime: false);
     }

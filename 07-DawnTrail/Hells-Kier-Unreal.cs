@@ -25,18 +25,17 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 namespace Veever.DawnTrail.Hells_Kier_Unreal;
 
 [ScriptType(name: "LV.100 朱雀幻巧战", territorys: [1272], guid: "60468283-702c-4ddb-95db-fd81409d5630",
-    version: "0.0.0.7", author: "Veever", note: noteStr)]
+    version: "0.0.0.8", author: "Veever", note: noteStr)]
 
 public class Hells_Kier_Unreal
 {
     const string noteStr =
     """
-    v0.0.0.7:
+    v0.0.0.8:
     1. 本脚本使用攻略为菓子攻略，请在打本之前调整好! 可达鸭的小队排序!!（很重要，影响指路和机制播报）
     2. 如果懒得调也不想看需要小队位置判定的指路，可以在用户设置里面关闭指路开关
     3. 用户设置里面新加入场景标点设置(开局放置ABCD标点)(需要ACT鲶鱼精), 可能在未来弄一个不需要鲶鱼精的方法
-    4. 转场那里有想到一个全自动转圈的想法，可能有朝一日会写(猴年马月)
-    5. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
+    4. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     鸭门。
     """;
 
@@ -122,7 +121,7 @@ public class Hells_Kier_Unreal
     public void Boss1AOE(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("AOE", duration: 2700, true);
-        if (isTTS) accessory.Method.EdgeTTS($"AOE");
+        if (isTTS) accessory.Method.TTS($"AOE");
     }
 
     [ScriptMethod(name: "Rout-突进", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:43027"])]
@@ -231,7 +230,7 @@ public class Hells_Kier_Unreal
                 if (@event.TargetId() == accessory.Data.Me)
                 {
                     if (isText) accessory.Method.TextInfo("分散, 不要重叠", duration: 4000, true);
-                    if (isTTS) accessory.Method.EdgeTTS($"分散, 不要重叠");
+                    if (isTTS) accessory.Method.TTS($"分散, 不要重叠");
                 }
                 var dp = accessory.Data.GetDefaultDrawProperties();
                 dp.Name = "008B-分散";
@@ -249,7 +248,7 @@ public class Hells_Kier_Unreal
     public void FleetingSummer(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("远离Boss正面", duration: 2700, true);
-        if (isTTS) accessory.Method.EdgeTTS($"远离Boss正面");
+        if (isTTS) accessory.Method.TTS($"远离Boss正面");
 
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = $"Fleeting Summer";
@@ -269,12 +268,12 @@ public class Hells_Kier_Unreal
         if (@event.TargetId == accessory.Data.Me)
         {
             if (isText) accessory.Method.TextInfo("死刑点名, 注意减伤", duration: 2500, true);
-            if (isTTS)  accessory.Method.EdgeTTS($"死刑点名, 注意减伤");
+            if (isTTS)  accessory.Method.TTS($"死刑点名, 注意减伤");
         }
         else if (index == 0 || index == 1 || index == 2 || index == 3)
         {
             if (isText) accessory.Method.TextInfo($"死刑点名{@event.TargetName()}", duration: 2500, true);
-            if (isTTS) accessory.Method.EdgeTTS($"死刑点名{@event.TargetName()}");
+            if (isTTS) accessory.Method.TTS($"死刑点名{@event.TargetName()}");
         }
     }
 
@@ -345,7 +344,7 @@ public class Hells_Kier_Unreal
                     // NW
                     DebugMsg("is NW", accessory);
                     if (isText) accessory.Method.TextInfo("攻击指定羽毛，不要攻击尾羽", duration: 4500, true);
-                    if (isTTS) accessory.Method.EdgeTTS($"攻击指定羽毛，不要攻击尾羽");
+                    if (isTTS) accessory.Method.TTS($"攻击指定羽毛，不要攻击尾羽");
                     if (isLead) DrawHelper.DrawDisplacement(accessory, posNW, new Vector2(2f, 2f), 6000, "NW——Red", color: accessory.Data.DefaultDangerColor);
 
                     if (index == 4)
@@ -362,7 +361,7 @@ public class Hells_Kier_Unreal
                     if (index == 4)
                     {
                         if (isText) accessory.Method.TextInfo("引导火焰鸟至指定地点, 并迅速击杀", duration: 4500, true);
-                        if (isTTS) accessory.Method.EdgeTTS($"引导火焰鸟至指定地点, 并迅速击杀");
+                        if (isTTS) accessory.Method.TTS($"引导火焰鸟至指定地点, 并迅速击杀");
                     }
                 } 
                 else
@@ -370,7 +369,7 @@ public class Hells_Kier_Unreal
                     // N
                     DebugMsg("is N", accessory);
                     if (isText) accessory.Method.TextInfo("攻击指定羽毛，不要攻击尾羽", duration: 4500, true);
-                    if (isTTS) accessory.Method.EdgeTTS($"攻击指定羽毛，不要攻击尾羽");
+                    if (isTTS) accessory.Method.TTS($"攻击指定羽毛，不要攻击尾羽");
                     if (isLead) DrawHelper.DrawDisplacement(accessory, posN, new Vector2(2f, 2f), 6000, "N——Red", color: accessory.Data.DefaultDangerColor);
                     
                     if (index == 4)
@@ -387,7 +386,7 @@ public class Hells_Kier_Unreal
                     if (index == 4)
                     {
                         if (isText) accessory.Method.TextInfo("引导火焰鸟至指定地点, 并迅速击杀", duration: 4500, true);
-                        if (isTTS) accessory.Method.EdgeTTS($"引导火焰鸟至指定地点, 并迅速击杀");
+                        if (isTTS) accessory.Method.TTS($"引导火焰鸟至指定地点, 并迅速击杀");
                     }
                 }
 
@@ -401,7 +400,7 @@ public class Hells_Kier_Unreal
                     // NE
                     DebugMsg("is NE", accessory);
                     if (isText) accessory.Method.TextInfo("攻击指定羽毛，不要攻击尾羽", duration: 4500, true);
-                    if (isTTS) accessory.Method.EdgeTTS($"攻击指定羽毛，不要攻击尾羽");
+                    if (isTTS) accessory.Method.TTS($"攻击指定羽毛，不要攻击尾羽");
                     if (isLead) DrawHelper.DrawDisplacement(accessory, posNE, new Vector2(2f, 2f), 6000, "NE——Red", color: accessory.Data.DefaultDangerColor);
                     
                     if (index == 5)
@@ -418,7 +417,7 @@ public class Hells_Kier_Unreal
                     if (index == 5)
                     {
                         if (isText) accessory.Method.TextInfo("引导火焰鸟至指定地点, 并迅速击杀", duration: 4500, true);
-                        if (isTTS) accessory.Method.EdgeTTS($"引导火焰鸟至指定地点, 并迅速击杀");
+                        if (isTTS) accessory.Method.TTS($"引导火焰鸟至指定地点, 并迅速击杀");
                     }
                 }
                 else
@@ -426,7 +425,7 @@ public class Hells_Kier_Unreal
                     // E
                     DebugMsg("is E", accessory);
                     if (isText) accessory.Method.TextInfo("攻击指定羽毛，不要攻击尾羽", duration: 4500, true);
-                    if (isTTS) accessory.Method.EdgeTTS($"攻击指定羽毛，不要攻击尾羽");
+                    if (isTTS) accessory.Method.TTS($"攻击指定羽毛，不要攻击尾羽");
                     if (isLead) DrawHelper.DrawDisplacement(accessory, posE, new Vector2(2f, 2f), 6000, "E——Red", color: accessory.Data.DefaultDangerColor);
                     
                     if (index == 5)
@@ -443,7 +442,7 @@ public class Hells_Kier_Unreal
                     if (index == 5)
                     {
                         if (isText) accessory.Method.TextInfo("引导火焰鸟至指定地点, 并迅速击杀", duration: 4500, true);
-                        if (isTTS) accessory.Method.EdgeTTS($"引导火焰鸟至指定地点, 并迅速击杀");
+                        if (isTTS) accessory.Method.TTS($"引导火焰鸟至指定地点, 并迅速击杀");
                     }
                 }
 
@@ -456,7 +455,7 @@ public class Hells_Kier_Unreal
                     // SW
                     DebugMsg("is SW", accessory);
                     if (isText) accessory.Method.TextInfo("攻击指定羽毛，不要攻击尾羽", duration: 4500, true);
-                    if (isTTS) accessory.Method.EdgeTTS($"攻击指定羽毛，不要攻击尾羽");
+                    if (isTTS) accessory.Method.TTS($"攻击指定羽毛，不要攻击尾羽");
                     if (isLead) DrawHelper.DrawDisplacement(accessory, posSW, new Vector2(2f, 2f), 6000, "SW——Red", color: accessory.Data.DefaultDangerColor);
 
                     if (index == 6)
@@ -473,7 +472,7 @@ public class Hells_Kier_Unreal
                     if (index == 6)
                     {
                         if (isText) accessory.Method.TextInfo("引导火焰鸟至指定地点, 并迅速击杀", duration: 4500, true);
-                        if (isTTS) accessory.Method.EdgeTTS($"引导火焰鸟至指定地点, 并迅速击杀");
+                        if (isTTS) accessory.Method.TTS($"引导火焰鸟至指定地点, 并迅速击杀");
                     }
                 }
                 else
@@ -482,7 +481,7 @@ public class Hells_Kier_Unreal
                     DebugMsg("is W", accessory);
 
                     if (isText) accessory.Method.TextInfo("攻击指定羽毛，不要攻击尾羽", duration: 4500, true);
-                    if (isTTS) accessory.Method.EdgeTTS($"攻击指定羽毛，不要攻击尾羽");
+                    if (isTTS) accessory.Method.TTS($"攻击指定羽毛，不要攻击尾羽");
                     if (isLead) DrawHelper.DrawDisplacement(accessory, posW, new Vector2(2f, 2f), 6000, "W——Red", color: accessory.Data.DefaultDangerColor);
 
                     if (index == 6)
@@ -499,7 +498,7 @@ public class Hells_Kier_Unreal
                     if (index == 6)
                     {
                         if (isText) accessory.Method.TextInfo("引导火焰鸟至指定地点, 并迅速击杀", duration: 4500, true);
-                        if (isTTS) accessory.Method.EdgeTTS($"引导火焰鸟至指定地点, 并迅速击杀");
+                        if (isTTS) accessory.Method.TTS($"引导火焰鸟至指定地点, 并迅速击杀");
                     }
                 }
 
@@ -513,7 +512,7 @@ public class Hells_Kier_Unreal
                     // SE
                     DebugMsg("is SE", accessory);
                     if (isText) accessory.Method.TextInfo("攻击指定羽毛，不要攻击尾羽", duration: 4500, true);
-                    if (isTTS) accessory.Method.EdgeTTS($"攻击指定羽毛，不要攻击尾羽");
+                    if (isTTS) accessory.Method.TTS($"攻击指定羽毛，不要攻击尾羽");
                     if (isLead) DrawHelper.DrawDisplacement(accessory, posSE, new Vector2(2f, 2f), 6000, "SE——Red", color: accessory.Data.DefaultDangerColor);
 
 
@@ -531,7 +530,7 @@ public class Hells_Kier_Unreal
                     if (index == 7)
                     {
                         if (isText) accessory.Method.TextInfo("引导火焰鸟至指定地点, 并迅速击杀", duration: 4500, true);
-                        if (isTTS) accessory.Method.EdgeTTS($"引导火焰鸟至指定地点, 并迅速击杀");
+                        if (isTTS) accessory.Method.TTS($"引导火焰鸟至指定地点, 并迅速击杀");
                     }
                 }
                 else
@@ -540,7 +539,7 @@ public class Hells_Kier_Unreal
                     DebugMsg("is S", accessory);
 
                     if (isText) accessory.Method.TextInfo("攻击指定羽毛，不要攻击尾羽", duration: 4500, true);
-                    if (isTTS) accessory.Method.EdgeTTS($"攻击指定羽毛，不要攻击尾羽");
+                    if (isTTS) accessory.Method.TTS($"攻击指定羽毛，不要攻击尾羽");
                     if (isLead) DrawHelper.DrawDisplacement(accessory, posS, new Vector2(2f, 2f), 6000, "S——Red", color: accessory.Data.DefaultDangerColor);
 
                     if (index == 7)
@@ -557,7 +556,7 @@ public class Hells_Kier_Unreal
                     if (index == 7)
                     {
                         if (isText) accessory.Method.TextInfo("引导火焰鸟至指定地点, 并迅速击杀", duration: 4500, true);
-                        if (isTTS) accessory.Method.EdgeTTS($"引导火焰鸟至指定地点, 并迅速击杀");
+                        if (isTTS) accessory.Method.TTS($"引导火焰鸟至指定地点, 并迅速击杀");
                     }
                 }
 
@@ -586,7 +585,7 @@ public class Hells_Kier_Unreal
     public void HeavyAOE(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("大AOE", duration: 6700, true);
-        if (isTTS) accessory.Method.EdgeTTS($"大AOE");
+        if (isTTS) accessory.Method.TTS($"大AOE");
     }
     #endregion
 
@@ -596,7 +595,7 @@ public class Hells_Kier_Unreal
     public void MesmerizingMelody(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("远离中心吸引", duration: 6700, true);
-        if (isTTS) accessory.Method.EdgeTTS($"远离中心吸引");
+        if (isTTS) accessory.Method.TTS($"远离中心吸引");
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = "MesmerizingMelody";
         dp.Color = accessory.Data.DefaultDangerColor;
@@ -611,7 +610,7 @@ public class Hells_Kier_Unreal
     public void RuthlessRefrain(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("靠近中心击退", duration: 6700, true);
-        if (isTTS) accessory.Method.EdgeTTS($"靠近中心击退");
+        if (isTTS) accessory.Method.TTS($"靠近中心击退");
 
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = "MesmerizingMelody";
@@ -629,7 +628,7 @@ public class Hells_Kier_Unreal
     public void WellofFlame(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("远离Boss正面", duration: 3700, true);
-        if (isTTS) accessory.Method.EdgeTTS($"远离Boss正面");
+        if (isTTS) accessory.Method.TTS($"远离Boss正面");
 
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = $"Well of Flame";
@@ -661,7 +660,7 @@ public class Hells_Kier_Unreal
         if (index != 0 || index != 1)
         {
             if (isText) accessory.Method.TextInfo($"与{@event.TargetName()}分摊", duration: 3700, true);
-            if (isTTS) accessory.Method.EdgeTTS($"与{@event.TargetName()}分摊");
+            if (isTTS) accessory.Method.TTS($"与{@event.TargetName()}分摊");
             if (isLead) DrawHelper.DrawDisplacement(accessory, pos, new Vector2(1, 1), 6000, "分摊闲人引导");
         } else
         {
@@ -686,11 +685,11 @@ public class Hells_Kier_Unreal
             if (index == 0 || index == 1)
             {
                 if (isText) accessory.Method.TextInfo($"鬼宿脚，准备减伤并换T，随后远离Boss正面", duration: 4000, true);
-                if (isTTS) accessory.Method.EdgeTTS($"鬼宿脚，准备减伤并换T，随后远离Boss正面");
+                if (isTTS) accessory.Method.TTS($"鬼宿脚，准备减伤并换T，随后远离Boss正面");
             } else 
             {
                 if (isText) accessory.Method.TextInfo($"远离Boss正面", duration: 4000, true);
-                if (isTTS) accessory.Method.EdgeTTS($"远离Boss正面");
+                if (isTTS) accessory.Method.TTS($"远离Boss正面");
             }
         } else 
         {

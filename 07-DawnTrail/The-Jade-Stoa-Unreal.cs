@@ -24,13 +24,13 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 namespace Veever.DawnTrail.The_Jade_Stoa_Unreal;
 
 [ScriptType(name: "LV.100 白虎幻巧战", territorys: [1239], guid: "29193d9d-a2c5-4a0d-875b-943a06790b95",
-    version: "0.0.0.4", author: "Veever", note: noteStr)]
+    version: "0.0.0.5", author: "Veever", note: noteStr)]
 
 public class The_Jade_Stoa_Unreal
 {
     const string noteStr =
     """
-    v0.0.0.4:
+    v0.0.0.5:
     1. 本脚本使用攻略为子言攻略，请在打本之前调整好!可达鸭的小队排序!（很重要，影响指路和机制播报）
     2. 如果懒得调也不想看需要小队位置判定的指路，可以在用户设置里面关闭指路开关
     鸭门。
@@ -41,9 +41,6 @@ public class The_Jade_Stoa_Unreal
 
     [UserSetting("TTS开关")]
     public bool isTTS { get; set; } = false;
-
-    [UserSetting("DR TTS开关")]
-    public bool isDRTTS { get; set; } = true;
 
     [UserSetting("指路开关")]
     public bool isLead { get; set; } = true;
@@ -67,6 +64,7 @@ public class The_Jade_Stoa_Unreal
     public bool isMTGroup;
 
     private readonly object OminousWindMarkerTTSLock = new object();
+    private bool isDRTTS = false;
 
     public void Init(ScriptAccessory accessory)
     {
@@ -854,11 +852,7 @@ public static class Extensions
 {
     public static void TTS(this ScriptAccessory accessory, string text, bool isTTS, bool isDRTTS)
     {
-        if (isDRTTS)
-        {
-            accessory.Method.SendChat($"/pdr tts {text}");
-        }
-        else if (isTTS)
+        if (isTTS)
         {
             accessory.Method.TTS(text);
         }

@@ -60,15 +60,15 @@ public class TheWindwardWilds
     const string UpdateStr =
     $"""
     v{Version}
-    删除了更新提醒的网络报错提示，为版本更新提示加上了脚本名字和作者名字
+    修复了TTS
     鸭门
     ----------------------------------
-    Deleted the network error message for update checking, added script name and author to update notification.
+    Fixed TTS
     Duckmen.
     """;
 
     private const string Name = "LV.100 护锁刃龙狩猎战 [The Windward Wilds]";
-    private const string Version = "0.0.0.6";
+    private const string Version = "0.0.0.7";
     private const string DebugVersion = "a";
     private const string UpdateInfo = UpdateStr;
 
@@ -167,7 +167,7 @@ public class TheWindwardWilds
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
         ChainbladeBlowTripleCount = 0;
     }
 
@@ -270,7 +270,7 @@ public class TheWindwardWilds
                     {
                         string msg = language == Language.Chinese ? "前往第三个钢铁边缘，随后进入躲避" : "To Third Chariot edge, then in";
                         if (isText) sa.Method.TextInfo($"{msg}", duration: 5700, true);
-                        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+                        if (isTTS) sa.Method.TTS($"{msg}");
                     }
 
                     if (ChainbladeBlowTripleCount != 2)
@@ -317,13 +317,13 @@ public class TheWindwardWilds
         {
             string msg = language == Language.Chinese ? "分摊点名" : "Stack";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 5700, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
         else
         {
             string msg = language == Language.Chinese ? $"与{tname}分摊" : $"Stack with {tname}";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 5700, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
 
         DrawHelper.DrawCircleObject(sa, ev.TargetId, new Vector2(4.5f), 6000, "Stack", color: sa.Data.DefaultSafeColor);
@@ -358,7 +358,7 @@ public class TheWindwardWilds
         string msg = language == Language.Chinese ? $"集合 → 放圈 → 踩塔" : $"Stack → drop circles → soak towers";
         string msg1 = language == Language.Chinese ? $"集合放圈后踩塔" : $"Stack and drop circles then soak towers";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 5000, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg1}");
+        if (isTTS) sa.Method.TTS($"{msg1}");
     }
 
     [ScriptMethod(name: "护龙共振坦克提示 - Guardian Resonance Tank Notify", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(43854)$"])]
@@ -421,7 +421,7 @@ public class TheWindwardWilds
     {
         string msg = language == Language.Chinese ? "三连AOE" : "Triple AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
         guardianArkveldPhase = GuardianArkveldPhase.Phase2;
     }
 
@@ -462,7 +462,7 @@ public class TheWindwardWilds
         {
             string msg = language == Language.Chinese ? "前往安全区域" : "Move to Safe Place";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         } else
         {
             if (ev.ActionId == 45049)
@@ -470,13 +470,13 @@ public class TheWindwardWilds
                 string msg = language == Language.Chinese ? "前往左上角躲避" : "Move to TL corner";
                 string msg1 = language == Language.Chinese ? "前往左上角躲避" : "Move to Top Left corner";
                 if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-                if (isTTS) sa.Method.EdgeTTS($"{msg1}");
+                if (isTTS) sa.Method.TTS($"{msg1}");
             } else
             {
                 string msg = language == Language.Chinese ? "前往右上角躲避" : "Move to TR corner";
                 string msg1 = language == Language.Chinese ? "前往左上角躲避" : "Move to Top right corner";
                 if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-                if (isTTS) sa.Method.EdgeTTS($"{msg1}");
+                if (isTTS) sa.Method.TTS($"{msg1}");
             }
 
         }
@@ -584,7 +584,7 @@ public class TheWindwardWilds
         DrawHelper.DrawRectObjectNoTargetWithRot(sa, ev.SourceId, new Vector2(6f, 60f), float.Pi, 3300, $"Steeltail Thrust-{ev.SourceId}", sa.Data.DefaultDangerColor);
         string msg = language == Language.Chinese ? "远离背后" : "Avoid behind the boss";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 3000, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     public Vector3 WrathfulRattlePos = new Vector3(0, 0, 0);

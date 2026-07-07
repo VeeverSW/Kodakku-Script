@@ -37,7 +37,7 @@ public class TheMesoTerminal
 {
     const string NoteStr =
     """
-    v0.0.0.4
+    v0.0.0.5
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     2. Boss3 NPC聚集在一起的圆圈绘画如果掉线可能会导致不画
     鸭门
@@ -48,14 +48,17 @@ public class TheMesoTerminal
     """;
 
     const string UpdateInfo =
-    """
-        v0.0.0.4
-        修复Boss3的NPC机制绘图的一些逻辑问题
-        Fixed some logic issues with Boss 3 NPC mechanic
+    $"""
+    v{Version}
+    修复了TTS
+    鸭门
+    ----------------------------------
+    Fixed TTS
+    Duckmen.
     """;
 
     private const string Name = "LV.100 永久幽界中央终端 [the Meso Terminal]";
-    private const string Version = "0.0.0.4";
+    private const string Version = "0.0.0.5";
     private const string DebugVersion = "a";
 
     private const bool Debugging = true;
@@ -229,7 +232,7 @@ public class TheMesoTerminal
     {
         string msg = language == Language.Chinese ? "大AOE" : "Heavy AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "爆炸药液-Pungent Aerosol", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:43807"])]
@@ -253,7 +256,7 @@ public class TheMesoTerminal
     {
         string msg = language == Language.Chinese ? "远离正面" : "Avoid front";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
 
         DrawHelper.DrawFanOwner(sa, ev.SourceId, 0, new Vector2(40), 180, 4700, $"Biochemical Front-{ev.SourceId}");
 
@@ -264,7 +267,7 @@ public class TheMesoTerminal
     {
         string msg = language == Language.Chinese ? "Dot死刑点名" : "Dot Tankbuster";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "圆状散布-Sterile Sphere", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(4380[56])$"])]
@@ -303,7 +306,7 @@ public class TheMesoTerminal
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 2700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "Boss连线检测和标记 - Boss Thther Check & mark", eventType: EventTypeEnum.Tether, eventCondition: ["Id:00F9"])]
@@ -313,7 +316,7 @@ public class TheMesoTerminal
         {
             string msg = language == Language.Chinese ? "攻击连线Boss" : "Attack tethered Boss";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 2700, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
             if (isMark) sa.Method.MarkClear();
             if (isMark) sa.Method.Mark((uint)ev.SourceId, MarkType.Attack1, LocalMark);
         }
@@ -403,7 +406,7 @@ public class TheMesoTerminal
         {
             string msg = language == Language.Chinese ? "打断Boss" : "Interrupt!";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4000, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
 
     }
@@ -416,7 +419,7 @@ public class TheMesoTerminal
             await Task.Delay(4500);
             string msg = language == Language.Chinese ? "驱散自身死宣" : "Esuna Doom";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4000, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
 
     }
@@ -441,7 +444,7 @@ public class TheMesoTerminal
         {
             string msg = language == Language.Chinese ? "攻击焦热刑具" : "Attack Hellmaker";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4000, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
             if (isMark) sa.Method.MarkClear();
             if (isMark) sa.Method.Mark((uint)ev.SourceId, MarkType.Attack1, LocalMark);
         }
@@ -463,7 +466,7 @@ public class TheMesoTerminal
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "雷转质射线 - Electray", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:43810"])]
@@ -582,7 +585,7 @@ public class TheMesoTerminal
     {
         string msg = language == Language.Chinese ? "死刑点名" : "Tankbuster";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "雷光-Keraunography", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:43813"])]
@@ -602,7 +605,7 @@ public class TheMesoTerminal
                     DrawHelper.DrawFanOwner(sa, ev.SourceId, (-float.Pi / 2), new Vector2(50f), 180, 4700, $"Turmoil-{ev.SourceId}", scaleByTime: false);
                     string msg = language == Language.Chinese ? "去右侧" : "Go Right";
                     if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-                    if (isTTS) sa.Method.EdgeTTS($"{msg}");
+                    if (isTTS) sa.Method.TTS($"{msg}");
                     break;
                 }
             // 右
@@ -611,7 +614,7 @@ public class TheMesoTerminal
                     DrawHelper.DrawFanOwner(sa, ev.SourceId, (float.Pi / 2), new Vector2(50f), 180, 4700, $"Turmoil-{ev.SourceId}", scaleByTime: false);
                     string msg = language == Language.Chinese ? "去左侧" : "Go Left";
                     if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-                    if (isTTS) sa.Method.EdgeTTS($"{msg}");
+                    if (isTTS) sa.Method.TTS($"{msg}");
                     break;
                 }
         }
@@ -626,30 +629,17 @@ public class TheMesoTerminal
         {
             string msg = language == Language.Chinese ? "分摊点名" : "Stack";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4000, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         } else
         {
             string msg = language == Language.Chinese ? $"与{tname}分摊" : $"Stack with {tname}";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4000, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
 
         DrawHelper.DrawRectObjectTarget(sa, ev.SourceId, ev.TargetId, new Vector2(8, 40), 5000, "MemoryoftheStorm", color: sa.Data.DefaultSafeColor);
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     #endregion
 

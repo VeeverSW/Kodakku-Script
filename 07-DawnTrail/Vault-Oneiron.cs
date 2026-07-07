@@ -41,8 +41,8 @@ namespace Veever.DawnTrail.Vault_Oneiron;
 public class Vault_Oneiron  
 {
     const string NoteStr =
-    """
-    v0.0.0.2
+    $"""
+    v{Version}
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     鸭门
     ------------------------------
@@ -51,12 +51,17 @@ public class Vault_Oneiron
     """;
 
     const string UpdateInfo =
-    """
-        v0.0.0.2
+    $"""
+    v{Version}
+    修复了TTS
+    鸭门
+    ----------------------------------
+    Fixed TTS
+    Duckmen.
     """;
 
     private const string Name = "巡梦金库 [Vault Oneiron]";
-    private const string Version = "0.0.0.2";
+    private const string Version = "0.0.0.3";
     private const string DebugVersion = "a";
 
     private const bool Debugging = true;
@@ -183,7 +188,7 @@ public class Vault_Oneiron
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 3000, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "死刑提示 - Tankbuster Notify", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(43607|43638|43615)$"])]
@@ -193,7 +198,7 @@ public class Vault_Oneiron
         {
             string msg = language == Language.Chinese ? "死刑点名" : "Targeted Buster";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 3000, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
     }
 
@@ -234,7 +239,7 @@ public class Vault_Oneiron
             msg = language == Language.Chinese ? "远离范围AOE死刑" : "AOE Tankbuster — Stay Away";
         }
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
 
 
         DrawHelper.DrawRectObjectTarget(sa, ev.SourceId, ev.TargetId, new Vector2(8f, 60f), 4700, $"TankBuster-{ev.TargetId}", color: new Vector4(1, 0, 0, ColorAlpha));
@@ -391,7 +396,7 @@ public class Vault_Oneiron
     {
         //string msg = language == Language.Chinese ? "二穿一躲避" : "Dodge between two rings";
         //if (isText) sa.Method.TextInfo($"{msg}", duration: 4200, true);
-        //if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        //if (isTTS) sa.Method.TTS($"{msg}");
 
         DrawHelper.DrawCircleObject(sa, ev.TargetId, new Vector2(10f), 3700, $"Tremblor-{ev.SourceId}", color: new Vector4(1, 0, 0, ColorAlpha), scaleByTime: true);
         DrawHelper.DrawDountObject(sa, ev.TargetId, new Vector2(20f), new Vector2(10f), 3700, $"Tremblor1-{ev.SourceId}", delay: 3000, color: new Vector4(1, 0, 0, ColorAlpha), scaleByTime: false);
@@ -425,12 +430,12 @@ public class Vault_Oneiron
         {
             string msg = language == Language.Chinese ? "死刑点名" : "Targeted Buster";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         } else
         {
             string msg = language == Language.Chinese ? "远离范围死刑" : "Avoid AOE tankbuster";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
     }
 
@@ -439,7 +444,7 @@ public class Vault_Oneiron
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "地盘震动 - Earthshake", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(43670)$"])]
@@ -490,13 +495,13 @@ public class Vault_Oneiron
         {
             string msg = language == Language.Chinese ? "死刑点名" : "Targeted Buster";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
         else
         {
             string msg = language == Language.Chinese ? "远离范围死刑" : "Avoid AOE tankbuster";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
     }
 
@@ -511,7 +516,7 @@ public class Vault_Oneiron
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     #endregion
@@ -550,7 +555,7 @@ public class Vault_Oneiron
     {
         string msg = language == Language.Chinese ? "进入月环" : "Move in (Dynamo)";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 3500, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
 
         DrawHelper.DrawCircleObject(sa, ev.SourceId, new Vector2(5f), 3700, $"Eye of the Thunderstorm Safe-{ev.SourceId}",
             color: sa.Data.DefaultSafeColor, scaleByTime: false);
@@ -564,7 +569,7 @@ public class Vault_Oneiron
     {
         string msg = language == Language.Chinese ? "打断Boss" : "Interrupt!";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 7700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "百星石回转 - 100-stone Swing", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(43676)$"])]
@@ -579,7 +584,7 @@ public class Vault_Oneiron
     {
         string msg = language == Language.Chinese ? "远离Boss" : "Away from Boss";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
 
         DrawHelper.DrawCircleObject(sa, ev.SourceId, new Vector2(13f), 7700, $"100-stone Swing-{ev.SourceId}",
             color: sa.Data.DefaultDangerColor, scaleByTime: true);
@@ -604,7 +609,7 @@ public class Vault_Oneiron
             msg = language == Language.Chinese ? "远离范围AOE死刑" : "AOE Tankbuster — Stay Away";
         }
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
 
 
         DrawHelper.DrawRectObjectTarget(sa, ev.SourceId, ev.TargetId, new Vector2(8f, 65f), 4700, $"TankBuster-{ev.TargetId}", color: new Vector4(1, 0, 0, ColorAlpha));
@@ -631,7 +636,7 @@ public class Vault_Oneiron
         await Task.Delay(4000);
         string msg = language == Language.Chinese ? "背对Boss" : "Face Away from Boss";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 3000, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "环状放雷 - Levinroot Ring", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(43713|43710)$"])]
@@ -641,7 +646,7 @@ public class Vault_Oneiron
         {
             string msg = language == Language.Chinese ? "先靠近，后远离" : "Dynamo then Chariot";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
 
             DrawHelper.DrawCircle(sa, ev.EffectPosition, new Vector2(10f), 4700, $"Levinroot Ring Safe-{ev.SourceId}",
                 color: sa.Data.DefaultSafeColor, scaleByTime: false);
@@ -651,7 +656,7 @@ public class Vault_Oneiron
         {
             string msg = language == Language.Chinese ? "先远离，后靠近" : "Chariot then Dynamo";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
 
             DrawHelper.DrawCircle(sa, ev.EffectPosition, new Vector2(10f), 4700, $"Levinroot Ring Danger-{ev.SourceId}",
                 color: sa.Data.DefaultDangerColor, scaleByTime: false);
@@ -690,7 +695,7 @@ public class Vault_Oneiron
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "死刑提示 - Tankbuster Notify", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:43716"])]
@@ -700,7 +705,7 @@ public class Vault_Oneiron
         {
             string msg = language == Language.Chinese ? "死刑点名" : "Targeted Buster";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
     }
     #endregion
@@ -718,7 +723,7 @@ public class Vault_Oneiron
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "落雷 - Lightning Bolt", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(43652)$"])]
@@ -786,13 +791,13 @@ public class Vault_Oneiron
         {
             string msg = language == Language.Chinese ? "死刑点名" : "Targeted Buster";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
         else
         {
             string msg = language == Language.Chinese ? "远离范围死刑" : "Avoid AOE tankbuster";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
     }
 
@@ -826,7 +831,7 @@ public class Vault_Oneiron
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "王国闪雷 - Alexandrian Thunder", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(43721)$"])]
@@ -875,13 +880,13 @@ public class Vault_Oneiron
         {
             string msg = language == Language.Chinese ? "死刑点名" : "Targeted Buster";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
         else
         {
             string msg = language == Language.Chinese ? "远离范围死刑" : "Avoid AOE tankbuster";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
     }
 
@@ -890,7 +895,7 @@ public class Vault_Oneiron
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4200, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "高能雷转质射线 - High-voltage Electray", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(43778|43779|43780|43781)$"])]

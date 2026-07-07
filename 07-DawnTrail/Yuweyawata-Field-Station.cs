@@ -19,7 +19,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 namespace Veever.DawnTrail.YuweyawataFieldStation;
 
 [ScriptType(name: "LV.100 废弃据点玉韦亚瓦塔实验站", territorys: [1242], guid: "992e47a8-17d0-4379-891b-0762c0509257",
-    version: "0.0.2.1", author: "Veever", note: noteStr)]
+    version: "0.0.2.2", author: "Veever", note: noteStr)]
 
 public class YuweyawataFieldStation
 {
@@ -31,7 +31,7 @@ public class YuweyawataFieldStation
 
     const string noteStr =
     """
-    v0.0.2.1:
+    v0.0.2.2:
     1. 如果有漏画（Boss出现在南侧核爆）错画的情况，请在dc@我，并附上arr文件
     鸭门。
     """;
@@ -40,9 +40,6 @@ public class YuweyawataFieldStation
 
     [UserSetting("TTS开关")]
     public bool isTTS { get; set; } = false;
-
-    [UserSetting("DR TTS开关")]
-    public bool isDRTTS { get; set; } = true;
 
     [UserSetting("Debug开关, 非开发用请关闭")]
     public bool isDebug { get; set; } = false;
@@ -61,8 +58,9 @@ public class YuweyawataFieldStation
         RagingClawCount = 0;
 
         await Task.Delay(50);
-    } 
-       
+    }
+    private bool isDRTTS = false;
+
     public void DebugMsg(string str, ScriptAccessory accessory)
     {
         if (!isDebug) return;
@@ -1004,11 +1002,7 @@ public static class Extensions
 {
     public static void TTS(this ScriptAccessory accessory, string text, bool isTTS, bool isDRTTS)
     {
-        if (isDRTTS)
-        {
-            accessory.Method.SendChat($"/pdr tts {text}");
-        }
-        else if (isTTS)
+        if (isTTS)
         {
             accessory.Method.TTS(text);
         }

@@ -24,13 +24,13 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 namespace Veever.DawnTrail.the_Underkeep;
 
 [ScriptType(name: "LV.100 王城古迹永护塔底", territorys: [1266], guid: "9b381347-ddbf-4f52-98a9-a63d6e0d69bd",
-    version: "0.0.0.4", author: "Veever & Cyf5119", note: noteStr)]
+    version: "0.0.0.5", author: "Veever & Cyf5119", note: noteStr)]
 
 public class the_Underkeep
 {
     const string noteStr =
     """
-    v0.0.0.4:
+    v0.0.0.5:
     1. 持续更新中
     2. Boss3的十字炸弹画了但是没画完，先不开放使用
     3. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
@@ -226,7 +226,7 @@ public class the_Underkeep
     public void WheelingShot(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo($"去{@event.TargetName()}身后或打断", duration: 3500, true);
-        if (isTTS) accessory.Method.EdgeTTS($"去{@event.TargetName()}身后或打断");
+        if (isTTS) accessory.Method.TTS($"去{@event.TargetName()}身后或打断");
 
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = $"Wheeling Shot-{@event.SourceId()}";
@@ -271,14 +271,14 @@ public class the_Underkeep
     public void Boss1AOE(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("AOE", duration: 4700, true);
-        if (isTTS)  accessory.Method.EdgeTTS($"AOE");
+        if (isTTS)  accessory.Method.TTS($"AOE");
     }
 
     [ScriptMethod(name: "Almighty Racket", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:42546"])]
     public void AlmightyRacket(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("去Boss身后", duration: 3500, true);
-        if (isTTS) accessory.Method.EdgeTTS($"去Boss身后");
+        if (isTTS) accessory.Method.TTS($"去Boss身后");
 
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = $"Almighty Racket";
@@ -294,7 +294,7 @@ public class the_Underkeep
     public void AerialAmbush(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("远离直线冲击", duration: 4000, true);
-        if (isTTS) accessory.Method.EdgeTTS($"远离直线冲击");
+        if (isTTS) accessory.Method.TTS($"远离直线冲击");
 
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = $"Aerial Ambush";
@@ -312,7 +312,7 @@ public class the_Underkeep
         if (@event.TargetId() == accessory.Data.Me)
         {
             if (isText) accessory.Method.TextInfo("分散, 不要重叠", duration: 4000, true);
-            if (isTTS) accessory.Method.EdgeTTS($"分散, 不要重叠");
+            if (isTTS) accessory.Method.TTS($"分散, 不要重叠");
         }
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = "Sedimentary Debris";
@@ -327,7 +327,7 @@ public class the_Underkeep
     public void Boss1Tankbuster(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("死刑准备", duration: 4000, true);
-        if (isTTS) accessory.Method.EdgeTTS($"死刑准备");
+        if (isTTS) accessory.Method.TTS($"死刑准备");
     }
 
     [ScriptMethod(name: "Sphere Shatter", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(43135|42545)"])]
@@ -348,14 +348,14 @@ public class the_Underkeep
     public void Boss2AOE(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("AOE", duration: 4500, true);
-        if (isTTS) accessory.Method.EdgeTTS($"AOE");
+        if (isTTS) accessory.Method.TTS($"AOE");
     }
 
     [ScriptMethod(name: "Boss2死刑", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:43136"])]
     public void Boss2Tankbuster(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("死刑准备", duration: 4000, true);
-        if (isTTS) accessory.Method.EdgeTTS($"死刑准备");
+        if (isTTS) accessory.Method.TTS($"死刑准备");
     }
 
     public bool isL = true;
@@ -373,7 +373,7 @@ public class the_Underkeep
         }
 
         if (isText) accessory.Method.TextInfo($"{(isL ? "去Boss最后一个分身的右侧" : "去Boss最后一个分身的左侧")}", duration: 3500, true);
-        if (isTTS) accessory.Method.EdgeTTS($"{(isL ? "去Boss最后一个分身的右侧" : "去Boss最后一个分身的左侧")}");
+        if (isTTS) accessory.Method.TTS($"{(isL ? "去Boss最后一个分身的右侧" : "去Boss最后一个分身的左侧")}");
 
         //var dp = accessory.Data.GetDefaultDrawProperties();
         //dp.Name = $"Sector Bisector";
@@ -401,7 +401,7 @@ public class the_Underkeep
     //     }
 
     //     if (isText) accessory.Method.TextInfo($"{(isL ? "去Boss右侧" : "去Boss左侧")}", duration: 3500, true);
-    //     if (isTTS) accessory.Method.EdgeTTS($"{(isL ? "去Boss右侧" : "去Boss左侧")}");
+    //     if (isTTS) accessory.Method.TTS($"{(isL ? "去Boss右侧" : "去Boss左侧")}");
 
     //     var dp = accessory.Data.GetDefaultDrawProperties();
     //     dp.Name = $"Sector Bisector";
@@ -444,7 +444,7 @@ public class the_Underkeep
             {
                 DebugMsg($"{StaticForceCount}", accessory);
                 if (isText) accessory.Method.TextInfo("分散, 不要重叠", duration: 4000, true);
-                if (isTTS) accessory.Method.EdgeTTS($"分散, 不要重叠");
+                if (isTTS) accessory.Method.TTS($"分散, 不要重叠");
                 for (var i = 0; i < accessory.Data.PartyList.Count; i++)
                 {
                     var dp = accessory.Data.GetDefaultDrawProperties();
@@ -473,7 +473,7 @@ public class the_Underkeep
         if (@event.TargetId() == accessory.Data.Me)
         {
             if (isText) accessory.Method.TextInfo("分散, 不要重叠", duration: 4000, true);
-            if (isTTS) accessory.Method.EdgeTTS($"分散, 不要重叠");
+            if (isTTS) accessory.Method.TTS($"分散, 不要重叠");
         }
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = "Electric Excess";
@@ -490,7 +490,7 @@ public class the_Underkeep
     public void Boss3AOE(Event @event, ScriptAccessory accessory)
     {
         if (isText) accessory.Method.TextInfo("AOE", duration: 4700, true);
-        if (isTTS) accessory.Method.EdgeTTS($"AOE");
+        if (isTTS) accessory.Method.TTS($"AOE");
     }
 
     //[ScriptMethod(name: "Enforcement Ray", eventType: EventTypeEnum.SetObjPos, eventCondition: ["Id:0197"])]
@@ -558,7 +558,7 @@ public class the_Underkeep
         if (@event.TargetId() == accessory.Data.Me)
         {
             if (isText) accessory.Method.TextInfo("分散, 不要重叠", duration: 4000, true);
-            if (isTTS) accessory.Method.EdgeTTS($"分散, 不要重叠");
+            if (isTTS) accessory.Method.TTS($"分散, 不要重叠");
         }
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = "Hypercharged Light";
@@ -589,7 +589,7 @@ public class the_Underkeep
         string tname = @event["TargetName"]?.ToString() ?? "未知目标";
 
         if (isText) accessory.Method.TextInfo($"与{tname}分摊", duration: 4700, true);
-        accessory.Method.EdgeTTS($"与{tname}分摊");
+        if (isTTS) accessory.Method.TTS($"与{tname}分摊");
 
         var dp = accessory.Data.GetDefaultDrawProperties();
         dp.Name = "Deterrent Pulse";
@@ -611,7 +611,7 @@ public class the_Underkeep
             {
                 DebugMsg($"{ConcurrentFieldCount}", accessory);
                 if (isText) accessory.Method.TextInfo("分散, 不要重叠", duration: 4000, true);
-                if (isTTS) accessory.Method.EdgeTTS($"分散, 不要重叠");
+                if (isTTS) accessory.Method.TTS($"分散, 不要重叠");
                 for (var i = 0; i < accessory.Data.PartyList.Count; i++)
                 {
                     var dp = accessory.Data.GetDefaultDrawProperties();

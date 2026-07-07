@@ -64,15 +64,15 @@ public class Mistwake
     const string UpdateStr =
     $"""
     v{Version}
-    删除了更新提醒的网络报错提示，为版本更新提示加上了脚本名字和作者名字
+    修复了TTS
     鸭门
     ----------------------------------
-    Deleted the network error message for update checking, added script name and author to update notification.
+    Fixed TTS
     Duckmen.
     """;
 
     private const string Name = "LV.100 遗忘行路雾之迹 [Mistwake]";
-    private const string Version = "0.0.0.4";
+    private const string Version = "0.0.0.5";
     private const string DebugVersion = "a";
 
     private const bool Debugging = false;
@@ -89,9 +89,6 @@ public class Mistwake
 
     [UserSetting("TTS开关(TTS toggle)")]
     public bool isTTS { get; set; } = true;
-    
-    [UserSetting("EdgeTTS开关(EdgeTTS toggle)")]
-    public bool isEdgeTTS { get; set; } = true;
     
     [UserSetting("是否自动使用防击退(Auto anti-knockback)")]
     public bool useAntiKnockBack { get; set; } = false;
@@ -116,6 +113,8 @@ public class Mistwake
 
 
     private readonly object CountLock = new object();
+
+    private bool isEdgeTTS = false;
 
 
     public void DebugMsg(string str, ScriptAccessory sa)
@@ -252,7 +251,7 @@ public class Mistwake
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4700, true);
-        sa.TTS($"{msg}", isEdgeTTS);
+        if (isTTS) sa.TTS($"{msg}", isEdgeTTS);
     }
     
     [ScriptMethod(name: "暴雷 - Thunder III", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:43329"])]
@@ -2202,14 +2201,7 @@ public static class Extensions
 {
     public static void TTS(this ScriptAccessory accessory, string text, bool isEdgeTTS)
     {
-        if (isEdgeTTS)
-        {
-            accessory.Method.EdgeTTS(text);
-        }
-        else
-        {
-            accessory.Method.TTS(text);
-        }
+        accessory.Method.TTS(text);
     }
 
     public static void antiKnockBack(this MethodAccessory method, ScriptAccessory sa)

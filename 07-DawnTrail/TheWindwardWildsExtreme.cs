@@ -83,16 +83,16 @@ public class TheWindwardWildsExtreme
 
     const string UpdateStr =
     $"""
-    v{Version}
-    删除了更新提醒的网络报错提示，为版本更新提示加上了脚本名字和作者名字
+    v{ Version }
+    修复了TTS
     鸭门
     ----------------------------------
-    Deleted the network error message for update checking, added script name and author to update notification.
+    Fixed TTS
     Duckmen.
     """;
 
     private const string Name = "LV.100 护锁刃龙上位狩猎战 [The Windward Wilds (Extreme)]";
-    private const string Version = "0.0.0.9";
+    private const string Version = "0.0.1.0";
     private const string DebugVersion = "a";
 
     private const bool Debugging = false;
@@ -390,7 +390,7 @@ public class TheWindwardWildsExtreme
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}"); 
+        if (isTTS) sa.Method.TTS($"{msg}"); 
         ChainbladeBlowTripleCount = 0;
         ClamorousChaseDict.Clear();
         ChainbladeBlowTriplePos.Clear();
@@ -410,7 +410,7 @@ public class TheWindwardWildsExtreme
                     string msg = language == Language.Chinese ? "左侧 ←← 右侧" : "Left ←← Right";
                     string msg1 = language == Language.Chinese ? "先右侧再左侧" : "Right then Left";
                     if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-                    if (isTTS) sa.Method.EdgeTTS($"{msg1}");
+                    if (isTTS) sa.Method.TTS($"{msg1}");
 
                     DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(28f, 80f), 6700, $"Chainblade Blow rightP1-{ev.SourceId}",
                         sa.Data.DefaultDangerColor, offset: new Vector3(7f, 0, 20f));
@@ -424,7 +424,7 @@ public class TheWindwardWildsExtreme
                     string msg = language == Language.Chinese ? "左侧 →→ 右侧" : "Left →→ Right";
                     string msg1 = language == Language.Chinese ? "先左侧再右侧" : "Left then Right";
                     if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-                    if (isTTS) sa.Method.EdgeTTS($"{msg1}");
+                    if (isTTS) sa.Method.TTS($"{msg1}");
 
                     DrawHelper.DrawRectObjectNoTarget(sa, ev.SourceId, new Vector2(28f, 80f), 6700, $"Chainblade Blow leftP1-{ev.SourceId}",
                         sa.Data.DefaultDangerColor, offset: new Vector3(-7f, 0, 20f));
@@ -520,7 +520,7 @@ public class TheWindwardWildsExtreme
                         {
                             string msg = language == Language.Chinese ? "前往第三个钢铁边缘，随后进入躲避" : "To Third Chariot edge, then in";
                             if (isText) sa.Method.TextInfo($"{msg}", duration: 5700, true);
-                            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+                            if (isTTS) sa.Method.TTS($"{msg}");
                         }
 
                         if (ChainbladeBlowTripleCount == 1)
@@ -609,7 +609,7 @@ public class TheWindwardWildsExtreme
 
                 if (isDebug) DebugMsg(nearBoss ? "A" : "B", sa);
                 if (isText) sa.Method.TextInfo($"{msg}", duration: 5700, true);
-                if (isTTS) sa.Method.EdgeTTS($"{msg}");
+                if (isTTS) sa.Method.TTS($"{msg}");
                 DrawHelper.DrawCircleObject(sa, sa.Data.Me, new Vector2(4.5f), 7700,
                     $"Stack {(nearBoss ? "Near" : "Away")}", color: sa.Data.DefaultSafeColor);
             }
@@ -667,7 +667,7 @@ public class TheWindwardWildsExtreme
                     long currentTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
                     if (isTTS && (currentTime - _lastStackTTSTime > TTS_COOLDOWN))
                     {
-                        sa.Method.EdgeTTS($"{msg}");
+                        sa.Method.TTS($"{msg}");
                         _lastStackTTSTime = currentTime;
                     }
 
@@ -695,13 +695,13 @@ public class TheWindwardWildsExtreme
         {
             string msg = language == Language.Chinese ? "分摊点名" : "Stack";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 5700, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
         else
         {
             string msg = language == Language.Chinese ? $"与{tname}分摊" : $"Stack with {tname}";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 5700, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
 
         DrawHelper.DrawCircleObject(sa, ev.TargetId, new Vector2(4.5f), 6000, "Stack", color: sa.Data.DefaultSafeColor);
@@ -778,7 +778,7 @@ public class TheWindwardWildsExtreme
         string msg = language == Language.Chinese ? $"1点集合 → 放3次圈 → 踩塔 (黄圈不要引导到塔上)" : $"Stack at point 1 → drop 3 circles → soak towers (No Puddles on Towers)";
         string msg1 = language == Language.Chinese ? $"衣点集合放圈后踩塔" : $"Stack at point one and drop circles then soak towers";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 5000, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg1}");
+        if (isTTS) sa.Method.TTS($"{msg1}");
 
         List<string> role = ["MT", "ST", "H1", "H2", "D1", "D2", "D3", "D4"];
         await Task.Delay(1000);
@@ -820,7 +820,7 @@ public class TheWindwardWildsExtreme
                     await Task.Delay(4500);
                     string msg2 = language == Language.Chinese ? $"治疗玩家补塔" : $"Healer Cover Tower";
                     if (isText) sa.Method.TextInfo($"{msg2}", duration: 5000, true);
-                    if (isTTS) sa.Method.EdgeTTS($"{msg2}");
+                    if (isTTS) sa.Method.TTS($"{msg2}");
                     break;
             }
         } else
@@ -861,7 +861,7 @@ public class TheWindwardWildsExtreme
                     await Task.Delay(4500);
                     string msg2 = language == Language.Chinese ? $"治疗玩家补塔" : $"Healer Cover Tower";
                     if (isText) sa.Method.TextInfo($"{msg2}", duration: 5000, true);
-                    if (isTTS) sa.Method.EdgeTTS($"{msg2}");
+                    if (isTTS) sa.Method.TTS($"{msg2}");
                     break;
             }
         }
@@ -960,7 +960,7 @@ public class TheWindwardWildsExtreme
     {
         string msg = language == Language.Chinese ? "三连AOE" : "Triple AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
         guardianArkveldPhase = GuardianArkveldPhase.Phase2;
         ClamorousChaseDict.Clear();
         ChainbladeBlowTriplePos.Clear();
@@ -1097,7 +1097,7 @@ public class TheWindwardWildsExtreme
 
                     string msg = language == Language.Chinese ? "先在安全区等待Boss攻击后再引导" : "Wait in the safe zone, then bait.";
                     if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-                    if (isTTS) sa.Method.EdgeTTS($"{msg}");
+                    if (isTTS) sa.Method.TTS($"{msg}");
 
                     if (isLead) DrawHelper.DrawDisplacement(sa, posA, new Vector2(2f), 9300,
                         $"Clamorous Chase Navi 4-{ev.SourceId}", delay: 8900);
@@ -1252,7 +1252,7 @@ public class TheWindwardWildsExtreme
 
                     string msg = language == Language.Chinese ? "先在安全区等待Boss攻击后再引导" : "Wait in the safe zone, then bait.";
                     if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-                    if (isTTS) sa.Method.EdgeTTS($"{msg}");
+                    if (isTTS) sa.Method.TTS($"{msg}");
 
 
                     if (isLead) DrawHelper.DrawDisplacement(sa, posA, new Vector2(2f), 9300,
@@ -1367,7 +1367,7 @@ public class TheWindwardWildsExtreme
             if (isLead) DrawHelper.DrawDisplacement(sa, RightTopPos, new Vector2(2f), 7700, "Wyvern's Weal Target Lead Navi");
             string msg = language == Language.Chinese ? "右上角落引导" : "Bait at top-right corner";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 5000, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
 
             if (isLead) DrawHelper.DrawDisplacement(sa, LeftTopPos, new Vector2(2f), 9000, "Wyvern's Weal Target Lead Navi", delay: 7700);
             // Check H1 Group
@@ -1385,7 +1385,7 @@ public class TheWindwardWildsExtreme
             if (isLead) DrawHelper.DrawDisplacement(sa, LeftTopPos, new Vector2(2f), 7700, "Wyvern's Weal Target Lead Navi");
             string msg = language == Language.Chinese ? "左上角落等待" : "Wait at top-left corner";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 5000, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
 
             bool IsH1Group(int index) => index is 0 or 2 or 4 or 5;
 
@@ -1434,7 +1434,7 @@ public class TheWindwardWildsExtreme
                     string msg = language == Language.Chinese ? "左侧 →→ 右侧" : "Left →→ Right";
                     string msg1 = language == Language.Chinese ? "先左侧再右侧" : "Left then Right";
                     if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-                    if (isTTS) sa.Method.EdgeTTS($"{msg1}");
+                    if (isTTS) sa.Method.TTS($"{msg1}");
 
                     float rightX = spos.X - 20 * MathF.Sin(srot) + 7 * MathF.Cos(srot);
                     float rightZ = spos.Z - 20 * MathF.Cos(srot) - 7 * MathF.Sin(srot);
@@ -1457,7 +1457,7 @@ public class TheWindwardWildsExtreme
                     string msg = language == Language.Chinese ? "左侧 ←← 右侧" : "Left ←← Right";
                     string msg1 = language == Language.Chinese ? "先右侧再左侧" : "Right then Left";
                     if (isText) sa.Method.TextInfo($"{msg}", duration: 4500, true);
-                    if (isTTS) sa.Method.EdgeTTS($"{msg1}");
+                    if (isTTS) sa.Method.TTS($"{msg1}");
 
                     float rightX = spos.X - 20 * MathF.Sin(srot) + 7 * MathF.Cos(srot);
                     float rightZ = spos.Z - 20 * MathF.Cos(srot) - 7 * MathF.Sin(srot);
@@ -1531,7 +1531,7 @@ public class TheWindwardWildsExtreme
         DrawHelper.DrawRectObjectNoTargetWithRot(sa, ev.SourceId, new Vector2(6f, 30f), float.Pi, 3300, $"Steeltail Thrust-{ev.SourceId}", sa.Data.DefaultDangerColor);
         string msg = language == Language.Chinese ? "远离背后" : "Avoid behind the boss";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 3000, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     public Vector3 WrathfulRattlePos = new Vector3(0, 0, 0);

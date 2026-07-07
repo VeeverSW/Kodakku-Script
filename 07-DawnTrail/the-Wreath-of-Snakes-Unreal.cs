@@ -27,7 +27,7 @@ using System.Xml.Linq;
 namespace Veever.DawnTrail.the_Wreath_of_Snakes_Unreal;
 
 [ScriptType(name: Name, territorys: [825, 1302], guid: "3a915832-971d-4c27-b802-407a1e30ae53",
-    version: Version, author: "Veever & Usami", note: NoteStr, updateInfo: UpdateInfo)]
+    version: Version, author: "Veever & Usami", note: NoteStr, updateInfo: UpdateStr)]
 
 // ^(?!.*((武僧|机工士|龙骑士|武士|忍者|蝰蛇剑士|钐镰客|舞者|吟游诗人|占星术士|贤者|学者|(朝日|夕月)小仙女|炽天使|白魔法师|战士|骑士|暗黑骑士|绝枪战士|绘灵法师|黑魔法师|青魔法师|召唤师|宝石兽|亚灵神巴哈姆特|亚灵神不死鸟|迦楼罗之灵|泰坦之灵|伊弗利特之灵|后式自走人偶)\] (Used|Cast))).*35501.*$
 // ^\[\w+\|[^|]+\|E\]\s\w+
@@ -35,8 +35,8 @@ namespace Veever.DawnTrail.the_Wreath_of_Snakes_Unreal;
 public class UnrealSeiryu
 {
     const string NoteStr =
-    """
-    v0.0.0.1
+    $"""
+    v{Version}
     1. 如果需要某个机制的绘画或者哪里出了问题请在dc@我或者私信我
     2. 刀禁咒分摊强制绑定画双奶（双奶死了的话就听天由命了）
     3. 塔站位绘图按照如下方式
@@ -58,10 +58,19 @@ public class UnrealSeiryu
     Duckmen.
     """;
 
+    const string UpdateStr =
+    $"""
+    v{Version}
+    修复了TTS
+    鸭门
+    ----------------------------------
+    Fixed TTS
+    Duckmen.
+    """;
+
     private const string Name = "LV.100 青龙诗魂-幻巧战 [the Wreath of Snakes Ex-Unreal]";
-    private const string Version = "0.0.0.1";
+    private const string Version = "0.0.0.2";
     private const string DebugVersion = "a";
-    private const string UpdateInfo = "";
 
     private const bool Debugging = false;
 
@@ -317,7 +326,7 @@ public class UnrealSeiryu
     {
         string msg = language == Language.Chinese ? "AOE" : "AOE";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 3700, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     [ScriptMethod(name: "九字切绘图 - Kuji-kiri Draw", eventType: EventTypeEnum.StartCasting, eventCondition: ["ActionId:regex:^(4399[3])$"],
@@ -367,14 +376,14 @@ public class UnrealSeiryu
 
                 string msg = language == Language.Chinese ? "钢铁远离" : "Chariot - Stay away from boss";
                 if (isText) sa.Method.TextInfo($"{msg}", duration: 2700, true);
-                if (isTTS) sa.Method.EdgeTTS($"{msg}");
+                if (isTTS) sa.Method.TTS($"{msg}");
 
                 break;
             
             case 14853 or 44028:
                 string msg1 = language == Language.Chinese ? "先月环后钢铁" : "Dynamo → Chariot";
                 if (isText) sa.Method.TextInfo($"{msg1}", duration: 2700, true);
-                if (isTTS) sa.Method.EdgeTTS($"{msg1}");
+                if (isTTS) sa.Method.TTS($"{msg1}");
                 
                 dp = sa.DrawDonut(sid, 0, 3000, $"月环", 30f, 7f, draw: false);
                 dp.Color = sa.Data.DefaultDangerColor.WithW(ColorAlpha);
@@ -388,7 +397,7 @@ public class UnrealSeiryu
             case 14851 or 44026:
                 string msg2 = language == Language.Chinese ? "先钢铁后月环" : "Chariot → Dynamo";
                 if (isText) sa.Method.TextInfo($"{msg2}", duration: 2700, true);
-                if (isTTS) sa.Method.EdgeTTS($"{msg2}");
+                if (isTTS) sa.Method.TTS($"{msg2}");
 
                 dp = sa.DrawCircle(sid, 0, 3000, $"钢铁", 12f, draw: false);
                 dp.Color = sa.Data.DefaultDangerColor.WithW(ColorAlpha);
@@ -431,12 +440,12 @@ public class UnrealSeiryu
         {
             string msg = language == Language.Chinese ? "换T" : "Tank swap";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 3000, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
 
             await Task.Delay(13000);
             string msg1 = language == Language.Chinese ? "换T" : "Tank swap";
             if (isText) sa.Method.TextInfo($"{msg1}", duration: 3000);
-            if (isTTS) sa.Method.EdgeTTS($"{msg1}");
+            if (isTTS) sa.Method.TTS($"{msg1}");
         }
     }
     
@@ -483,7 +492,7 @@ public class UnrealSeiryu
                 _bools[0] = true;
                 string msg = language == Language.Chinese ? "两侧引导，不要冲击人群" : "Go to flanks, avoid cleaving";
                 if (isText) sa.Method.TextInfo($"{msg}", duration: 3000, true);
-                if (isTTS) sa.Method.EdgeTTS($"{msg}");
+                if (isTTS) sa.Method.TTS($"{msg}");
 
                 if (useaction) sa.Method.UseAction(sa.Data.Me, 7559);
                 if (useaction) sa.Method.UseAction(sa.Data.Me, 7548);
@@ -559,7 +568,7 @@ public class UnrealSeiryu
         {
             string msg = language == Language.Chinese ? "接场地西侧的线，并引导至场外" : "Take WEST line, drag out";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 3000, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
             KanaboTTSCount++;
         }
 
@@ -567,7 +576,7 @@ public class UnrealSeiryu
         {
             string msg = language == Language.Chinese ? "接场地东侧的线，并引导至场外" : "Take EAST line, drag out";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 3000, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
             KanaboTTSCount++;
         }
 
@@ -607,7 +616,7 @@ public class UnrealSeiryu
         {
             string msg = language == Language.Chinese ? "沉默打断被标记式鬼" : "Silence the marked mob!";
             if (isText) sa.Method.TextInfo($"{msg}", duration: 3000, true);
-            if (isTTS) sa.Method.EdgeTTS($"{msg}");
+            if (isTTS) sa.Method.TTS($"{msg}");
         }
 
         if (isMark) sa.Method.Mark((uint)sid, MarkType.Attack1, LocalMark);
@@ -730,7 +739,7 @@ public class UnrealSeiryu
 
         string msg = language == Language.Chinese ? "集合引导放黄圈" : "Stack bait";
         if (isText) sa.Method.TextInfo($"{msg}", duration: 4000, true);
-        if (isTTS) sa.Method.EdgeTTS($"{msg}");
+        if (isTTS) sa.Method.TTS($"{msg}");
     }
 
     public bool towered = true;
