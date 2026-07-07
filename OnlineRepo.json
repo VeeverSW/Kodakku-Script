@@ -33,7 +33,7 @@
     "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/03-Heavensward/the-Aetherochemical-Research-Facility.cs",
     "Note": "v0.0.0.8:\r\n1. 现在支持文字横幅/TTS开关\r\n2. 以前的这几个脚本的底层扩展目前懒得重构（就能加啥随便加了）\r\n鸭门。",
-    "UpdateInfo": "",
+    "UpdateInfo": "修复了TTS",
     "TerritoryIds": [
       1110
     ]
@@ -137,7 +137,7 @@
     "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/03-Heavensward/A9N.cs",
     "Note": "v0.0.0.6",
-    "UpdateInfo": "",
+    "UpdateInfo": "修复了TTS",
     "TerritoryIds": [
       580
     ]
@@ -150,7 +150,7 @@
     "Repo": "https://github.com/VeeverSW/Kodakku-Script",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/03-Heavensward/A11N.cs",
     "Note": "v0.0.0.6:",
-    "UpdateInfo": "",
+    "UpdateInfo": "修复了TTS",
     "TerritoryIds": [
       582
     ]
@@ -163,7 +163,7 @@
     "Repo": "",
     "DownloadUrl": "https://raw.githubusercontent.com/VeeverSW/Kodakku-Script/main/03-Heavensward/A12N.cs",
     "Note": "v0.0.0.6:",
-    "UpdateInfo": "",
+    "UpdateInfo": "修复了TTS",
     "TerritoryIds": [
       583
     ]
